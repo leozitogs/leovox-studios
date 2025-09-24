@@ -5,9 +5,10 @@ services:
     plan: free
     buildPacks:
       - node:
-          version: 18
+          version: 20 # Versão atualizada para a mais recente LTS
       - python:
           version: 3.11
     rootDir: backend
-    buildCommand: "pip install -r requirements.txt && cd ../frontend && npm install --legacy-peer-deps && chmod +x node_modules/.bin/vite && npm run build && cp -r dist/* ../backend/src/static/"
+    # Comando de build simplificado, sem o chmod
+    buildCommand: "pip install -r requirements.txt && cd ../frontend && npm install --legacy-peer-deps && npm run build && cp -r dist/* ../backend/src/static/"
     startCommand: "gunicorn --chdir src main:app"
