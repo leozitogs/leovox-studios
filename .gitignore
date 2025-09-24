@@ -1,0 +1,12 @@
+ # Arquivos de Segredos e Variáveis de Ambiente
+email-backend/src/.env
+
+# Ambiente Virtual
+email-backend/venv/
+*.pyc
+
+# Caches do Python
+email-backend/src/__pycache__
+email-backend/src/database/__pycache__
+email-backend/src/models/__pycache__
+email-backend/src/routes/__pycache__
