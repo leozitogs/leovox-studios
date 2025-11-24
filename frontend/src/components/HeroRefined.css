@@ -1,0 +1,500 @@
+/* HeroRefined.css */
+/* Hero CINEMATOGRÁFICO com scroll travado via JS + PARALLAX */
+
+/* ===================================================================
+   CONTAINER - ocupa 1 viewport, resto do site vem depois
+   =================================================================== */
+
+.hero-refined-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  overflow: hidden;
+  cursor: none; /* Esconde cursor para efeito mais imersivo (opcional) */
+}
+
+/* ===================================================================
+   WRAPPER INTERNO
+   =================================================================== */
+
+.hero-refined-sticky {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* ✅ Background inicial branco, GSAP animará para #0a0a0a */
+  background: #ffffff;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  /* ✅ Transição suave do background */
+  transition: background-color 0.3s ease;
+}
+
+/* ❌ REMOVIDO: ::after estava sobrescrevendo GSAP */
+
+/* ===================================================================
+   TEXTURA DE FUNDO
+   =================================================================== */
+
+.background-texture {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  /* ✅ Aumentada opacidade para ficar visível em fundo escuro */
+  background-image:
+    linear-gradient(rgba(0, 255, 65, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.08) 1px, transparent 1px);
+
+  background-size: 70px 70px, 70px 70px;
+  background-position: 0 0, 0 0;
+
+  animation: texture-drift 40s ease-in-out infinite alternate;
+  
+  /* ✅ Começa invisível, aparece quando background escurece */
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+@keyframes texture-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-15px, -15px, 0);
+  }
+  100% {
+    transform: translate3d(8px, 8px, 0);
+  }
+}
+
+/* ===================================================================
+   PARTÍCULAS ORIGINAIS
+   =================================================================== */
+
+.particles-refined-canvas {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 2 !important;
+  pointer-events: auto;
+}
+
+#tsparticles-refined canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ===================================================================
+   CONTEÚDO DO HERO
+   =================================================================== */
+
+.hero-refined-content {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* ===================================================================
+   CAMADA 1: NOME LEOVOX SVG (ATRÁS - z-index 11) - MAIOR PARA DESTAQUE
+   =================================================================== */
+
+.leovox-type-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  pointer-events: none;
+}
+
+.leovox-type-svg {
+  width: auto;
+  height: 1000px; /* MAIOR: 1000px para DESTAQUE */
+  max-width: 92vw;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.08))
+          drop-shadow(0 0 15px rgba(0, 255, 65, 0.12));
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animação SVG path drawing */
+.leovox-type-svg path {
+  stroke: #00ff41;
+  stroke-width: 1.5;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: calc(1000 * (1 - var(--svg-path-progress, 0)));
+  fill: #00ff41;
+  fill-opacity: var(--svg-path-progress, 0);
+  transition: stroke-dashoffset 0.3s ease-out, fill-opacity 0.3s ease-out;
+}
+
+/* ===================================================================
+   CAMADA 2: ISOLOGO 2D (INICIAL - z-index 12) + PARALLAX
+   =================================================================== */
+
+.isologo-2d-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+  pointer-events: auto;
+  /* Transição SUAVE para parallax */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.isologo-refined {
+  width: 500px;
+  height: auto;
+  max-width: 70vw;
+  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.1))
+          drop-shadow(0 0 20px rgba(0, 255, 65, 0.08));
+  cursor: pointer;
+  user-select: none;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.isologo-refined:hover {
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.12))
+          drop-shadow(0 0 25px rgba(0, 255, 65, 0.12));
+  transform: scale(1.02);
+}
+
+/* ===================================================================
+   CAMADA 3: ISOLOGO 3D (NA FRENTE - z-index 13) + PARALLAX PROFUNDO
+   =================================================================== */
+
+.isologo-3d-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 13;
+  pointer-events: auto;
+  perspective: 1200px;
+  /* Transição SUAVE para parallax */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.isologo-3d {
+  width: 550px;
+  height: auto;
+  max-width: 75vw;
+  filter: drop-shadow(0 25px 60px rgba(0, 0, 0, 0.25))
+          drop-shadow(0 12px 30px rgba(0, 0, 0, 0.18))
+          drop-shadow(0 0 20px rgba(0, 255, 65, 0.1));
+  cursor: pointer;
+  user-select: none;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+  /* Transição SUAVE para parallax 3D */
+  transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.isologo-3d:hover {
+  filter: drop-shadow(0 30px 70px rgba(0, 0, 0, 0.3))
+          drop-shadow(0 15px 35px rgba(0, 0, 0, 0.2))
+          drop-shadow(0 0 25px rgba(0, 255, 65, 0.15));
+  transform: scale(1.02);
+}
+
+/* ===================================================================
+   RESPONSIVIDADE
+   =================================================================== */
+
+@media (max-width: 1024px) {
+  .hero-refined-container {
+    height: 100vh;
+  }
+
+  .leovox-type-svg {
+    height: 750px;
+  }
+
+  .isologo-refined {
+    width: 420px;
+  }
+
+  .isologo-3d {
+    width: 460px;
+  }
+
+  .background-texture {
+    background-size: 60px 60px, 60px 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-refined-container {
+    height: 100vh;
+    cursor: auto; /* Restaura cursor no mobile */
+  }
+
+  .leovox-type-svg {
+    height: 550px;
+  }
+
+  .isologo-refined {
+    width: 350px;
+  }
+
+  .isologo-3d {
+    width: 380px;
+  }
+
+  .background-texture {
+    background-size: 50px 50px, 50px 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-refined-container {
+    height: 100vh;
+  }
+
+  .leovox-type-svg {
+    height: 400px;
+  }
+
+  .isologo-refined {
+    width: 280px;
+  }
+
+  .isologo-3d {
+    width: 300px;
+  }
+
+  .background-texture {
+    background-size: 40px 40px, 40px 40px;
+  }
+}
+
+/* ===================================================================
+   OTIMIZAÇÕES DE PERFORMANCE
+   =================================================================== */
+
+.hero-refined-sticky * {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+.leovox-type-layer,
+.isologo-2d-layer,
+.isologo-3d-layer,
+.background-texture {
+  will-change: transform, opacity;
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .isologo-refined,
+  .isologo-3d,
+  .background-texture {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .hero-refined-container {
+    height: 100vh !important;
+  }
+
+  .leovox-type-svg path {
+    stroke-dashoffset: 0 !important;
+    fill-opacity: 1 !important;
+  }
+
+  /* Desabilita parallax para quem prefere movimento reduzido */
+  .isologo-2d-layer,
+  .isologo-3d-layer {
+    transition: opacity 0.3s ease !important;
+  }
+}
+
+/* ===================================================================
+   VINHETA SUTIL
+   =================================================================== */
+
+.hero-refined-sticky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.03) 100%
+  );
+  z-index: 15;
+  pointer-events: none;
+}
+
+/* ===================================================================
+   EFEITOS 3D CINEMATOGRÁFICOS
+   =================================================================== */
+
+.isologo-3d-layer {
+  perspective: 1200px;
+  perspective-origin: center center;
+}
+
+.isologo-3d {
+  transform-style: preserve-3d;
+}
+
+/* ===================================================================
+   TRANSIÇÕES SUAVES GLOBAIS
+   =================================================================== */
+
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* ===================================================================
+   ✅ ADICIONADO: TEXTOS DO PORTFOLIO (TRANSIÇÃO)
+   =================================================================== */
+
+.portfolio-text-transition-container {
+  position: absolute;
+  top: 55%; /* Um pouco abaixo do centro */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%; /* Menor para dar espaço aos logos */
+  max-width: 1000px;
+  z-index: 14;
+  opacity: 0; /* Começa invisível */
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portfolio-title-transition {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0 0 2rem 0;
+  text-transform: uppercase;
+}
+
+.text-green {
+  color: #1abc01;
+  font-style: italic;
+  position: relative;
+  display: inline-block;
+}
+
+.text-green::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #1abc01, transparent);
+  opacity: 0.5;
+}
+
+.portfolio-desc-transition {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ✅ Estilo para SVG portfolio_name */
+.portfolio-name-svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4))
+          drop-shadow(0 0 15px rgba(26, 188, 1, 0.12));
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ===================================================================
+   RESPONSIVIDADE DOS TEXTOS
+   =================================================================== */
+
+@media (max-width: 1024px) {
+  .portfolio-text-transition-container {
+    right: 30%;
+  }
+
+  .portfolio-title-transition {
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
+
+  .portfolio-desc-transition {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .portfolio-text-transition-container {
+    top: 15%;
+    left: 5%;
+    right: 5%;
+  }
+
+  .portfolio-title-transition {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .portfolio-desc-transition {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-title-transition {
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  }
+
+  .portfolio-desc-transition {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+}
+

@@ -1,6 +1,7 @@
 import './App.css'
-import Header from './components/Header'
-import HeroImproved from './components/HeroImproved'
+import './components/HeroRefined.css'
+import HeaderLandoStyle from './components/HeaderLandoStyle'
+import HeroRefined from './components/HeroRefined'
 import ProjectShowcase from './components/ProjectShowcase'
 import Projects from './components/Projects'
 import Services from './components/Services'
@@ -8,18 +9,23 @@ import BrandShowcase from './components/BrandShowcase'
 import About from './components/About'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
-import ScrollProgress from './components/ScrollProgress'
-import WhatsAppFloat from './components/WhatsAppFloat'
 import CustomCursorAdvanced from './components/CustomCursorAdvanced'
+import ScrollProgress from './components/ScrollProgress'
 
 function App() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="App">
       <CustomCursorAdvanced />
       <ScrollProgress />
-      <Header />
+      
+      {/* Header adaptativo que muda de cor */}
+      <HeaderLandoStyle />
+      
       <main>
-        <HeroImproved />
+        {/* Hero com animação cinematográfica (paleta branca) */}
+        <HeroRefined />
+        
+        {/* Outras seções */}
         <ProjectShowcase />
         <Projects />
         <Services />
@@ -28,10 +34,8 @@ function App() {
         <Contact />
       </main>
       <Footer />
-      <WhatsAppFloat />
     </div>
   )
 }
 
 export default App
-
