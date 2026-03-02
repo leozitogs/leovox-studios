@@ -1,0 +1,767 @@
+/* ============================================================================
+   CINEMATIC SHIRT SHOWCASE — SCROLLYTELLING PREMIUM
+   Leovox Studios | v6 — Background Complexo + Enquadramento Final
+
+   REGRA DE OURO DO STICKY:
+   Nenhum ancestral do .lv-sticky-master pode ter overflow: hidden.
+   ============================================================================ */
+
+/* ============================================================================
+   1. SEÇÃO WRAPPER
+   ============================================================================ */
+.lv-showcase-section {
+  position: relative;
+  width: 100%;
+  background-color: #050505;
+  overflow-x: clip; /* clip NÃO quebra sticky */
+}
+
+/* ============================================================================
+   2. SCROLL TRACK
+   ============================================================================ */
+.lv-scroll-track {
+  position: relative;
+  width: 100%;
+  min-height: 600vh;
+  background-color: #050505;
+}
+
+/* ============================================================================
+   3. STICKY MASTER
+   ============================================================================ */
+.lv-sticky-master {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #050505;
+}
+
+/* ============================================================================
+   4. BACKGROUND CINEMATOGRÁFICO — SISTEMA MULTI-CAMADA
+   ============================================================================ */
+
+/* 4a. Grid perspectiva com profundidade */
+.lv-grid-floor {
+  position: absolute;
+  inset: 0;
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(to right, rgba(0, 255, 65, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 65, 0.04) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at 50% 100%, black 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 100%, black 10%, transparent 70%);
+  transform: perspective(800px) rotateX(55deg) translateY(50px) scale(2.5);
+  transform-origin: bottom center;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+/* 4b. Glow ambiente central */
+.lv-ambient-glow {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 255, 65, 0.07) 0%,
+      rgba(0, 255, 65, 0.03) 30%,
+      rgba(0, 100, 40, 0.015) 50%,
+      transparent 70%
+    );
+  filter: blur(60px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: lv-glow-pulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes lv-glow-pulse {
+  0%   { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); }
+}
+
+/* 4c. Linhas de energia diagonais — efeito "circuito" */
+.lv-energy-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.12;
+  background:
+    repeating-linear-gradient(
+      -30deg,
+      transparent,
+      transparent 120px,
+      rgba(0, 255, 65, 0.06) 120px,
+      rgba(0, 255, 65, 0.06) 121px
+    ),
+    repeating-linear-gradient(
+      30deg,
+      transparent,
+      transparent 180px,
+      rgba(0, 200, 80, 0.04) 180px,
+      rgba(0, 200, 80, 0.04) 181px
+    );
+  mask-image: radial-gradient(ellipse at 50% 60%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 60%, black 20%, transparent 80%);
+}
+
+/* 4d. Vignette cinematográfico — escurece as bordas */
+.lv-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.25) 70%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+/* 4e. Scan line sutil — efeito de tela/monitor */
+.lv-scan-line {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.03;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.04) 2px,
+    rgba(255, 255, 255, 0.04) 4px
+  );
+}
+
+/* 4f. Partículas flutuantes — profundidade e atmosfera */
+.lv-particle-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.lv-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 255, 65, 0.6);
+  box-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+  animation: lv-particle-float linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes lv-particle-float {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120px) translateX(30px);
+    opacity: 0;
+  }
+}
+
+/* ============================================================================
+   5. CAMADA DO INTRO (PNG)
+   ============================================================================ */
+.lv-intro-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  transition: opacity 0.4s ease-out;
+  will-change: opacity;
+}
+
+/* ============================================================================
+   6. FLASH OVERLAY — Branco cinematográfico
+   ============================================================================ */
+.lv-flash-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* ============================================================================
+   6.5. LENS FLARE OVERLAY — Flash sutil nas transições
+   ============================================================================ */
+.lv-lens-flare-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 14;
+  pointer-events: none;
+  will-change: opacity;
+  background:
+    radial-gradient(
+      ellipse at 30% 35%,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(180, 200, 255, 0.06) 20%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 70% 40%,
+      rgba(100, 150, 255, 0.08) 0%,
+      rgba(60, 100, 200, 0.03) 25%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.04) 0%,
+      transparent 30%
+    );
+  mix-blend-mode: screen;
+}
+
+/* ============================================================================
+   7. CAMADA DO CANVAS 3D
+   ============================================================================ */
+.lv-canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  transition: opacity 0.5s ease-in;
+  will-change: opacity;
+  background-color: #050505;
+}
+
+.lv-canvas-layer canvas {
+  outline: none;
+  display: block;
+}
+
+/* ============================================================================
+   8. CAMADA DE TEXTO
+   ============================================================================ */
+.lv-text-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   9. LEGENDAS DE DESIGN
+   ============================================================================ */
+.lv-design-caption {
+  position: absolute;
+  max-width: 440px;
+  padding: 2rem;
+  pointer-events: none;
+}
+
+.lv-caption-left {
+  left: 5vw;
+  bottom: 12vh;
+  text-align: left;
+}
+
+.lv-caption-right {
+  right: 5vw;
+  bottom: 12vh;
+  text-align: right;
+}
+
+.lv-caption-center {
+  left: 50%;
+  bottom: 12vh;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.lv-caption-tag {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #00ff41;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+  opacity: 0.85;
+}
+
+.lv-caption-title {
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem 0;
+  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.8);
+}
+
+.lv-caption-divider {
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #00ff41, transparent);
+  margin-bottom: 0.8rem;
+  border-radius: 2px;
+}
+
+.lv-caption-right .lv-caption-divider {
+  background: linear-gradient(270deg, #00ff41, transparent);
+  margin-left: auto;
+}
+
+.lv-caption-center .lv-caption-divider {
+  background: linear-gradient(90deg, transparent, #00ff41, transparent);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lv-caption-description {
+  font-size: 0.88rem;
+  color: #bbbbbb;
+  line-height: 1.6;
+  font-weight: 300;
+  margin: 0;
+  background: rgba(8, 8, 8, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================================
+   10. CTA FINAL — "VOCÊ MERECE UMA IDENTIDADE ÚNICA"
+   ============================================================================ */
+.lv-final-cta {
+  position: absolute;
+  right: 8vw;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+  pointer-events: auto;
+  z-index: 25;
+  max-width: 520px;
+}
+
+.lv-cta-eyebrow {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  color: #00ff41;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem 0;
+  opacity: 0.85;
+}
+
+.lv-cta-title {
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  color: #ffffff;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.05;
+  text-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+}
+
+.lv-cta-highlight {
+  background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lv-cta-sub {
+  font-size: 0.92rem;
+  color: #999;
+  margin: 0 0 1.8rem 0;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+/* Botão premium arredondado com gradiente e seta */
+.lv-btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #009922 100%);
+  color: #000000;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.95rem 2rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow:
+    0 4px 15px rgba(0, 255, 65, 0.25),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.lv-btn-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.6s ease;
+}
+
+.lv-btn-cta:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow:
+    0 8px 30px rgba(0, 255, 65, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.lv-btn-cta:hover::before {
+  left: 100%;
+}
+
+.lv-btn-cta svg {
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.lv-btn-cta:hover svg {
+  transform: translateX(4px);
+}
+
+/* ============================================================================
+   11. INDICADOR DE PROGRESSO (Lateral direito)
+   ============================================================================ */
+.lv-progress-indicator {
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.3rem;
+  pointer-events: none;
+}
+
+.lv-progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lv-progress-pip {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.4s ease;
+  flex-shrink: 0;
+}
+
+.lv-progress-step.active .lv-progress-pip {
+  background: #00ff41;
+  border-color: #00ff41;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  width: 9px;
+  height: 9px;
+}
+
+.lv-progress-step.done .lv-progress-pip {
+  background: rgba(0, 255, 65, 0.3);
+  border-color: rgba(0, 255, 65, 0.2);
+}
+
+.lv-progress-label {
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.07);
+  text-transform: uppercase;
+  transition: all 0.4s ease;
+  white-space: nowrap;
+}
+
+.lv-progress-step.active .lv-progress-label {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lv-progress-step.done .lv-progress-label {
+  color: rgba(0, 255, 65, 0.2);
+}
+
+/* ============================================================================
+   12. INTRO CONTAINER (ShirtIntro.jsx)
+   ============================================================================ */
+.lv-intro-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 50%, #050505 100%);
+}
+
+.lv-intro-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lv-intro-hero-text {
+  text-align: center;
+  z-index: 10;
+  position: relative;
+  pointer-events: none;
+}
+
+.lv-intro-hero-text h1 {
+  font-size: clamp(4.5rem, 14vw, 11rem);
+  font-weight: 900;
+  line-height: 0.85;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  background: linear-gradient(to bottom, #ffffff, #555555);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
+}
+
+.lv-intro-hero-text h2 {
+  font-size: clamp(0.9rem, 2.5vw, 1.8rem);
+  color: #00ff41;
+  letter-spacing: 0.5em;
+  margin-top: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.lv-intro-hero-text p {
+  color: #888;
+  margin-top: 0.8rem;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+/* Camisas flutuantes */
+.lv-floating-shirt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.lv-floating-shirt img {
+  width: auto;
+  max-width: none;
+  filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.6));
+}
+
+.shirt-crow-center { z-index: 5; width: 420px; }
+.shirt-crow-center img { width: 100%; }
+
+.shirt-storm {
+  z-index: 4; margin-left: -500px; margin-top: 80px; width: 360px;
+  opacity: 0.9; filter: blur(2px) brightness(0.6);
+}
+.shirt-storm img { width: 100%; }
+
+.shirt-mdg {
+  z-index: 4; margin-left: 500px; margin-top: -80px; width: 360px;
+  opacity: 0.9; filter: blur(2px) brightness(0.6);
+}
+.shirt-mdg img { width: 100%; }
+
+.shirt-electra {
+  z-index: 2; margin-left: -700px; margin-top: -250px; width: 280px;
+  opacity: 0.5; filter: blur(5px) grayscale(60%);
+}
+.shirt-electra img { width: 100%; }
+
+.shirt-blue {
+  z-index: 2; margin-left: 700px; margin-top: 250px; width: 280px;
+  opacity: 0.5; filter: blur(5px) grayscale(60%);
+}
+.shirt-blue img { width: 100%; }
+
+/* Scroll Indicator */
+.lv-scroll-indicator {
+  position: absolute;
+  bottom: 6vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 30;
+}
+
+.lv-scroll-indicator span {
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.arrow-down {
+  font-size: 1.3rem;
+  color: #00ff41;
+  animation: lv-bounce 2s infinite;
+}
+
+@keyframes lv-bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-8px); }
+  60% { transform: translateY(-4px); }
+}
+
+.lv-intro-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to top, #050505 5%, transparent);
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   13. RESPONSIVIDADE
+   ============================================================================ */
+@media (max-width: 768px) {
+  .shirt-storm, .shirt-mdg, .shirt-electra, .shirt-blue { display: none; }
+  .shirt-crow-center { width: 280px; }
+  .lv-intro-hero-text h1 { font-size: 4rem; }
+
+  /* Legendas centralizadas no mobile */
+  .lv-design-caption {
+    left: 4vw !important;
+    right: 4vw !important;
+    bottom: 8vh !important;
+    max-width: none;
+    transform: none !important;
+    text-align: center !important;
+    padding: 1rem;
+  }
+
+  .lv-caption-title { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+
+  .lv-caption-description {
+    font-size: 0.8rem;
+    background: rgba(8, 8, 8, 0.75);
+  }
+
+  .lv-caption-divider {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    background: linear-gradient(90deg, transparent, #00ff41, transparent) !important;
+  }
+
+  /* Indicador menor */
+  .lv-progress-indicator { right: 0.5rem; gap: 0.9rem; }
+  .lv-progress-label { display: none; }
+
+  /* CTA centralizado */
+  .lv-final-cta {
+    right: auto;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 90vw;
+    padding: 0 1rem;
+  }
+
+  .lv-cta-title { font-size: clamp(1.4rem, 6vw, 2.2rem); }
+  .lv-btn-cta { padding: 0.85rem 1.6rem; font-size: 0.78rem; }
+
+  /* Grid floor menor */
+  .lv-grid-floor {
+    background-size: 40px 40px;
+    transform: perspective(600px) rotateX(50deg) translateY(30px) scale(2);
+  }
+
+  .lv-ambient-glow {
+    width: 400px;
+    height: 400px;
+  }
+
+  /* Efeitos reduzidos no mobile */
+  .lv-energy-lines { opacity: 0.06; }
+  .lv-scan-line { display: none; }
+}
+
+@media (max-width: 480px) {
+  .shirt-crow-center { width: 220px; }
+  .lv-intro-hero-text h1 { font-size: 3.2rem; }
+  .lv-caption-title { font-size: 1.1rem; }
+  .lv-caption-description { font-size: 0.76rem; padding: 0.6rem 0.8rem; }
+}
+
+/* ============================================================================
+   14. PERFORMANCE
+   ============================================================================ */
+.lv-intro-layer,
+.lv-canvas-layer,
+.lv-flash-overlay,
+.lv-lens-flare-overlay {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow-down { animation: none !important; }
+  .lv-particle { animation: none !important; }
+  .lv-ambient-glow { animation: none !important; }
+}

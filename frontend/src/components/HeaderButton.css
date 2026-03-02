@@ -1,0 +1,160 @@
+/* =====================================================================
+   HeaderButton.css
+   Estilos do botão 3D "Pushable" do Header — Leovox Studios
+   
+   Baseado na referência de animação fornecida pelo usuário,
+   adaptado com a paleta principal #19bc00 e transições suaves
+   para integração com a troca de background do Hero.
+   
+   IMPORTANTE: Este arquivo deve ser importado no HeaderLandoStyle.jsx
+   ou no App.css / index.css do projeto.
+   ===================================================================== */
+
+/* =====================================================================
+   BOTÃO PUSHABLE — Container externo
+   O background do container cria o efeito de "borda 3D" inferior.
+   ===================================================================== */
+
+.lvx-pushable-btn {
+  /* Variáveis de design */
+  --lvx-btn-radius: 0.75em;
+  --lvx-btn-bg: #19bc00;
+  --lvx-btn-edge: #0e7a00;
+  --lvx-shadow-color: rgba(0, 0, 0, 0.25);
+
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--lvx-btn-radius);
+  background: var(--lvx-btn-edge);
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: filter 250ms ease;
+
+  /* Sombra 3D inferior */
+  box-shadow:
+    0 4px 0 0 var(--lvx-btn-edge),
+    0 6px 12px var(--lvx-shadow-color);
+}
+
+/* =====================================================================
+   BOTÃO PUSHABLE — Face superior (a parte que "desce" ao clicar)
+   ===================================================================== */
+
+.lvx-pushable-btn__top {
+  display: block;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-radius: var(--lvx-btn-radius);
+  padding: 0.75em 1.5em;
+  background: var(--lvx-btn-bg);
+
+  /* Texto */
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  line-height: 1.2;
+
+  /* Efeito 3D: face elevada */
+  transform: translateY(-0.25em);
+
+  /* Transições suaves para TODAS as propriedades dinâmicas */
+  transition:
+    transform 0.1s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+/* =====================================================================
+   ESTADOS INTERATIVOS
+   ===================================================================== */
+
+/* Hover: eleva mais a face do botão */
+.lvx-pushable-btn:hover .lvx-pushable-btn__top {
+  transform: translateY(-0.4em);
+}
+
+/* Hover: aumenta a sombra e brilho */
+.lvx-pushable-btn:hover {
+  filter: brightness(110%);
+  box-shadow:
+    0 6px 0 0 var(--lvx-btn-edge),
+    0 8px 16px var(--lvx-shadow-color);
+}
+
+/* Active (pressionado): desce a face do botão */
+.lvx-pushable-btn:active .lvx-pushable-btn__top {
+  transform: translateY(0);
+}
+
+/* Active: reduz sombra para efeito de "pressão" */
+.lvx-pushable-btn:active {
+  box-shadow:
+    0 1px 0 0 var(--lvx-btn-edge),
+    0 2px 4px var(--lvx-shadow-color);
+}
+
+/* Focus visível (acessibilidade via teclado) */
+.lvx-pushable-btn:focus-visible {
+  outline: 2px solid #19bc00;
+  outline-offset: 4px;
+}
+
+/* Remove outline padrão em clique com mouse */
+.lvx-pushable-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* =====================================================================
+   RESPONSIVIDADE
+   ===================================================================== */
+
+@media (max-width: 768px) {
+  .lvx-pushable-btn {
+    font-size: 15px;
+  }
+
+  .lvx-pushable-btn__top {
+    padding: 0.65em 1.25em;
+    letter-spacing: 1px;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .lvx-pushable-btn {
+    font-size: 14px;
+  }
+
+  .lvx-pushable-btn__top {
+    padding: 0.55em 1em;
+    letter-spacing: 0.75px;
+    font-size: 0.8125rem;
+  }
+}
+
+/* =====================================================================
+   ACESSIBILIDADE — prefers-reduced-motion
+   ===================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .lvx-pushable-btn,
+  .lvx-pushable-btn__top {
+    transition: none !important;
+  }
+
+  .lvx-pushable-btn:hover .lvx-pushable-btn__top {
+    transform: translateY(-0.25em);
+  }
+
+  .lvx-pushable-btn:active .lvx-pushable-btn__top {
+    transform: translateY(0);
+  }
+}

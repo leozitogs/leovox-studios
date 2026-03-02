@@ -1,66 +1,134 @@
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+
+// ============================================================================
+// ATENÇÃO PARA O SEU PROJETO LOCAL:
+// Descomente a linha abaixo para usar seu logo original.
 import leovoxHead from '../assets/brand/Leovox_head.svg'
-import { Zap } from 'lucide-react' // Ícone de raio
+// ============================================================================
+
+// Estilos do botão 3D Pushable
+import './HeaderButton.css'
+
+// Placeholder para o preview funcionar sem erros de arquivo não encontrado:
+// const leovoxHead = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNTAgNTAiPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMjQiPkxFT1ZPWDwvdGV4dD48L3N2Zz4=`
 
 const HeaderLandoStyle = () => {
   // ============================================================================
   // DETECÇÃO DE MUDANÇA DE COR DO HERO VIA CSS VARIABLE
-  // Sincronizado com HeroRefined via --hero-bg-dark (0 → 1)
+  // Otimizado: usa RAF com throttle para evitar re-renders excessivos.
+  // Só atualiza o state quando o valor muda significativamente (delta > 0.01).
   // ============================================================================
   const [heroBgDark, setHeroBgDark] = useState(0)
+  const lastValueRef = useRef(0)
 
   useEffect(() => {
+    let rafId
+
     const checkHeroBgDark = () => {
       const value = getComputedStyle(document.documentElement)
         .getPropertyValue('--hero-bg-dark')
         .trim()
-      
-      const numValue = parseFloat(value) || 0
-      setHeroBgDark(numValue)
+
+      const numValue = parseFloat(value)
+      const safeValue = Number.isNaN(numValue) ? 0 : Math.max(0, Math.min(1, numValue))
+
+      // Só atualiza o state se a diferença for perceptível (evita re-renders desnecessários)
+      if (Math.abs(safeValue - lastValueRef.current) > 0.01) {
+        lastValueRef.current = safeValue
+        setHeroBgDark(safeValue)
+      }
+
+      rafId = requestAnimationFrame(checkHeroBgDark)
     }
 
-    // Checa a cada frame para transição suave
-    let rafId
-    const loop = () => {
-      checkHeroBgDark()
-      rafId = requestAnimationFrame(loop)
-    }
-    
-    rafId = requestAnimationFrame(loop)
-    
+    rafId = requestAnimationFrame(checkHeroBgDark)
+
     return () => cancelAnimationFrame(rafId)
   }, [])
 
   // ============================================================================
-  // CORES DINÂMICAS BASEADAS NO SINALIZADOR
+  // LÓGICA DE CORES — TRANSIÇÃO SUAVE SEM THRESHOLD BINÁRIO
+  // Todas as cores são calculadas como gradientes contínuos baseados em heroBgDark.
+  // Isso elimina saltos visuais durante a transição do hero.
   // ============================================================================
-  
-  // Logo: preto → branco
-  const logoFilter = `invert(${heroBgDark})`
-  
-  // Botão sempre verde neon
-  const ctaBgColor = '#1abc01'
-  
-  // Borda do botão: preto → verde
-  const ctaBorderColor = heroBgDark > 0.5 
-    ? `rgba(161, 245, 156, 1, ${0.5 + heroBgDark * 0.5})` 
-    : 'rgba(0, 0, 0, 1)'
-  
-  // Texto do botão: sempre preto
-  const ctaTextColor = 'rgba(0, 0, 0, 1)'
-  
-  // Sombra do botão: preta → verde
-  const ctaShadow = heroBgDark > 0.5
-    ? `0 5px 0 0 rgba(161, 245, 156, 1, ${0.5 + heroBgDark * 0.5})`
-    : '0 5px 0 0 rgba(0, 0, 0, 1)'
 
-  const handleContactClick = () => {
-    const contactSection = document.getElementById('contact')
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
+  const logoFilter = `invert(${heroBgDark})`
+
+  // Cores base do botão (paleta principal #19bc00)
+  const mainColor = '#19bc00'
+  const edgeColorDark = '#0e7a00'
+
+  // Cor do texto do botão: transição contínua
+  // Quando fundo claro (heroBgDark ≈ 0): texto escuro (#0a0a0a) para contraste com verde
+  // Quando fundo escuro (heroBgDark ≈ 1): texto branco (#ffffff) para contraste com verde
+  const textR = Math.round(10 + heroBgDark * 245)
+  const textG = Math.round(10 + heroBgDark * 245)
+  const textB = Math.round(10 + heroBgDark * 245)
+  const buttonTextColor = `rgb(${textR}, ${textG}, ${textB})`
+
+  // Cor da borda/outline do botão: transição contínua
+  // Fundo claro: borda escura para definição
+  // Fundo escuro: borda verde luminosa
+  const borderR = Math.round(10 + heroBgDark * 15)
+  const borderG = Math.round(10 + heroBgDark * 178)
+  const borderB = Math.round(10 + heroBgDark * -10)
+  const buttonBorderColor = `rgb(${Math.max(0, borderR)}, ${Math.max(0, borderG)}, ${Math.max(0, Math.min(255, borderB))})`
+
+  // Sombra do botão: transição contínua (sem threshold)
+  // Fundo claro: sombra escura sutil
+  // Fundo escuro: sombra verde brilhante
+  const shadowOpacity = 0.2 + heroBgDark * 0.25
+  const shadowR = Math.round(0 + heroBgDark * 25)
+  const shadowG = Math.round(0 + heroBgDark * 188)
+  const shadowB = Math.round(0 + heroBgDark * 0)
+  const shadowColor = `rgba(${shadowR}, ${shadowG}, ${shadowB}, ${shadowOpacity.toFixed(2)})`
+
+  // ============================================================================
+  // HANDLERS DE NAVEGAÇÃO
+  // ============================================================================
+
+  const handleLogoClick = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }, [])
+
+  // ============================================================================
+  // handleContactClick — CORREÇÃO DO BUG DE SCROLL TRAVADO
+  //
+  // PROBLEMA: O HeroRefined trava o scroll do body (overflow: hidden) enquanto
+  // o scrollProgress não atinge 2.0. Quando o botão "ME CONTATE" dispara
+  // scrollIntoView(), o navegador tenta rolar mas o body está travado,
+  // resultando em página congelada com partículas visíveis sobre o conteúdo.
+  //
+  // SOLUÇÃO: Antes de navegar, forçamos o desbloqueio do scroll:
+  // 1. Setamos scrollProgress para 2.0 (completa a animação do Hero)
+  // 2. Disparamos o evento customizado 'hero-force-unlock' para que o Hero
+  //    atualize seu state isLocked para false
+  // 3. Forçamos body.overflow = '' como fallback imediato
+  // 4. Esperamos um frame para o DOM processar, depois fazemos o scrollIntoView
+  // ============================================================================
+  const handleContactClick = useCallback(() => {
+    // 1. Força o desbloqueio do scroll do body imediatamente
+    document.body.style.overflow = ''
+
+    // 2. Dispara evento customizado para o Hero desbloquear seu state interno
+    //    O HeroRefined escuta esse evento e seta isLocked = false + scrollProgress = 2
+    window.dispatchEvent(new CustomEvent('hero-force-unlock'))
+
+    // 3. Aguarda um frame para o DOM processar o desbloqueio, depois navega
+    requestAnimationFrame(() => {
+      // Fallback: garante que overflow está liberado mesmo se o Hero não respondeu
+      document.body.style.overflow = ''
+
+      const contactSection = document.getElementById('contact')
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    })
+  }, [])
 
   return (
     <motion.header
@@ -69,63 +137,62 @@ const HeaderLandoStyle = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Background sempre transparente (SEM blur escuro) */}
-
-      {/* Container principal com margens generosas */}
       <div className="relative mx-auto flex items-center justify-between px-6 py-6 md:px-8 lg:px-12">
-        
-        {/* Logo à esquerda - SVG Leovox Studios */}
+        {/* ================================================================
+            LOGO À ESQUERDA
+            Usa style inline para filter dinâmico (sem <style> tag).
+            ================================================================ */}
         <div className="flex flex-1 items-center">
-          <a href="#home" className="select-none">
-            <motion.img 
-              src={leovoxHead} 
-              alt="Leovox Studios" 
-              className="h-[120px] w-auto transition-all duration-300"
-              style={{ filter: logoFilter }}
+          <div
+            onClick={handleLogoClick}
+            className="cursor-pointer select-none outline-none border-none ring-0 focus:outline-none"
+            tabIndex={-1}
+            style={{ WebkitTapHighlightColor: 'transparent' }}
+          >
+            <motion.img
+              src={leovoxHead}
+              alt="Leovox Studios"
+              className="h-[120px] w-auto"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                boxShadow: 'none',
+                filter: logoFilter,
+                background: 'transparent',
+                transition: 'filter 0.3s ease'
+              }}
             />
-          </a>
+          </div>
         </div>
 
-        {/* Botões à direita */}
-        <motion.div 
-          className="flex flex-1 items-center justify-end gap-3"
+        {/* ================================================================
+            BOTÃO 3D PUSHABLE — "ME CONTATE"
+            Baseado na referência fornecida pelo usuário.
+            Usa style inline para todas as cores dinâmicas,
+            eliminando a necessidade de <style> tags com interpolação.
+            ================================================================ */}
+        <motion.div
+          className="flex flex-1 items-center justify-end"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          {/* Botão "FALE COMIGO" com ícone de raio */}
-          <motion.button
+          <button
+            className="lvx-pushable-btn"
             onClick={handleContactClick}
-            className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-xl px-7 py-3.5 text-sm font-black uppercase tracking-[0.2em] transition-all duration-200 md:px-8 md:py-4 md:text-base"
-            style={{
-              backgroundColor: ctaBgColor,
-              borderWidth: '3px',
-              borderStyle: 'solid',
-              borderColor: ctaBorderColor,
-              color: ctaTextColor,
-              boxShadow: ctaShadow,
-            }}
-            whileHover={{ 
-              y: -2,
-              transition: { duration: 0.2 }
-            }}
-            whileTap={{ 
-              y: 2,
-              transition: { duration: 0.1 }
-            }}
+            aria-label="Ir para seção de contato"
           >
-            {/* Efeito de brilho no hover */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
-              initial={{ x: "-100%" }}
-              whileHover={{ x: "100%" }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-            />
-            
-            {/* Ícone de Raio */}
-            <Zap className="h-5 w-5 transition-transform duration-200 group-hover:scale-110 md:h-6 md:w-6" strokeWidth={3} fill="currentColor" />
-            <span className="relative font-black">Fale Comigo</span>
-          </motion.button>
+            <span
+              className="lvx-pushable-btn__top"
+              style={{
+                color: buttonTextColor,
+                borderColor: buttonBorderColor,
+                '--lvx-shadow-color': shadowColor,
+              }}
+            >
+              ME CONTATE
+            </span>
+          </button>
         </motion.div>
       </div>
     </motion.header>

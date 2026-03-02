@@ -14,7 +14,7 @@ const CustomCursorAdvanced = () => {
     const handleMouseEnter = () => setIsVisible(true)
     const handleMouseLeave = () => setIsVisible(false)
 
-    // Add event listeners for interactive elements
+    // Detecta elementos interativos para mudar o estado do cursor
     const addHoverListeners = () => {
       const interactiveElements = document.querySelectorAll('a, button, [role="button"], .cursor-pointer, input, textarea')
       
@@ -28,8 +28,8 @@ const CustomCursorAdvanced = () => {
     document.addEventListener('mouseenter', handleMouseEnter)
     document.addEventListener('mouseleave', handleMouseLeave)
     
-    // Add listeners after a short delay to ensure DOM is ready
-    setTimeout(addHoverListeners, 100)
+    // Pequeno delay para garantir que o DOM carregou
+    setTimeout(addHoverListeners, 500)
 
     return () => {
       document.removeEventListener('mousemove', updateMousePosition)
@@ -40,18 +40,41 @@ const CustomCursorAdvanced = () => {
 
   if (!isVisible) return null
 
+  // Variantes de animação do cursor
+  const variants = {
+    default: {
+      x: mousePosition.x - 16,
+      y: mousePosition.y - 16,
+      height: 32,
+      width: 32,
+      backgroundColor: "rgba(0, 255, 65, 0.15)",
+      border: "1px solid rgba(0, 255, 65, 0.5)",
+      mixBlendMode: "screen"
+    },
+    hover: {
+      x: mousePosition.x - 40,
+      y: mousePosition.y - 40,
+      height: 80,
+      width: 80,
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      border: "1px solid rgba(255, 255, 255, 0.8)",
+      mixBlendMode: "difference"
+    }
+  }
+
   return (
-    <>
-      {/* Neon effect on buttons when hovering */}
-      <style jsx global>{`
-        a:hover, button:hover, [role="button"]:hover, .cursor-pointer:hover {
-          box-shadow: 0 0 20px rgba(0, 255, 65, 0.5), 0 0 40px rgba(0, 255, 65, 0.3) !important;
-          transition: box-shadow 0.3s ease !important;
-        }
-      `}</style>
-    </>
+    <motion.div
+      className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999]"
+      variants={variants}
+      animate={cursorVariant}
+      transition={{
+        type: "spring",
+        stiffness: 150,
+        damping: 15,
+        mass: 0.1
+      }}
+    />
   )
 }
 
 export default CustomCursorAdvanced
-

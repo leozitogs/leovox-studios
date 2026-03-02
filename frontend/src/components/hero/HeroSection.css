@@ -1,0 +1,711 @@
+/* ============================================================================
+ * HeroSection.css — Estilos da Hero Section v2 "Das Nuvens à Realidade"
+ * 
+ * Organização:
+ * 1. Layout Base (section + pinned container)
+ * 2. Ato 1: Ascensão
+ * 3. Ato 2: Descida
+ * 4. Ato 3: Revelação
+ * 5. Ato 4: Transformação
+ * 6. Ato 5: Showcase
+ * 7. Componentes Compartilhados (CTAs, Glass, etc.)
+ * 8. Responsividade
+ * 9. Debug
+ * ============================================================================ */
+
+/* ============================================================================
+ * 1. LAYOUT BASE
+ * ============================================================================ */
+
+.hero-section-v2 {
+  position: relative;
+  width: 100%;
+  /* height é definido inline via TOTAL_SCROLL_HEIGHT (500vh) */
+  overflow: visible;
+}
+
+.hero-section-v2-pinned {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ============================================================================
+ * 2. ATO 1: ASCENSÃO
+ * ============================================================================ */
+
+.hero-act-one {
+  /* Posicionamento absoluto definido inline */
+}
+
+/* Título LEOVOX STUDIOS */
+.hero-act-one-title-group {
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-act-one-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  line-height: 1;
+}
+
+.hero-act-one-title-leovox {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+  text-shadow: 0 0 40px rgba(0, 255, 65, 0.3), 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hero-act-one-title-studios {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 2rem);
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Tagline com typewriter */
+.hero-act-one-tagline {
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-typewriter {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.05em;
+}
+
+.hero-typewriter-cursor {
+  color: #00ff41;
+  font-weight: 300;
+  transition: opacity 0.1s ease;
+  margin-left: 2px;
+}
+
+/* Indicador de scroll */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hero-scroll-indicator-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ============================================================================
+ * 3. ATO 2: DESCIDA
+ * ============================================================================ */
+
+/* Estilos inline no componente — sem classes adicionais necessárias */
+
+/* ============================================================================
+ * 4. ATO 3: REVELAÇÃO
+ * ============================================================================ */
+
+.hero-act-three-card-content {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Foto */
+.hero-act-three-photo {
+  flex-shrink: 0;
+}
+
+.hero-act-three-photo-frame {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.hero-act-three-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.hero-act-three-photo-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 28px;
+  border: 2px solid rgba(0, 255, 65, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Texto */
+.hero-act-three-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero-act-three-name {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.hero-act-three-role {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-weight: 500;
+  color: #00cc33;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.02em;
+}
+
+.hero-act-three-bio {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+  font-weight: 400;
+  color: #4a4a4a;
+  line-height: 1.7;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Métricas */
+.hero-act-three-metrics {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.hero-act-three-metric-card {
+  flex: 1;
+  min-width: 80px;
+}
+
+.hero-metric-value {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 800;
+  color: #00cc33;
+  line-height: 1.2;
+}
+
+.hero-counter-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-metric-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #6a6a6a;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+/* ============================================================================
+ * 5. ATO 4: TRANSFORMAÇÃO
+ * ============================================================================ */
+
+.hero-act-four-bridge-text {
+  text-align: center;
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.hero-bridge-line {
+  display: block;
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.hero-bridge-line--green {
+  font-weight: 900;
+  color: #00ff41 !important;
+  text-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+}
+
+/* ============================================================================
+ * 6. ATO 5: SHOWCASE
+ * ============================================================================ */
+
+.hero-act-five-title {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.hero-text-green {
+  color: #00ff41;
+  text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.hero-act-five-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* Grid de projetos */
+.hero-act-five-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* Project Card */
+.hero-project-card {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-project-card-thumb {
+  position: relative;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+}
+
+.hero-project-card-thumb-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-project-card-thumb-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 255, 65, 0.4);
+}
+
+.hero-project-card-content {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-project-card-title {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.hero-project-card-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+  margin: 0 0 0.75rem 0;
+  flex: 1;
+}
+
+.hero-project-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.hero-project-card-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #00ff41;
+  background: rgba(0, 255, 65, 0.1);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  border-radius: 100px;
+  padding: 0.2rem 0.6rem;
+  letter-spacing: 0.02em;
+}
+
+/* Encerramento */
+.hero-act-five-closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.hero-act-five-logo {
+  width: 160px;
+  height: auto;
+}
+
+.hero-act-five-logo-img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 65, 0.2));
+}
+
+.hero-act-five-socials {
+  display: flex;
+  gap: 1rem;
+}
+
+.hero-act-five-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 255, 65, 0.08);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  color: #00ff41;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.hero-act-five-social-link:hover {
+  background: rgba(0, 255, 65, 0.15);
+  border-color: rgba(0, 255, 65, 0.4);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ============================================================================
+ * 7. COMPONENTES COMPARTILHADOS
+ * ============================================================================ */
+
+/* CTAs — Ato 3 */
+.hero-cta-primary {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #0a0a0a;
+  background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+  border: none;
+  border-radius: 100px;
+  padding: 0.875rem 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 255, 65, 0.25);
+}
+
+.hero-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 255, 65, 0.35);
+}
+
+.hero-cta-primary:active {
+  transform: translateY(0);
+}
+
+.hero-cta-secondary {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 100px;
+  padding: 0.875rem 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hero-cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.hero-cta-secondary:active {
+  transform: translateY(0);
+}
+
+/* CTA Final — Ato 5 */
+.hero-cta-final {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #0a0a0a;
+  background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+  border: none;
+  border-radius: 100px;
+  padding: 1rem 2.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 255, 65, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cta-final::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #00ff41, #00cc33, #00ff41);
+  z-index: -1;
+  animation: hero-cta-glow 3s ease-in-out infinite;
+  filter: blur(8px);
+  opacity: 0.5;
+}
+
+.hero-cta-final:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(0, 255, 65, 0.4);
+}
+
+.hero-cta-final:active {
+  transform: translateY(0) scale(1);
+}
+
+@keyframes hero-cta-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* ============================================================================
+ * 8. RESPONSIVIDADE
+ * ============================================================================ */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .hero-act-three-card-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-act-three-photo-frame {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto;
+  }
+
+  .hero-act-three-metrics {
+    justify-content: center;
+  }
+
+  .hero-act-five-grid {
+    gap: 1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-act-one-title-leovox {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
+
+  .hero-act-one-title-studios {
+    font-size: clamp(0.75rem, 3vw, 1.25rem);
+    letter-spacing: 0.3em;
+  }
+
+  .hero-typewriter {
+    font-size: clamp(0.85rem, 3vw, 1.1rem);
+  }
+
+  .hero-act-three-card-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-act-three-photo-frame {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+  }
+
+  .hero-act-three-name {
+    font-size: 1.5rem;
+  }
+
+  .hero-act-three-bio {
+    font-size: 0.85rem;
+  }
+
+  .hero-act-three-metrics {
+    justify-content: center;
+  }
+
+  .hero-act-three-metric-card {
+    min-width: 70px;
+  }
+
+  .hero-act-three-ctas {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-act-five-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-project-card {
+    min-height: 180px;
+  }
+
+  .hero-bridge-line {
+    font-size: clamp(1.5rem, 8vw, 3rem);
+  }
+
+  .hero-act-five-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-cta-primary,
+  .hero-cta-secondary {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .hero-cta-final {
+    padding: 0.875rem 2rem;
+    font-size: 0.9rem;
+  }
+
+  .hero-act-five-logo {
+    width: 120px;
+  }
+
+  /* Tech orbit menor no mobile */
+  .hero-tech-orbit-item {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .hero-tech-orbit-item svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 480px) {
+  .hero-act-one-title-leovox {
+    font-size: 2rem;
+  }
+
+  .hero-act-one-title-studios {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+  }
+
+  .hero-act-three-photo-frame {
+    width: 120px;
+    height: 120px;
+  }
+
+  .hero-act-three-metrics {
+    gap: 0.5rem;
+  }
+
+  .hero-act-three-metric-card {
+    min-width: 60px;
+    padding: 0.75rem !important;
+  }
+
+  .hero-metric-value {
+    font-size: 1.1rem;
+  }
+
+  .hero-metric-label {
+    font-size: 0.6rem;
+  }
+}
+
+/* ============================================================================
+ * 9. DEBUG OVERLAY
+ * ============================================================================ */
+
+.hero-debug-overlay {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  gap: 8px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  color: #00ff41;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  pointer-events: none;
+}
+
+/* ============================================================================
+ * ANIMAÇÕES GLOBAIS
+ * ============================================================================ */
+
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes hero-pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.4); }
+  50% { box-shadow: 0 0 20px 5px rgba(0, 255, 65, 0.2); }
+}
+
+/* Suavização global para transições */
+.hero-act {
+  will-change: opacity;
+}
+
+/* Prevenir seleção de texto durante scroll */
+.hero-section-v2-pinned {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Garantir que o canvas WebGL não bloqueia interações */
+.hero-clouds-background canvas {
+  display: block;
+}

@@ -1,5 +1,8 @@
 /* HeroRefined.css */
 /* Hero CINEMATOGRÁFICO com scroll travado via JS + PARALLAX */
+/* v5 — "Nebula Viva": gradientes nativos CSS, grid tech, glow pulse */
+/* v6 — Animação de entrada do Isologo (recriação fiel do vídeo Scene-1) */
+/* Performance: zero filter:blur em runtime, animação via background-position e opacity */
 
 /* ===================================================================
    CONTAINER - ocupa 1 viewport, resto do site vem depois
@@ -11,7 +14,7 @@
   height: 100vh;
   z-index: 1;
   overflow: hidden;
-  cursor: none; /* Esconde cursor para efeito mais imersivo (opcional) */
+  cursor: none;
 }
 
 /* ===================================================================
@@ -24,19 +27,278 @@
   left: 0;
   width: 100%;
   height: 100%;
-  /* ✅ Background inicial branco, GSAP animará para #0a0a0a */
   background: #ffffff;
   overflow: hidden;
   z-index: 0;
   pointer-events: none;
-  /* ✅ Transição suave do background */
   transition: background-color 0.3s ease;
 }
 
-/* ❌ REMOVIDO: ::after estava sobrescrevendo GSAP */
+/* ===================================================================
+   NEBULA WRAPPER — Container de todas as camadas do background escuro
+   Substitui o antigo spectral-wrapper + 6 blobs individuais.
+   Agora usa um ÚNICO div com múltiplos radial-gradients nativos,
+   eliminando filter:blur e reduzindo camadas compostas de 9 para 4.
+   =================================================================== */
+
+.hero-spectral-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  will-change: opacity;
+
+  /* =============================================
+     NEBULA GRADIENTS — Aurora orgânica via CSS puro
+     4 gradientes radiais sobrepostos criam profundidade
+     sem nenhum filter:blur (zero custo GPU de composição).
+     Animados via background-position para movimento orgânico.
+     FIX: Opacidades aumentadas para serem visíveis sobre fundo rgb(3,3,3).
+     ============================================= */
+  background:
+    /* Nebula 1: Arco superior — protagonista verde Leovox */
+    radial-gradient(
+      ellipse 90% 45% at 65% -10%,
+      rgba(25, 188, 0, 0.45) 0%,
+      rgba(25, 188, 0, 0.20) 35%,
+      transparent 70%
+    ),
+    /* Nebula 2: Massa inferior-esquerda — verde esmeralda profundo */
+    radial-gradient(
+      ellipse 55% 70% at -5% 115%,
+      rgba(0, 255, 65, 0.30) 0%,
+      rgba(0, 200, 50, 0.12) 40%,
+      transparent 65%
+    ),
+    /* Nebula 3: Halo central difuso — respiração sutil */
+    radial-gradient(
+      ellipse 60% 55% at 50% 55%,
+      rgba(25, 188, 0, 0.18) 0%,
+      rgba(25, 188, 0, 0.08) 30%,
+      transparent 55%
+    ),
+    /* Nebula 4: Accent inferior-direito — contraponto assimétrico */
+    radial-gradient(
+      ellipse 45% 50% at 105% 90%,
+      rgba(0, 255, 65, 0.22) 0%,
+      rgba(25, 188, 0, 0.08) 35%,
+      transparent 60%
+    );
+
+  background-size:
+    200% 200%,
+    180% 180%,
+    150% 150%,
+    200% 200%;
+
+  animation: nebula-drift 50s ease-in-out infinite alternate;
+}
 
 /* ===================================================================
-   TEXTURA DE FUNDO
+   GRID TECH — Identidade visual de estúdio digital
+   Linhas finas verdes que criam profundidade e sofisticação.
+   Fade nas bordas via mask-image para integração orgânica.
+   =================================================================== */
+
+.hero-spectral-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background:
+    /* Linhas verticais */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent calc(8vw - 1px),
+      rgba(25, 188, 0, 0.08) calc(8vw - 1px),
+      rgba(25, 188, 0, 0.08) 8vw
+    ),
+    /* Linhas horizontais */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent calc(8vw - 1px),
+      rgba(25, 188, 0, 0.08) calc(8vw - 1px),
+      rgba(25, 188, 0, 0.08) 8vw
+    );
+
+  /* Fade radial — grid desaparece nas bordas */
+  -webkit-mask-image: radial-gradient(
+    ellipse 65% 60% at 50% 50%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0) 80%
+  );
+  mask-image: radial-gradient(
+    ellipse 65% 60% at 50% 50%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0) 80%
+  );
+
+  opacity: 0.7;
+}
+
+/* ===================================================================
+   GLOW PULSE — Vida e respiração do background
+   Radial-gradient verde com animação de opacidade suave.
+   Efeito quase subliminar que impede o fundo de parecer "morto".
+   =================================================================== */
+
+.hero-spectral-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(25, 188, 0, 0.25) 0%,
+    rgba(25, 188, 0, 0.10) 35%,
+    transparent 65%
+  );
+
+  animation: glow-pulse 8s ease-in-out infinite;
+}
+
+/* ===================================================================
+   VINHETA ESCURA — Escurece bordas para continuidade com seção seguinte
+   Mais suave e elegante que a versão anterior.
+   =================================================================== */
+
+.hero-spectral-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+  background:
+    radial-gradient(
+      ellipse 75% 70% at 50% 50%,
+      transparent 0%,
+      transparent 35%,
+      rgba(3, 3, 3, 0.20) 60%,
+      rgba(3, 3, 3, 0.40) 80%,
+      rgba(3, 3, 3, 0.60) 100%
+    );
+}
+
+/* ===================================================================
+   GRAIN / NOISE ANIMADO — Textura de película cinematográfica
+   Otimizado: background-size menor (128px), opacidade mais sutil.
+   =================================================================== */
+
+.hero-spectral-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+  overflow: hidden;
+  mix-blend-mode: overlay;
+}
+
+.hero-spectral-grain::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  animation: grain-shift 5s steps(6) infinite;
+}
+
+/* ===================================================================
+   KEYFRAMES — NEBULA DRIFT
+   Movimento orgânico dos gradientes via background-position.
+   Muito mais leve que animar transform em 6 divs com blur.
+   =================================================================== */
+
+@keyframes nebula-drift {
+  0% {
+    background-position:
+      0% 0%,
+      0% 100%,
+      50% 50%,
+      100% 100%;
+  }
+  25% {
+    background-position:
+      30% 10%,
+      10% 80%,
+      55% 45%,
+      80% 90%;
+  }
+  50% {
+    background-position:
+      60% 20%,
+      20% 60%,
+      45% 55%,
+      60% 80%;
+  }
+  75% {
+    background-position:
+      40% 5%,
+      5% 90%,
+      52% 48%,
+      90% 95%;
+  }
+  100% {
+    background-position:
+      10% 15%,
+      15% 70%,
+      48% 52%,
+      70% 85%;
+  }
+}
+
+/* ===================================================================
+   KEYFRAMES — GLOW PULSE (respiração)
+   =================================================================== */
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08) translateY(3%);
+  }
+}
+
+/* ===================================================================
+   KEYFRAMES — GRAIN ANIMADO (película de filme)
+   Otimizado: menos steps, tamanho menor
+   =================================================================== */
+
+@keyframes grain-shift {
+  0%   { transform: translate(0, 0); }
+  16%  { transform: translate(-5%, -8%); }
+  33%  { transform: translate(7%, -12%); }
+  50%  { transform: translate(-8%, 5%); }
+  66%  { transform: translate(4%, 8%); }
+  83%  { transform: translate(-3%, -5%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ===================================================================
+   TEXTURA DE FUNDO ORIGINAL (mantida para compatibilidade)
    =================================================================== */
 
 .background-texture {
@@ -44,32 +306,10 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-
-  /* ✅ Aumentada opacidade para ficar visível em fundo escuro */
-  background-image:
-    linear-gradient(rgba(0, 255, 65, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 65, 0.08) 1px, transparent 1px);
-
-  background-size: 70px 70px, 70px 70px;
-  background-position: 0 0, 0 0;
-
-  animation: texture-drift 40s ease-in-out infinite alternate;
-  
-  /* ✅ Começa invisível, aparece quando background escurece */
+  background: transparent;
   opacity: 0;
+  will-change: opacity;
   transition: opacity 1.5s ease;
-}
-
-@keyframes texture-drift {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(-15px, -15px, 0);
-  }
-  100% {
-    transform: translate3d(8px, 8px, 0);
-  }
 }
 
 /* ===================================================================
@@ -82,7 +322,7 @@
   left: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  z-index: 2 !important;
+  z-index: 4 !important;
   pointer-events: auto;
 }
 
@@ -111,7 +351,7 @@
 }
 
 /* ===================================================================
-   CAMADA 1: NOME LEOVOX SVG (ATRÁS - z-index 11) - MAIOR PARA DESTAQUE
+   CAMADA 1: NOME LEOVOX SVG (ATRÁS - z-index 11)
    =================================================================== */
 
 .leovox-type-layer {
@@ -129,7 +369,7 @@
 
 .leovox-type-svg {
   width: auto;
-  height: 1000px; /* MAIOR: 1000px para DESTAQUE */
+  height: 1000px;
   max-width: 92vw;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.08))
           drop-shadow(0 0 15px rgba(0, 255, 65, 0.12));
@@ -138,7 +378,6 @@
   transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animação SVG path drawing */
 .leovox-type-svg path {
   stroke: #00ff41;
   stroke-width: 1.5;
@@ -147,6 +386,41 @@
   fill: #00ff41;
   fill-opacity: var(--svg-path-progress, 0);
   transition: stroke-dashoffset 0.3s ease-out, fill-opacity 0.3s ease-out;
+}
+
+/* ===================================================================
+   GLOW VERDE — Animação de entrada do Isologo (v6)
+   Efeito de brilho verde difuso atrás da logo durante a animação inicial.
+   Observado no vídeo: glow verde suave, mais pronunciado à esquerda.
+   Implementado via radial-gradient (zero filter:blur = zero custo GPU).
+   Centering via inset + margin auto (Framer Motion controla transform).
+   =================================================================== */
+
+.isologo-entrance-glow {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 480px;
+  height: 480px;
+  max-width: 75vw;
+  max-height: 75vw;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 11;
+
+  /* Gradiente verde difuso — simula o glow do vídeo
+     Offset ligeiramente à esquerda (at 42%) como observado */
+  background: radial-gradient(
+    ellipse 65% 60% at 42% 48%,
+    rgba(25, 188, 0, 0.32) 0%,
+    rgba(0, 255, 65, 0.16) 35%,
+    rgba(25, 188, 0, 0.05) 60%,
+    transparent 80%
+  );
+
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* ===================================================================
@@ -164,7 +438,6 @@
   justify-content: center;
   z-index: 12;
   pointer-events: auto;
-  /* Transição SUAVE para parallax */
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -204,7 +477,6 @@
   z-index: 13;
   pointer-events: auto;
   perspective: 1200px;
-  /* Transição SUAVE para parallax */
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -220,7 +492,6 @@
   will-change: transform, opacity;
   transform: translateZ(0);
   transform-style: preserve-3d;
-  /* Transição SUAVE para parallax 3D */
   transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -249,19 +520,39 @@
     width: 420px;
   }
 
+  .isologo-entrance-glow {
+    width: 420px;
+    height: 420px;
+  }
+
   .isologo-3d {
     width: 460px;
   }
 
-  .background-texture {
-    background-size: 60px 60px, 60px 60px;
+  /* Grid tech: células maiores em tablet */
+  .hero-spectral-wrapper::before {
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent calc(10vw - 1px),
+        rgba(25, 188, 0, 0.03) calc(10vw - 1px),
+        rgba(25, 188, 0, 0.03) 10vw
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent calc(10vw - 1px),
+        rgba(25, 188, 0, 0.03) calc(10vw - 1px),
+        rgba(25, 188, 0, 0.03) 10vw
+      );
   }
 }
 
 @media (max-width: 768px) {
   .hero-refined-container {
     height: 100vh;
-    cursor: auto; /* Restaura cursor no mobile */
+    cursor: auto;
   }
 
   .leovox-type-svg {
@@ -272,12 +563,41 @@
     width: 350px;
   }
 
+  .isologo-entrance-glow {
+    width: 360px;
+    height: 360px;
+  }
+
   .isologo-3d {
     width: 380px;
   }
 
-  .background-texture {
-    background-size: 50px 50px, 50px 50px;
+  /* Grid tech: mais sutil em mobile */
+  .hero-spectral-wrapper::before {
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent calc(12vw - 1px),
+        rgba(25, 188, 0, 0.025) calc(12vw - 1px),
+        rgba(25, 188, 0, 0.025) 12vw
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent calc(12vw - 1px),
+        rgba(25, 188, 0, 0.025) calc(12vw - 1px),
+        rgba(25, 188, 0, 0.025) 12vw
+      );
+    opacity: 0.5;
+  }
+
+  /* Glow pulse menor em mobile */
+  .hero-spectral-wrapper::after {
+    top: -15%;
+    left: 15%;
+    width: 70%;
+    height: 50%;
   }
 }
 
@@ -294,12 +614,39 @@
     width: 280px;
   }
 
+  .isologo-entrance-glow {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(
+      ellipse 65% 60% at 42% 48%,
+      rgba(25, 188, 0, 0.22) 0%,
+      rgba(0, 255, 65, 0.10) 35%,
+      rgba(25, 188, 0, 0.03) 60%,
+      transparent 80%
+    );
+  }
+
   .isologo-3d {
     width: 300px;
   }
 
-  .background-texture {
-    background-size: 40px 40px, 40px 40px;
+  /* Grid tech: quase invisível em mobile pequeno */
+  .hero-spectral-wrapper::before {
+    opacity: 0.3;
+  }
+
+  /* Glow pulse mais sutil */
+  .hero-spectral-wrapper::after {
+    top: -10%;
+    left: 10%;
+    width: 80%;
+    height: 45%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(25, 188, 0, 0.18) 0%,
+      rgba(25, 188, 0, 0.07) 35%,
+      transparent 60%
+    );
   }
 }
 
@@ -307,29 +654,47 @@
    OTIMIZAÇÕES DE PERFORMANCE
    =================================================================== */
 
-.hero-refined-sticky * {
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
-}
-
 .leovox-type-layer,
 .isologo-2d-layer,
 .isologo-3d-layer,
+.isologo-entrance-glow,
 .background-texture {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   will-change: transform, opacity;
 }
 
-/* Acessibilidade */
+.hero-spectral-vignette,
+.hero-spectral-grain {
+  will-change: opacity;
+  backface-visibility: hidden;
+}
+
+/* ===================================================================
+   ACESSIBILIDADE — prefers-reduced-motion
+   =================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
   .isologo-refined,
   .isologo-3d,
   .background-texture {
     animation: none !important;
     transition: none !important;
+  }
+
+  /* Desabilita drift da nebula */
+  .hero-spectral-wrapper {
+    animation: none !important;
+  }
+
+  /* Desabilita glow pulse */
+  .hero-spectral-wrapper::after {
+    animation: none !important;
+  }
+
+  /* Desabilita grain animado */
+  .hero-spectral-grain::after {
+    animation: none !important;
   }
 
   .hero-refined-container {
@@ -341,15 +706,22 @@
     fill-opacity: 1 !important;
   }
 
-  /* Desabilita parallax para quem prefere movimento reduzido */
   .isologo-2d-layer,
   .isologo-3d-layer {
     transition: opacity 0.3s ease !important;
   }
+
+  /* v6: Desabilita animação de entrada */
+  .isologo-entrance-glow {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto;
+    opacity: 0.4 !important;
+  }
 }
 
 /* ===================================================================
-   VINHETA SUTIL
+   VINHETA SUTIL (fase branca — pré-transição)
    =================================================================== */
 
 .hero-refined-sticky::before {
@@ -362,7 +734,7 @@
     transparent 50%,
     rgba(0, 0, 0, 0.03) 100%
   );
-  z-index: 15;
+  z-index: 0;
   pointer-events: none;
 }
 
@@ -383,22 +755,38 @@
    TRANSIÇÕES SUAVES GLOBAIS
    =================================================================== */
 
-* {
+/* FIX: Removido seletor universal * que forçava transition-timing-function
+   em todos os elementos, causando conflitos com animações CSS nativas
+   (nebula-drift, glow-pulse, grain-shift) e impedindo que as camadas
+   de background respondessem corretamente às mudanças de opacity via JS. */
+.hero-refined-sticky,
+.isologo-refined,
+.isologo-3d,
+.leovox-type-svg,
+.background-texture,
+.portfolio-title-transition,
+.portfolio-desc-transition {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* v6: Contain para isolar layout/style do glow */
+.isologo-entrance-glow {
+  contain: layout style;
+}
+
 /* ===================================================================
-   ✅ ADICIONADO: TEXTOS DO PORTFOLIO (TRANSIÇÃO)
+   TEXTOS DO PORTFOLIO (TRANSIÇÃO)
    =================================================================== */
 
 .portfolio-text-transition-container {
   position: absolute;
-  top: 55%; /* Um pouco abaixo do centro */
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70%; /* Menor para dar espaço aos logos */
+  width: 70%;
   max-width: 1000px;
   z-index: 14;
-  opacity: 0; /* Começa invisível */
+  opacity: 0;
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -441,7 +829,6 @@
   font-weight: 400;
 }
 
-/* ✅ Estilo para SVG portfolio_name */
 .portfolio-name-svg {
   width: 100%;
   height: auto;
@@ -497,4 +884,3 @@
     line-height: 1.6;
   }
 }
-
