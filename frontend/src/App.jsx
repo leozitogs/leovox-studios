@@ -19,7 +19,7 @@ import Footer from './components/Footer'
 import CustomCursorAdvanced from './components/CustomCursorAdvanced'
 import ScrollProgress from './components/ScrollProgress'
 import CinematicShirtShowcase from './components/CinematicShirtShowcase'
-import VisualIdentityPage from './components/visual-identity/VisualIdentityPage'
+// import VisualIdentityPage from './components/visual-identity/VisualIdentityPage'
 
 function App() {
   return (
@@ -41,7 +41,7 @@ function App() {
         <CinematicShirtShowcase />
         
         {/* Identidades Visuais */}
-        <VisualIdentityPage />
+        
 
         {/* Seções complementares */}
         <Services />

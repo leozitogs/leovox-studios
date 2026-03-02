@@ -1,221 +1,226 @@
 /**
- * ActFour.jsx — Ato 4: Transformação (Scroll 65% – 78%)
- * 
- * Ponte dramática transicionando do ambiente limpo e pessoal do "Sobre Mim"
- * para a atmosfera energética e tecnológica do showcase de projetos.
- * A luz dá lugar à escuridão.
- * 
- * Elementos:
- * - Fundo escurecendo progressivamente (off-white → preto #0a0a0a)
- * - Linhas de circuito verdes se desenhando animadamente
- * - Tipografia "LEOVOX" como marca d'água semi-transparente
- * - Texto de ponte: "O que eu construo"
- * - Partículas verdes retornando densas
- * 
- * @param {Object} props
- * @param {number} props.progress - Progresso normalizado do Ato 4 (0-1)
- * @param {boolean} props.isActive - Se o ato está visível/ativo
+ * ActFour.jsx — Ato 4: Qualidade + Diferenciação Técnica (Scroll 26% – 42%)
+ *
+ * Páginas 4-5 do PDF:
+ * - Primeira metade: "Qualidade" (texto esquerda, mascote direita)
+ * - Segunda metade: "DIFERENCIAÇÃO TÉCNICA" (mascote esquerda cortado, texto direita)
+ * Ribbons verdes nos cantos, fundo branco.
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import CircuitGrid from './CircuitGrid';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
-import leovoxType from '../../assets/brand/Leovox_type.svg';
+import isologo from '../../assets/brand/Isologo.svg';
 
-/* ============================================================================
- * Partículas verdes densas retornando
- * ============================================================================ */
-const DenseParticles = ({ progress }) => {
-  const particles = React.useMemo(() => {
-    return Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: 1 + Math.random() * 3,
-      speed: 0.5 + Math.random() * 1.5,
-      delay: Math.random(),
-    }));
-  }, []);
-
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        inset: 0,
-        overflow: 'hidden',
-        pointerEvents: 'none',
-        zIndex: 3,
-      }}
-    >
-      {particles.map((particle) => {
-        const adjustedProgress = Math.max(0, Math.min(1, (progress - particle.delay * 0.5) / (1 - particle.delay * 0.5)));
-        const opacity = adjustedProgress * 0.5;
-        const yOffset = Math.sin(Date.now() * 0.001 * particle.speed + particle.id) * 5;
-
-        return (
-          <motion.div
-            key={particle.id}
-            style={{
-              position: 'absolute',
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              borderRadius: '50%',
-              backgroundColor: '#00ff41',
-              opacity: opacity,
-              boxShadow: '0 0 4px rgba(0, 255, 65, 0.5)',
-            }}
-            animate={{
-              y: [0, -10, 0, 8, 0],
-              x: [0, 5, 0, -3, 0],
-            }}
-            transition={{
-              duration: 3 + particle.speed,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: particle.delay,
-            }}
-          />
-        );
-      })}
-    </div>
-  );
+const mapRange = (value, inStart, inEnd, outStart, outEnd) => {
+  const t = Math.max(0, Math.min(1, (value - inStart) / (inEnd - inStart)));
+  return outStart + t * (outEnd - outStart);
 };
 
-/* ============================================================================
- * ActFour — Componente Principal
- * ============================================================================ */
+const GreenRibbons = ({ opacity }) => (
+  <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', opacity }}>
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+      <defs>
+        <linearGradient id="rg4a" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#AAFF00" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#008800" stopOpacity="0.5" />
+        </linearGradient>
+        <filter id="rg4glow">
+          <feGaussianBlur stdDeviation="8" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      <path d="M1250,-30 Q1380,120 1320,320 Q1260,520 1460,620"
+        fill="none" stroke="url(#rg4a)" strokeWidth="55" strokeLinecap="round"
+        filter="url(#rg4glow)" opacity="0.4" />
+      <path d="M-40,720 Q160,520 110,360 Q60,210 210,60"
+        fill="none" stroke="url(#rg4a)" strokeWidth="45" strokeLinecap="round"
+        filter="url(#rg4glow)" opacity="0.35" />
+    </svg>
+  </div>
+);
+
 const ActFour = ({ progress = 0, isActive = true }) => {
   const p = Math.min(1, Math.max(0, progress));
+  const qualTextRef = useRef(null);
+  const qualMascotRef = useRef(null);
+  const difTextRef = useRef(null);
+  const difMascotRef = useRef(null);
+  const hasAnimatedQual = useRef(false);
+  const hasAnimatedDif = useRef(false);
 
-  // Transição de cor do fundo: off-white (#f5f5f7) → preto (#0a0a0a)
-  const bgR = Math.round(245 - p * (245 - 10));
-  const bgG = Math.round(245 - p * (245 - 10));
-  const bgB = Math.round(247 - p * (247 - 10));
-  const bgColor = `rgb(${bgR}, ${bgG}, ${bgB})`;
+  // Phase 1: Qualidade (0 → 0.5), Phase 2: Diferenciação (0.5 → 1)
+  const isQualidade = p < 0.5;
+  const qualidadeP = mapRange(p, 0, 0.5, 0, 1);
+  const difP = mapRange(p, 0.5, 1, 0, 1);
 
-  // Marca d'água LEOVOX
-  const watermarkOpacity = p < 0.2
-    ? 0
-    : p < 0.5
-      ? (p - 0.2) / 0.3 * 0.08
-      : 0.08;
+  const qualidadeOpacity = isQualidade
+    ? mapRange(qualidadeP, 0, 0.15, 0, 1) * mapRange(qualidadeP, 0.75, 1, 1, 0)
+    : 0;
+  const difOpacity = !isQualidade
+    ? mapRange(difP, 0, 0.15, 0, 1) * mapRange(difP, 0.75, 1, 1, 0)
+    : 0;
 
-  // Texto de ponte "O que eu construo"
-  const bridgeTextOpacity = p < 0.4
-    ? 0
-    : p < 0.6
-      ? (p - 0.4) / 0.2
-      : p > 0.85
-        ? Math.max(0, 1 - (p - 0.85) / 0.15)
-        : 1;
+  // GSAP entrance for Qualidade
+  useEffect(() => {
+    if (!isActive || !isQualidade || hasAnimatedQual.current) return;
+    hasAnimatedQual.current = true;
 
-  // Cor do texto de ponte (transita de escuro para branco)
-  const textBrightness = Math.min(1, p * 1.5);
-  const textR = Math.round(26 + textBrightness * (255 - 26));
-  const textG = Math.round(26 + textBrightness * (255 - 26));
-  const textB = Math.round(26 + textBrightness * (255 - 26));
-  const bridgeTextColor = `rgb(${textR}, ${textG}, ${textB})`;
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    if (qualTextRef.current) {
+      tl.fromTo(qualTextRef.current,
+        { opacity: 0, x: -60 },
+        { opacity: 1, x: 0, duration: 1.0 }
+      );
+    }
+    if (qualMascotRef.current) {
+      tl.fromTo(qualMascotRef.current,
+        { opacity: 0, x: 80, rotate: 10 },
+        { opacity: 1, x: 0, rotate: -5, duration: 1.2 },
+        '-=0.6'
+      );
+    }
+    return () => tl.kill();
+  }, [isActive, isQualidade]);
 
-  // Circuito progress
-  const circuitProgress = Math.max(0, Math.min(1, (p - 0.15) / 0.85));
-  const circuitOpacity = p < 0.15 ? 0 : Math.min(1, (p - 0.15) / 0.3);
+  // GSAP entrance for Diferenciação
+  useEffect(() => {
+    if (!isActive || isQualidade || hasAnimatedDif.current) return;
+    hasAnimatedDif.current = true;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    if (difMascotRef.current) {
+      tl.fromTo(difMascotRef.current,
+        { opacity: 0, x: -100 },
+        { opacity: 1, x: -30, duration: 1.0 }
+      );
+    }
+    if (difTextRef.current) {
+      tl.fromTo(difTextRef.current,
+        { opacity: 0, x: 60 },
+        { opacity: 1, x: 0, duration: 1.0 },
+        '-=0.6'
+      );
+    }
+    return () => tl.kill();
+  }, [isActive, isQualidade]);
+
+  useEffect(() => {
+    if (!isActive) {
+      hasAnimatedQual.current = false;
+      hasAnimatedDif.current = false;
+    }
+  }, [isActive]);
+
+  // Mascot animations driven by scroll
+  const qualMascotRotate = mapRange(qualidadeP, 0, 0.4, 10, -5);
+  const difMascotX = mapRange(difP, 0, 0.3, -100, -30);
 
   return (
-    <div
-      className="hero-act hero-act-four"
-      style={{
-        position: 'absolute',
-        inset: 0,
-        overflow: 'hidden',
-        backgroundColor: bgColor,
-        opacity: isActive ? 1 : 0,
-        transition: 'opacity 0.3s ease',
-        pointerEvents: isActive ? 'auto' : 'none',
-      }}
-    >
-      {/* Grid de circuito verde animado */}
-      <CircuitGrid
-        opacity={circuitOpacity}
-        progress={circuitProgress}
-      />
+    <div className="hero-act hero-act-four" style={{
+      position: 'absolute', inset: 0, overflow: 'hidden',
+      backgroundColor: '#FFFFFF',
+      opacity: isActive ? 1 : 0,
+      transition: 'opacity 0.4s ease',
+      pointerEvents: isActive ? 'auto' : 'none',
+    }}>
+      <GreenRibbons opacity={1} />
 
-      {/* Marca d'água LEOVOX */}
-      <div
-        className="hero-act-four-watermark"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1,
-          pointerEvents: 'none',
-          opacity: watermarkOpacity,
-        }}
-      >
-        <img
-          src={leovoxType}
-          alt=""
-          aria-hidden="true"
-          style={{
-            width: '90%',
-            maxWidth: '1200px',
-            height: 'auto',
-            filter: p > 0.5
-              ? 'brightness(0) invert(1)'
-              : `brightness(0) opacity(${0.5 + p})`,
-            transition: 'filter 0.3s ease',
-          }}
-        />
+      {/* ═══ QUALIDADE (Página 4) ═══ */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 5,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '2rem 5%', gap: '4%',
+        opacity: qualidadeOpacity,
+      }}>
+        {/* Texto esquerda */}
+        <div ref={qualTextRef} style={{ flex: 1, maxWidth: '500px', opacity: 0 }}>
+          <h2 style={{
+            fontFamily: "'Inter', 'Helvetica Neue', sans-serif",
+            fontSize: 'clamp(2rem, 5vw, 4rem)',
+            fontWeight: 900, lineHeight: 1.05, margin: '0 0 1.5rem 0',
+            background: 'linear-gradient(180deg, #66FF00 0%, #1A5C00 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>
+            Qualidade
+          </h2>
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 'clamp(0.85rem, 1.3vw, 1.05rem)',
+            fontWeight: 400, color: '#333', lineHeight: 1.8, margin: 0,
+          }}>
+            Não criamos apenas sites. Construímos experiências digitais memoráveis.
+            Unimos estratégia, engenharia e identidade visual para transformar
+            ideias em produtos reais.
+          </p>
+        </div>
+
+        {/* Mascote direita */}
+        <div ref={qualMascotRef} style={{
+          flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center',
+          opacity: 0,
+          transform: `rotate(${qualMascotRotate}deg)`,
+        }}>
+          <img src={isologo} alt="" style={{
+            width: 'clamp(150px, 22vw, 320px)', height: 'auto',
+            filter: 'drop-shadow(0 0 30px rgba(0,255,65,0.35))',
+          }} />
+        </div>
       </div>
 
-      {/* Partículas verdes densas */}
-      <DenseParticles progress={p} />
+      {/* ═══ DIFERENCIAÇÃO TÉCNICA (Página 5) ═══ */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 5,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '2rem 5%', gap: '4%',
+        opacity: difOpacity,
+      }}>
+        {/* Mascote esquerda (cortado) */}
+        <div ref={difMascotRef} style={{
+          flex: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center',
+          overflow: 'hidden', position: 'relative',
+          opacity: 0,
+          transform: `translateX(${difMascotX}px)`,
+        }}>
+          <img src={isologo} alt="" style={{
+            width: 'clamp(200px, 30vw, 450px)', height: 'auto',
+            filter: 'drop-shadow(0 0 30px rgba(0,255,65,0.35))',
+            marginLeft: '-15%',
+          }} />
+        </div>
 
-      {/* Texto de ponte: "O que eu construo" */}
-      <div
-        className="hero-act-four-bridge"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 5,
-          pointerEvents: 'none',
-        }}
-      >
-        <motion.h2
-          className="hero-act-four-bridge-text"
-          style={{
-            opacity: bridgeTextOpacity,
-            color: bridgeTextColor,
-            transition: 'opacity 0.3s ease, color 0.3s ease',
-          }}
-        >
-          <span className="hero-bridge-line">O que eu</span>
-          <span className="hero-bridge-line hero-bridge-line--green">construo</span>
-        </motion.h2>
+        {/* Texto direita */}
+        <div ref={difTextRef} style={{ flex: 1, maxWidth: '500px', opacity: 0 }}>
+          <h2 style={{
+            fontFamily: "'Inter', 'Helvetica Neue', sans-serif",
+            fontSize: 'clamp(1.5rem, 4vw, 3rem)',
+            fontWeight: 900, lineHeight: 1.05, margin: '0 0 1.5rem 0',
+            background: 'linear-gradient(180deg, #66FF00 0%, #1A5C00 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text', textTransform: 'uppercase',
+          }}>
+            Diferenciação Técnica
+          </h2>
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 'clamp(0.85rem, 1.3vw, 1.05rem)',
+            fontWeight: 400, color: '#333', lineHeight: 1.8, margin: 0,
+          }}>
+            Design sem engenharia é superfície. Engenharia sem design é invisível.
+            Na Leovox, ambos são estrutura.
+          </p>
+        </div>
       </div>
 
-      {/* Grain animado (intensifica no escuro) */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 6,
-          pointerEvents: 'none',
-          opacity: p * 0.12,
-          mixBlendMode: 'overlay',
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '128px 128px',
-        }}
-      />
+      {/* Grain */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 6, pointerEvents: 'none',
+        opacity: 0.03, mixBlendMode: 'multiply',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+        backgroundRepeat: 'repeat', backgroundSize: '128px 128px',
+      }} />
     </div>
   );
 };

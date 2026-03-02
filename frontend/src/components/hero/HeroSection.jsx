@@ -1,30 +1,24 @@
 /**
- * HeroSection.jsx — Orquestrador Principal da Hero Section v2
- * "Das Nuvens à Realidade"
- * 
- * Componente raiz que gerencia a jornada cinematográfica em 5 atos,
- * controlada por scroll via GSAP ScrollTrigger. Substitui o HeroRefined.jsx
- * anterior mantendo total compatibilidade com App.jsx e HeaderLandoStyle.jsx.
- * 
- * Responsabilidades:
- * - Gerenciar o scroll virtual (0 → 1) via GSAP ScrollTrigger
- * - Calcular o progresso individual de cada ato
- * - Controlar a CSS variable --hero-bg-dark para o Header
- * - Gerenciar o lock/unlock do body scroll
- * - Escutar o evento 'hero-force-unlock' do Header
- * - Renderizar os 5 atos com transições suaves
- * 
+ * HeroSection.jsx — Orquestrador Principal da Hero Section v3
+ * "Jornada Cinematográfica Leovox"
+ *
+ * Refatorado para seguir fielmente o PDF "Design de Interface" (9 páginas).
+ * 8 atos controlados por GSAP ScrollTrigger com animações cinematográficas.
+ *
  * Breakpoints dos Atos:
- * | Ato | Início | Fim   | Descrição       |
- * |-----|--------|-------|-----------------|
- * | 1   | 0.00   | 0.25  | Ascensão        |
- * | 2   | 0.25   | 0.40  | Descida         |
- * | 3   | 0.40   | 0.65  | Revelação       |
- * | 4   | 0.65   | 0.78  | Transformação   |
- * | 5   | 0.78   | 1.00  | Showcase        |
+ * | Ato | Início | Fim   | Descrição                              |
+ * |-----|--------|-------|----------------------------------------|
+ * | 1   | 0.00   | 0.10  | Hero Landing (título + mascote + CTA)  |
+ * | 2   | 0.10   | 0.18  | Mascote Zoom-In                        |
+ * | 3   | 0.18   | 0.26  | Mascote + LVX atrás (garras)           |
+ * | 4   | 0.26   | 0.42  | Qualidade + Diferenciação Técnica      |
+ * | 5   | 0.42   | 0.52  | Competências Técnicas                  |
+ * | 6   | 0.52   | 0.68  | Sobre Mim + Transição Dark             |
+ * | 7   | 0.68   | 0.86  | Estudo de Caso Leovox (3 cards)        |
+ * | 8   | 0.86   | 1.00  | CTA Final + Encerramento               |
  */
 
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -33,43 +27,39 @@ import ActTwo from './ActTwo';
 import ActThree from './ActThree';
 import ActFour from './ActFour';
 import ActFive from './ActFive';
+import ActSix from './ActSix';
+import ActSeven from './ActSeven';
+import ActEight from './ActEight';
 
 import './HeroSection.css';
 
-// Registrar plugin GSAP
 gsap.registerPlugin(ScrollTrigger);
 
 /* ============================================================================
- * CONSTANTES DE CONFIGURAÇÃO
+ * CONSTANTES
  * ============================================================================ */
+const TOTAL_SCROLL_HEIGHT = '800vh';
 
-/** Altura total do scroll trigger (em viewports) */
-const TOTAL_SCROLL_HEIGHT = '500vh';
-
-/** Breakpoints dos atos (início e fim normalizados 0-1) */
 const ACT_BREAKPOINTS = {
-  1: { start: 0.00, end: 0.25 },
-  2: { start: 0.25, end: 0.40 },
-  3: { start: 0.40, end: 0.65 },
-  4: { start: 0.65, end: 0.78 },
-  5: { start: 0.78, end: 1.00 },
+  1: { start: 0.00, end: 0.10 },
+  2: { start: 0.10, end: 0.18 },
+  3: { start: 0.18, end: 0.26 },
+  4: { start: 0.26, end: 0.42 },
+  5: { start: 0.42, end: 0.52 },
+  6: { start: 0.52, end: 0.68 },
+  7: { start: 0.68, end: 0.86 },
+  8: { start: 0.86, end: 1.00 },
 };
 
-/** Mapeamento de progresso global → --hero-bg-dark (para o Header) */
 const getHeroBgDark = (progress) => {
-  // Atos 1-2: fundo claro (0)
-  // Ato 3: fundo claro (0)
-  // Ato 4: transição (0 → 1)
-  // Ato 5: fundo escuro (1)
-  if (progress < 0.65) return 0;
-  if (progress > 0.78) return 1;
-  // Transição linear durante o Ato 4
-  return (progress - 0.65) / (0.78 - 0.65);
+  // Atos 1-5: fundo claro (0)
+  // Ato 6 segunda metade: transição (0 → 1)
+  // Atos 7-8: fundo escuro (1)
+  if (progress < 0.60) return 0;
+  if (progress > 0.68) return 1;
+  return (progress - 0.60) / (0.68 - 0.60);
 };
 
-/* ============================================================================
- * Utilitário: calcula o progresso local de um ato dado o progresso global
- * ============================================================================ */
 const getActProgress = (globalProgress, actNumber) => {
   const bp = ACT_BREAKPOINTS[actNumber];
   if (!bp) return 0;
@@ -78,11 +68,8 @@ const getActProgress = (globalProgress, actNumber) => {
   return (globalProgress - bp.start) / (bp.end - bp.start);
 };
 
-/* ============================================================================
- * Utilitário: determina qual ato está ativo
- * ============================================================================ */
 const getActiveAct = (globalProgress) => {
-  for (let act = 5; act >= 1; act--) {
+  for (let act = 8; act >= 1; act--) {
     if (globalProgress >= ACT_BREAKPOINTS[act].start) return act;
   }
   return 1;
@@ -96,40 +83,29 @@ const HeroSection = () => {
   const pinnedRef = useRef(null);
   const scrollTriggerRef = useRef(null);
   const [progress, setProgress] = useState(0);
-  const [isLocked, setIsLocked] = useState(true);
   const progressRef = useRef(0);
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // GSAP ScrollTrigger Setup
-  // ──────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     const pinned = pinnedRef.current;
     if (!section || !pinned) return;
 
-    // ScrollTrigger que pina o conteúdo e mapeia scroll → progresso
     const trigger = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
       end: 'bottom bottom',
       pin: pinned,
       pinSpacing: false,
-      scrub: 0.8, // Suavização do scroll
+      scrub: 0.8,
       onUpdate: (self) => {
         const p = self.progress;
         progressRef.current = p;
         setProgress(p);
-
-        // Atualizar CSS variable para o Header
         const bgDark = getHeroBgDark(p);
         document.documentElement.style.setProperty('--hero-bg-dark', bgDark.toFixed(3));
       },
       onLeave: () => {
-        setIsLocked(false);
         document.documentElement.style.setProperty('--hero-bg-dark', '1');
-      },
-      onEnterBack: () => {
-        setIsLocked(true);
       },
       onLeaveBack: () => {
         document.documentElement.style.setProperty('--hero-bg-dark', '0');
@@ -137,8 +113,6 @@ const HeroSection = () => {
     });
 
     scrollTriggerRef.current = trigger;
-
-    // Inicializar --hero-bg-dark
     document.documentElement.style.setProperty('--hero-bg-dark', '0');
 
     return () => {
@@ -147,30 +121,20 @@ const HeroSection = () => {
     };
   }, []);
 
-  // ──────────────────────────────────────────────────────────────────────────
   // Escutar evento 'hero-force-unlock' do Header
-  // ──────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     const handleForceUnlock = () => {
-      setIsLocked(false);
       document.body.style.overflow = '';
-
-      // Scroll para o final da hero section
       if (scrollTriggerRef.current) {
         const endPos = scrollTriggerRef.current.end;
         window.scrollTo({ top: endPos + 1, behavior: 'instant' });
       }
-
       document.documentElement.style.setProperty('--hero-bg-dark', '1');
     };
-
     window.addEventListener('hero-force-unlock', handleForceUnlock);
     return () => window.removeEventListener('hero-force-unlock', handleForceUnlock);
   }, []);
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // Cálculos derivados do progresso
-  // ──────────────────────────────────────────────────────────────────────────
   const activeAct = useMemo(() => getActiveAct(progress), [progress]);
 
   const actProgresses = useMemo(() => ({
@@ -179,15 +143,20 @@ const HeroSection = () => {
     3: getActProgress(progress, 3),
     4: getActProgress(progress, 4),
     5: getActProgress(progress, 5),
+    6: getActProgress(progress, 6),
+    7: getActProgress(progress, 7),
+    8: getActProgress(progress, 8),
   }), [progress]);
 
-  // Determinar quais atos renderizar (ato ativo + adjacentes para transição)
   const shouldRender = useMemo(() => ({
     1: activeAct <= 2,
     2: activeAct >= 1 && activeAct <= 3,
     3: activeAct >= 2 && activeAct <= 4,
     4: activeAct >= 3 && activeAct <= 5,
-    5: activeAct >= 4,
+    5: activeAct >= 4 && activeAct <= 6,
+    6: activeAct >= 5 && activeAct <= 7,
+    7: activeAct >= 6 && activeAct <= 8,
+    8: activeAct >= 7,
   }), [activeAct]);
 
   return (
@@ -197,69 +166,48 @@ const HeroSection = () => {
       id="hero"
       style={{ height: TOTAL_SCROLL_HEIGHT }}
     >
-      {/* Container pinado que ocupa 100vh */}
-      <div
-        ref={pinnedRef}
-        className="hero-section-v2-pinned"
-      >
-        {/* ════════════════════════════════════════════════════════════════════
-            ATO 1: ASCENSÃO (0% – 25%)
-            Céu com nuvens volumétricas + emblema 3D + textos orbitais
-            ════════════════════════════════════════════════════════════════════ */}
+      <div ref={pinnedRef} className="hero-section-v2-pinned">
+        {/* ATO 1: Hero Landing */}
         {shouldRender[1] && (
-          <ActOne
-            progress={actProgresses[1]}
-            isActive={activeAct === 1}
-          />
+          <ActOne progress={actProgresses[1]} isActive={activeAct === 1} />
         )}
 
-        {/* ════════════════════════════════════════════════════════════════════
-            ATO 2: DESCIDA (25% – 40%)
-            Transição cinematográfica céu → claridade
-            ════════════════════════════════════════════════════════════════════ */}
+        {/* ATO 2: Mascote Zoom */}
         {shouldRender[2] && (
-          <ActTwo
-            progress={actProgresses[2]}
-            isActive={activeAct === 2}
-          />
+          <ActTwo progress={actProgresses[2]} isActive={activeAct === 2} />
         )}
 
-        {/* ════════════════════════════════════════════════════════════════════
-            ATO 3: REVELAÇÃO (40% – 65%)
-            Sobre Mim com glassmorphism
-            ════════════════════════════════════════════════════════════════════ */}
+        {/* ATO 3: Mascote + LVX */}
         {shouldRender[3] && (
-          <ActThree
-            progress={actProgresses[3]}
-            isActive={activeAct === 3}
-          />
+          <ActThree progress={actProgresses[3]} isActive={activeAct === 3} />
         )}
 
-        {/* ════════════════════════════════════════════════════════════════════
-            ATO 4: TRANSFORMAÇÃO (65% – 78%)
-            Light to dark transition
-            ════════════════════════════════════════════════════════════════════ */}
+        {/* ATO 4: Qualidade + Diferenciação */}
         {shouldRender[4] && (
-          <ActFour
-            progress={actProgresses[4]}
-            isActive={activeAct === 4}
-          />
+          <ActFour progress={actProgresses[4]} isActive={activeAct === 4} />
         )}
 
-        {/* ════════════════════════════════════════════════════════════════════
-            ATO 5: SHOWCASE (78% – 100%)
-            Projetos + encerramento
-            ════════════════════════════════════════════════════════════════════ */}
+        {/* ATO 5: Competências Técnicas */}
         {shouldRender[5] && (
-          <ActFive
-            progress={actProgresses[5]}
-            isActive={activeAct === 5}
-          />
+          <ActFive progress={actProgresses[5]} isActive={activeAct === 5} />
         )}
 
-        {/* ════════════════════════════════════════════════════════════════════
-            DEBUG OVERLAY (remover em produção)
-            ════════════════════════════════════════════════════════════════════ */}
+        {/* ATO 6: Sobre Mim + Transição Dark */}
+        {shouldRender[6] && (
+          <ActSix progress={actProgresses[6]} isActive={activeAct === 6} />
+        )}
+
+        {/* ATO 7: Estudo de Caso Leovox */}
+        {shouldRender[7] && (
+          <ActSeven progress={actProgresses[7]} isActive={activeAct === 7} />
+        )}
+
+        {/* ATO 8: CTA Final */}
+        {shouldRender[8] && (
+          <ActEight progress={actProgresses[8]} isActive={activeAct === 8} />
+        )}
+
+        {/* DEBUG */}
         {process.env.NODE_ENV === 'development' && (
           <div className="hero-debug-overlay">
             <span>Ato {activeAct}</span>
