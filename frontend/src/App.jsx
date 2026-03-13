@@ -9,8 +9,7 @@
 
 import './App.css'
 import ExpertiseShowcase from './components/ExpertiseShowcase'
-import HeaderLandoStyle from './components/HeaderLandoStyle'
-// import HeroRefined from './components/HeroRefined'  // ← REMOVER
+import Header from './components/Header'
 import HeroSection from './components/hero/HeroSection'  // ← NOVO
 import Services from './components/Services'
 import About from './components/About'
@@ -28,7 +27,7 @@ function App() {
       <ScrollProgress />
       
       {/* Header adaptativo — lê CSS variable --hero-bg-dark da Hero */}
-      <HeaderLandoStyle />
+      <Header />
       
       <main>
         {/* HERO SECTION v2 — "Das Nuvens à Realidade" */}
