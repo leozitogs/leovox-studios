@@ -1,0 +1,142 @@
+/* ============================================================
+   Leovox Studios · Tokens de marca
+   Regra de ouro: o site vive em preto. O verde é a luz da cena
+   por cor, nunca por efeito. Off-white nunca é branco puro.
+   ============================================================ */
+
+:root {
+  /* ---------- Cores ---------- */
+  --color-green: #19bc00; /* verde vivo, primária, identidade */
+  --color-offwhite: #fbfbfb; /* off-white, nunca branco puro */
+  --color-black: #000000;
+  --color-gray-dark: #222222;
+  --color-green-pastel: #c5f49d;
+
+  /* ---------- Tipografia (famílias) ---------- */
+  --font-display: 'Anton', Impact, sans-serif; /* headlines, statements monumentais */
+  --font-numeric: 'Bebas Neue', 'Arial Narrow', sans-serif; /* numeração, métricas, kickers */
+  --font-signature: 'Extenda 40', 'Anton', sans-serif; /* momentos-assinatura */
+  --font-body: 'Montserrat', Arial, sans-serif; /* corpo institucional */
+  --font-conversational: 'Poppins', Arial, sans-serif; /* formulário, microcopy próximo */
+  --font-seal: 'Lost in South', cursive; /* selo Isso é Leovox */
+  --font-hand: 'Schoolbell', cursive; /* anotação à mão, voz humana */
+
+  /* ---------- Escala tipográfica ---------- */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.5rem;
+  --text-3xl: 4rem;
+  --text-display: clamp(4rem, 10vw, 9rem);
+
+  /* ---------- Espaçamento ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+  --space-8: 10rem;
+
+  /* ---------- Camadas ---------- */
+  --z-canvas: 10; /* canvas R3F persistente, o totem viaja aqui */
+  --z-content: 20;
+  --z-header: 50;
+  --z-blade: 90; /* lâmina de verde chapado entre cenas */
+  --z-cursor: 100;
+
+  /* ---------- Movimento (referência para o GSAP) ---------- */
+  --duration-micro: 0.3s; /* microinteração: 0.2 a 0.4s */
+  --duration-enter: 0.75s; /* entrada de elemento: 0.6 a 0.9s */
+  --duration-scene: 1.15s; /* transição entre cenas: 0.9 a 1.4s */
+}
+
+/* ============================================================
+   Font-face · 7 fontes da marca
+   Os arquivos são placeholders: dropar os reais em public/fonts/
+   conforme o README daquela pasta.
+   ============================================================ */
+
+@font-face {
+  font-family: 'Anton';
+  src: url('/fonts/Anton-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bebas Neue';
+  src: url('/fonts/BebasNeue-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Extenda: cortes licenciados 30, 40 e 60 */
+@font-face {
+  font-family: 'Extenda 30';
+  src: url('/fonts/Extenda-30.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Extenda 40';
+  src: url('/fonts/Extenda-40.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Extenda 60';
+  src: url('/fonts/Extenda-60.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lost in South';
+  src: url('/fonts/LostInSouth-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Schoolbell';
+  src: url('/fonts/Schoolbell-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

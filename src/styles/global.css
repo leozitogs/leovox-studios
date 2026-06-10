@@ -1,0 +1,76 @@
+/* ============================================================
+   Leovox Studios · Global
+   Reset, fundo preto base e regras estruturais do plano-sequência.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* o Lenis assume o scroll */
+}
+
+body {
+  background: var(--color-black);
+  color: var(--color-offwhite);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+::selection {
+  background: var(--color-green);
+  color: var(--color-black);
+}
+
+/* Canvas R3F único e fixo: sobrevive às trocas de rota */
+.persistent-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-canvas);
+  pointer-events: none;
+}
+
+/* ---------- Placeholder do scaffolding (remover na Cena 1) ---------- */
+.placeholder-stage {
+  position: relative;
+  z-index: var(--z-content);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.placeholder-title {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  color: var(--color-green);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}

@@ -1,0 +1,7 @@
+node_modules
+dist
+docs
+package-lock.json
+public/fonts
+public/mascote
+public/textures
