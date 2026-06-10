@@ -1,10 +1,10 @@
-# Texturas
+# textures
 
-Dropar aqui as texturas da cena (Seção 7 do contexto):
+Texturas de sobreposição das cenas.
 
-- Fundo de prédio brutalista P&B (hero)
-- Textura de papel
-- Halftone (herança de impressão, permitido e incentivado)
+- `texture-paper.png`: papel amassado com transparência, overlay do
+  hero por cima do bg-buildings.
 
-Lembrete de marca: glow, neon, bloom, glitch, scanline, RGB split,
-holograma, código binário e ruído digital são banidos por padrão.
+O noise leve do estado final do hero não tem asset: sai por CSS/SVG
+direto no código. Halftone e serigrafia são as heranças visuais
+permitidas e incentivadas pela marca.

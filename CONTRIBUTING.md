@@ -43,12 +43,14 @@ formatação, testes de marca e build. O CI repete tudo em cada push e PR.
 
 ## Regras de marca no código
 
-1. O site vive em preto. O verde `#19BC00` é a luz da cena por cor, nunca por efeito.
-2. Off-white é `#FBFBFB`. Branco puro é proibido (coberto por teste).
+1. Paleta oficial: `#000000`, `#222222`, `#19BC00`, `#FBFBFB`, `#FFFFFF`,
+   mais o verde pastel `#C5F49D` de apoio. A paleta orienta, não aprisiona.
+2. O verde `#19BC00` é cor estrutural, aplicada chapada. Nunca efeito.
 3. Efeitos banidos: glow, neon, bloom, halo, glitch, scanline, RGB split,
-   holograma, código binário decorativo, ruído digital, graffiti spray clássico.
+   holograma, código binário decorativo, ruído digital. Grafite genérico
+   banido; assinatura própria autêntica liberada.
 4. Permitido e incentivado: halftone e serigrafia.
-5. Corte proibido: nenhum fade branco ou reload visível entre cenas.
+5. Corte proibido: nenhum reload visível entre cenas.
 
 A documentação completa da marca (brand manual, tom de voz, mascote, direção
 criativa) vive fora deste repositório, na base de identidade da Leovox Studios.

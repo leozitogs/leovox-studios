@@ -1,0 +1,171 @@
+/* ============================================================
+   Cena 1 · Hero · Estado A
+   Ordem das camadas, de trás pra frente:
+   prédios > headline fantasma > grafism > papel > mascote > globo
+   O mascote fica na frente de todas as texturas (correção do PO).
+   ============================================================ */
+
+.hero {
+  position: relative;
+  z-index: var(--z-content);
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-black);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('/background/bg-buildings.png') center / cover no-repeat;
+}
+
+/* ---------- Headline fantasma ---------- */
+
+.hero-headline {
+  --mx: 0px;
+  --my: 0px;
+  --reveal: 0;
+  --sweep: -30%;
+  position: absolute;
+  top: 4vh;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.headline-stack {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-signature);
+  font-weight: 400;
+  font-size: 11vw; /* monumental, sangrando nas bordas como no protótipo */
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.headline-stack span {
+  display: block;
+}
+
+.headline-ghost {
+  color: var(--color-offwhite);
+  opacity: 0.16;
+}
+
+.headline-lit,
+.headline-sweep {
+  position: absolute;
+  inset: 0;
+  color: var(--color-offwhite);
+}
+
+/* revelação no hover: máscara radial que segue o cursor */
+.headline-lit {
+  opacity: var(--reveal);
+  -webkit-mask-image: radial-gradient(
+    circle 240px at var(--mx) var(--my),
+    #000 35%,
+    transparent 75%
+  );
+  mask-image: radial-gradient(circle 340px at var(--mx) var(--my), #000 40%, transparent 82%);
+}
+
+/* varredura de luz ocasional: faixa diagonal estreita */
+.headline-sweep {
+  -webkit-mask-image: linear-gradient(
+    75deg,
+    transparent calc(var(--sweep) - 12%),
+    #000 var(--sweep),
+    transparent calc(var(--sweep) + 12%)
+  );
+  mask-image: linear-gradient(
+    75deg,
+    transparent calc(var(--sweep) - 12%),
+    #000 var(--sweep),
+    transparent calc(var(--sweep) + 12%)
+  );
+}
+
+/* reduced-motion: direto no estado resolvido */
+.hero-headline.is-resolved .headline-lit {
+  opacity: 1;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.hero-headline.is-resolved .headline-sweep {
+  display: none;
+}
+
+/* ---------- Grafism, mascote e papel ---------- */
+
+.hero-grafism {
+  position: absolute;
+  top: 9vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(62vw, 1180px);
+  pointer-events: none;
+}
+
+.hero-mascote {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 94vh;
+  pointer-events: none;
+}
+
+.hero-paper {
+  position: absolute;
+  inset: 0;
+  background: url('/textures/texture-paper.png') center / cover no-repeat;
+  pointer-events: none;
+}
+
+/* ---------- Globo hub ---------- */
+
+.globe-hub {
+  position: absolute;
+  right: 3vw;
+  bottom: 6vh;
+  width: clamp(72px, 6.5vw, 110px);
+  padding: 0;
+}
+
+.globe-hub img {
+  width: 100%;
+  transition: transform var(--duration-micro) ease;
+}
+
+.globe-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.5rem);
+  transform: translate(-50%, 8px);
+  font-family: var(--font-numeric);
+  font-size: var(--text-lg);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-offwhite);
+  opacity: 0;
+  transition:
+    opacity var(--duration-micro) ease,
+    transform var(--duration-micro) ease;
+  pointer-events: none;
+}
+
+.globe-hub:hover .globe-label,
+.globe-hub:focus-visible .globe-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.globe-hub:hover img,
+.globe-hub:focus-visible img {
+  transform: scale(1.06);
+}

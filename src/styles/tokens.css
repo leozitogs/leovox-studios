@@ -1,16 +1,17 @@
 /* ============================================================
    Leovox Studios · Tokens de marca
-   Regra de ouro: o site vive em preto. O verde é a luz da cena
-   por cor, nunca por efeito. Off-white nunca é branco puro.
+   A paleta orienta, não aprisiona. O verde é cor estrutural,
+   aplicada chapada, nunca como efeito de luz.
    ============================================================ */
 
 :root {
   /* ---------- Cores ---------- */
   --color-green: #19bc00; /* verde vivo, primária, identidade */
-  --color-offwhite: #fbfbfb; /* off-white, nunca branco puro */
+  --color-offwhite: #fbfbfb; /* branco padrão, com leve calor */
+  --color-white: #ffffff; /* branco puro, contraste máximo quando a peça pedir */
   --color-black: #000000;
   --color-gray-dark: #222222;
-  --color-green-pastel: #c5f49d;
+  --color-green-pastel: #c5f49d; /* apoio e respiro */
 
   /* ---------- Tipografia (famílias) ---------- */
   --font-display: 'Anton', Impact, sans-serif; /* headlines, statements monumentais */
@@ -18,7 +19,7 @@
   --font-signature: 'Extenda 40', 'Anton', sans-serif; /* momentos-assinatura */
   --font-body: 'Montserrat', Arial, sans-serif; /* corpo institucional */
   --font-conversational: 'Poppins', Arial, sans-serif; /* formulário, microcopy próximo */
-  --font-seal: 'Lost in South', cursive; /* selo Isso é Leovox */
+  --font-seal: 'Lost in South', cursive; /* selo Isso é Leovox, frases-assinatura */
   --font-hand: 'Schoolbell', cursive; /* anotação à mão, voz humana */
 
   /* ---------- Escala tipográfica ---------- */
@@ -55,14 +56,14 @@
 }
 
 /* ============================================================
-   Font-face · 7 fontes da marca
-   Os arquivos são placeholders: dropar os reais em public/fonts/
-   conforme o README daquela pasta.
+   Font-face · apontando para os arquivos reais em public/fonts/.
+   Pendência registrada: converter para woff2 antes do lançamento
+   e resolver a licença comercial da Extenda (cortes trial).
    ============================================================ */
 
 @font-face {
   font-family: 'Anton';
-  src: url('/fonts/Anton-Regular.woff2') format('woff2');
+  src: url('/fonts/Anton/Anton-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -70,16 +71,16 @@
 
 @font-face {
   font-family: 'Bebas Neue';
-  src: url('/fonts/BebasNeue-Regular.woff2') format('woff2');
+  src: url('/fonts/Bebas Neue/BebasNeue-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
-/* Extenda: cortes licenciados 30, 40 e 60 */
+/* Extenda: cortes reais nos arquivos: 30 Deca, 40 Hecto (trial), 80 Peta (trial) */
 @font-face {
   font-family: 'Extenda 30';
-  src: url('/fonts/Extenda-30.woff2') format('woff2');
+  src: url('/fonts/Extenda/extenda-30-deca.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -87,15 +88,15 @@
 
 @font-face {
   font-family: 'Extenda 40';
-  src: url('/fonts/Extenda-40.woff2') format('woff2');
+  src: url('/fonts/Extenda/Extenda-40-Hecto-trial.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Extenda 60';
-  src: url('/fonts/Extenda-60.woff2') format('woff2');
+  font-family: 'Extenda 80';
+  src: url('/fonts/Extenda/Extenda-80-Peta-trial.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -103,7 +104,7 @@
 
 @font-face {
   font-family: 'Montserrat';
-  src: url('/fonts/Montserrat-Variable.woff2') format('woff2');
+  src: url('/fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -111,7 +112,7 @@
 
 @font-face {
   font-family: 'Poppins';
-  src: url('/fonts/Poppins-Regular.woff2') format('woff2');
+  src: url('/fonts/Poppins/Poppins-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -119,7 +120,7 @@
 
 @font-face {
   font-family: 'Poppins';
-  src: url('/fonts/Poppins-Medium.woff2') format('woff2');
+  src: url('/fonts/Poppins/Poppins-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -127,7 +128,7 @@
 
 @font-face {
   font-family: 'Lost in South';
-  src: url('/fonts/LostInSouth-Regular.woff2') format('woff2');
+  src: url('/fonts/Lost in South/Lost in South.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -135,7 +136,7 @@
 
 @font-face {
   font-family: 'Schoolbell';
-  src: url('/fonts/Schoolbell-Regular.woff2') format('woff2');
+  src: url('/fonts/Schoolbell/Schoolbell-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
