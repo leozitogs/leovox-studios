@@ -58,19 +58,8 @@ button {
   pointer-events: none;
 }
 
-/* ---------- Placeholder do scaffolding (remover na Cena 1) ---------- */
-.placeholder-stage {
-  position: relative;
-  z-index: var(--z-content);
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-}
-
-.placeholder-title {
-  font-family: var(--font-display);
-  font-size: var(--text-display);
-  color: var(--color-green);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+/* Destino provisório do scroll após o hero (vira a Cena 2) */
+.scene-spacer {
+  height: 100vh;
+  background: var(--color-black);
 }

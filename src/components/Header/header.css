@@ -1,0 +1,101 @@
+/* Nav pill do protótipo: bola com a isologo que vira o header.
+   Geometria do mock: pill ~40vw de largura, 4rem de altura, isologo
+   com respiro, links espaçados, CTA branco de canto 12px. */
+
+.nav-pill {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-header);
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  height: 4rem;
+  padding: 0.5rem;
+  max-width: 4rem; /* estado bola: só a isologo; a coreografia expande */
+  overflow: hidden;
+  background: rgba(17, 17, 17, 0.96);
+  border-radius: 999px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Barra de progresso da página: faixa cinza que preenche a pill
+   da esquerda pra direita conforme o scroll avança. */
+.nav-progress {
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 4.2rem; /* começa depois da isologo, como na referência */
+  right: 8rem; /* termina antes do CTA: cheia = atrás dos links */
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.09);
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.nav-logo {
+  flex: 0 0 auto;
+  margin-left: 0.3rem;
+}
+
+.nav-logo img {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: block;
+}
+
+/* conteúdo sempre acima da barra de progresso */
+.nav-logo,
+.nav-links,
+.nav-cta {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.2rem;
+  margin-left: 0.6rem;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-offwhite);
+  /* sem fade individual: a borda da pill em expansão revela (leoleo) */
+  opacity: 0.85;
+  transition: none;
+}
+
+.nav-pill.is-open .nav-links a {
+  transition: opacity var(--duration-micro) ease;
+}
+
+.nav-pill.is-open .nav-links a:hover,
+.nav-pill.is-open .nav-links a:focus-visible {
+  opacity: 1 !important;
+}
+
+.nav-cta {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-black);
+  background: var(--color-white);
+  padding: 0.8rem 1.5rem;
+  margin-right: 0.2rem;
+  border-radius: 12px;
+  opacity: 0; /* entra no fim da coreografia */
+  transform: scale(0.7);
+  transition: background var(--duration-micro) ease;
+}
+
+.nav-cta:hover,
+.nav-cta:focus-visible {
+  background: var(--color-green);
+}

@@ -13,6 +13,8 @@ const ROOT = process.cwd()
 
 const IGNORED_DIRS = new Set(['node_modules', 'dist', '.git', '.vite', 'docs'])
 
+// .txt fica fora: os unicos txt do repo sao metadados de terceiros
+// (licencas de fontes do Google etc.), que nao sao conteudo Leovox.
 const TEXT_EXTENSIONS = new Set([
   '.ts',
   '.tsx',
@@ -26,7 +28,6 @@ const TEXT_EXTENSIONS = new Set([
   '.json',
   '.yml',
   '.yaml',
-  '.txt',
   '.svg',
 ])
 
@@ -45,7 +46,13 @@ function hasTextExtension(name) {
 function walk(dir, violations) {
   for (const entry of readdirSync(dir)) {
     const fullPath = join(dir, entry)
-    const stats = statSync(fullPath)
+
+    let stats
+    try {
+      stats = statSync(fullPath)
+    } catch {
+      continue // entrada inacessível (sync de arquivos em andamento)
+    }
 
     if (stats.isDirectory()) {
       if (!IGNORED_DIRS.has(entry)) walk(fullPath, violations)
@@ -54,7 +61,14 @@ function walk(dir, violations) {
 
     if (!hasTextExtension(entry)) continue
 
-    const lines = readFileSync(fullPath, 'utf8').split('\n')
+    let content
+    try {
+      content = readFileSync(fullPath, 'utf8')
+    } catch {
+      continue // arquivo inacessível no momento da varredura
+    }
+
+    const lines = content.split('\n')
     lines.forEach((line, index) => {
       for (const banned of BANNED) {
         if (line.includes(banned.char)) {
