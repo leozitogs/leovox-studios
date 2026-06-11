@@ -1,16 +1,18 @@
 // Headline fantasma: DESENVOLVA SEUS SONHOS. em Extenda, integrada ao céu.
-// Duas mecânicas: varredura de luz ocasional (a cada ~7s) e revelação
-// real no hover, com a máscara seguindo o cursor. Tudo por máscara de
-// gradiente, herança serigrafia: luz por cor, zero glow.
+// Estado A: varredura de luz ocasional e revelação no hover seguindo o
+// cursor. Quando o scroll assume (classe is-scrolling, via useHeroScroll),
+// o hover desliga e a timeline do pin passa a dirigir o elemento.
 
-import { useEffect, useRef } from 'react'
+import { type RefObject, useEffect } from 'react'
 import { gsap } from '../../lib/gsap'
 
 const HEADLINE = 'DESENVOLVA SEUS SONHOS.'
 
-export function HeadlineGhost() {
-  const rootRef = useRef<HTMLDivElement>(null)
+interface HeadlineGhostProps {
+  rootRef: RefObject<HTMLDivElement | null>
+}
 
+export function HeadlineGhost({ rootRef }: HeadlineGhostProps) {
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
@@ -27,6 +29,8 @@ export function HeadlineGhost() {
     let inside = false
 
     const onMove = (event: MouseEvent) => {
+      if (root.classList.contains('is-scrolling')) return
+
       const rect = root.getBoundingClientRect()
       moveX(event.clientX - rect.left)
       moveY(event.clientY - rect.top)
@@ -62,7 +66,7 @@ export function HeadlineGhost() {
       sweep.kill()
       gsap.killTweensOf(root)
     }
-  }, [])
+  }, [rootRef])
 
   return (
     <div ref={rootRef} className="hero-headline">

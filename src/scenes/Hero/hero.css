@@ -1,16 +1,45 @@
 /* ============================================================
-   Cena 1 · Hero · Estado A
-   Ordem das camadas, de trás pra frente:
-   prédios > headline fantasma > grafism > papel > mascote > globo
-   O mascote fica na frente de todas as texturas (correção do PO).
+   Cena 1 · Hero
+   Palco (stage) atrás, frame na frente. Dentro do frame, de trás
+   pra frente: prédios > headline > grafism > papel > mascote >
+   claim > globo. O mascote fica na frente de todas as texturas.
    ============================================================ */
 
 .hero {
   position: relative;
   z-index: var(--z-content);
   height: 100vh;
+  background: var(--color-black);
+}
+
+/* ---------- Palco (estado final, atrás do frame) ---------- */
+
+.hero-stage {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-offwhite);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/></svg>");
+}
+
+.hero-stage-mark {
+  position: absolute;
+  left: 1vw;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 70vh;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ---------- Frame (a cena que vira card no beat 3) ---------- */
+
+.hero-frame {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: var(--color-black);
+  will-change: transform;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
 }
 
 .hero-bg {
@@ -26,6 +55,7 @@
   --my: 0px;
   --reveal: 0;
   --sweep: -30%;
+  --sweep2: -30%;
   position: absolute;
   top: 4vh;
   left: 0;
@@ -168,4 +198,213 @@
 .globe-hub:hover img,
 .globe-hub:focus-visible img {
   transform: scale(1.06);
+}
+
+/* ---------- Mascote estático (entra no crossfade do beat 3) ---------- */
+
+.hero-mascote-static {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ---------- Claim do beat 2: DESENVOLVA + seus sonhos. ----------
+   Geometria cravada no mock: DESENVOLVA em Extenda 80 ocupando 80.5%
+   da largura (15.13vw), script em Lost in South a 7.3vw, deslocado
+   7.4vw abaixo do topo do claim, rotacionado -4 graus. */
+
+.hero-claim {
+  --cmx: 0px;
+  --cmy: 0px;
+  --creveal: 0;
+  --csweep: -30%;
+  position: absolute;
+  left: 50%;
+  top: 60vh;
+  transform: translateX(-50%);
+  z-index: 6;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  /* sombra bem desfocada descolando a frase do fundo */
+  filter: drop-shadow(0 1.1vw 2.4vw rgba(0, 0, 0, 0.55));
+}
+
+.claim-desenvolva {
+  position: relative;
+  display: block;
+  font-family: var(--font-display);
+  font-size: 11vw; /* Anton, escala do mock */
+  letter-spacing: -0.015em; /* fecha levemente o espaçamento natural do corpo grande */
+  line-height: 0.95;
+  color: var(--color-offwhite);
+  white-space: nowrap;
+}
+
+.claim-text {
+  display: block;
+  opacity: 0.8; /* truque de opacidade: a base nunca esta 100% acesa */
+}
+
+/* mesma mecânica da headline de abertura: a base fica a 80% e o
+   cursor revela a versão 100% acesa em máscara suave de queda longa */
+.claim-shine {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--color-offwhite);
+  opacity: var(--creveal);
+  -webkit-mask-image: radial-gradient(
+    circle 420px at var(--cmx) var(--cmy),
+    #000 20%,
+    transparent 90%
+  );
+  mask-image: radial-gradient(circle 420px at var(--cmx) var(--cmy), #000 20%, transparent 90%);
+}
+
+/* varredura de luz automática, a cada poucos segundos, como na abertura */
+.claim-sweep {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--color-offwhite);
+  -webkit-mask-image: linear-gradient(
+    75deg,
+    transparent calc(var(--csweep) - 14%),
+    #000 var(--csweep),
+    transparent calc(var(--csweep) + 14%)
+  );
+  mask-image: linear-gradient(
+    75deg,
+    transparent calc(var(--csweep) - 14%),
+    #000 var(--csweep),
+    transparent calc(var(--csweep) + 14%)
+  );
+}
+
+.claim-sonhos {
+  position: absolute;
+  left: 50%;
+  top: 5.9vw;
+  transform: translateX(-50%) rotate(-4deg);
+  font-family: var(--font-seal);
+  font-size: 7.3vw;
+  line-height: 1;
+  color: var(--color-green);
+  white-space: nowrap;
+  /* contorno verde-escuro de adesivo, na base de sombras duras empilhadas */
+  text-shadow:
+    0.045em 0 0 #0c6e00,
+    -0.045em 0 0 #0c6e00,
+    0 0.045em 0 #0c6e00,
+    0 -0.045em 0 #0c6e00,
+    0.032em 0.032em 0 #0c6e00,
+    -0.032em 0.032em 0 #0c6e00,
+    0.032em -0.032em 0 #0c6e00,
+    -0.032em -0.032em 0 #0c6e00;
+}
+
+/* ---------- Scroll dirigindo a headline (classe is-scrolling) ----------
+   Durante o mergulho, a frase nao acende em branco chapado: o fantasma
+   sobe de opacidade e a varredura de luz (canal --sweep2, proprio do
+   scroll) atravessa mais rapida e mais larga. */
+
+.hero-headline.is-scrolling .headline-lit {
+  opacity: 0;
+}
+
+.hero-headline.is-scrolling .headline-sweep {
+  -webkit-mask-image: linear-gradient(
+    75deg,
+    transparent calc(var(--sweep2) - 18%),
+    #000 var(--sweep2),
+    transparent calc(var(--sweep2) + 18%)
+  );
+  mask-image: linear-gradient(
+    75deg,
+    transparent calc(var(--sweep2) - 18%),
+    #000 var(--sweep2),
+    transparent calc(var(--sweep2) + 18%)
+  );
+}
+
+/* ============================================================
+   Entrada da cena (CSS puro, de propósito).
+   Animação CSS não escreve estilo inline: roda uma vez com fill
+   backwards e devolve os elementos ao estado natural do CSS, sem
+   deixar rastro pro scrub do GSAP capturar errado. A classe
+   is-entering esconde as camadas até o load; is-ready dispara.
+   ============================================================ */
+
+.hero.is-entering .hero-bg,
+.hero.is-entering .hero-grafism,
+.hero.is-entering video.hero-mascote,
+.hero.is-entering .hero-headline,
+.hero.is-entering .globe-hub {
+  opacity: 0;
+}
+
+.hero.is-ready .hero-bg {
+  animation: hero-settle 1.4s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+}
+
+.hero.is-ready video.hero-mascote {
+  animation: hero-rise-centered 0.9s cubic-bezier(0.33, 1, 0.68, 1) 0.1s backwards;
+}
+
+.hero.is-ready .hero-grafism {
+  animation: hero-rise-centered 0.9s cubic-bezier(0.33, 1, 0.68, 1) 0.25s backwards;
+}
+
+.hero.is-ready .hero-headline {
+  animation: hero-fade 0.8s cubic-bezier(0.33, 1, 0.68, 1) 0.45s backwards;
+}
+
+.hero.is-ready .globe-hub {
+  animation: hero-up 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.6s backwards;
+}
+
+@keyframes hero-settle {
+  from {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes hero-rise-centered {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(36px);
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero.is-entering .hero-bg,
+  .hero.is-entering .hero-grafism,
+  .hero.is-entering video.hero-mascote,
+  .hero.is-entering .hero-headline,
+  .hero.is-entering .globe-hub {
+    opacity: 1;
+  }
+
+  .hero.is-ready .hero-bg,
+  .hero.is-ready video.hero-mascote,
+  .hero.is-ready .hero-grafism,
+  .hero.is-ready .hero-headline,
+  .hero.is-ready .globe-hub {
+    animation: none;
+  }
 }
