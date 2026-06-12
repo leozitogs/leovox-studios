@@ -4,6 +4,7 @@
 
 import { useEffect, useRef } from 'react'
 import { gsap } from '../../lib/gsap'
+import { onReveal } from '../../lib/reveal'
 import { ContourField } from '../../components/ContourField'
 import { GlobeHub } from './GlobeHub'
 import { HeadlineGhost } from './HeadlineGhost'
@@ -20,7 +21,9 @@ export function Hero() {
   const mascoteStaticRef = useRef<HTMLImageElement>(null)
 
   // O React não aplica o atributo muted no primeiro render (bug conhecido),
-  // e sem muted o browser bloqueia o autoplay. Forçamos via DOM e damos o play.
+  // e sem muted o browser bloqueia o autoplay. Forçamos via DOM. O play
+  // só acontece no reveal: decodificar VP8 por software durante a
+  // abertura roubava CPU da dança do loader.
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
@@ -34,13 +37,18 @@ export function Hero() {
       })
     }
 
-    if (video.readyState >= 2) {
-      tryPlay()
-    } else {
-      video.addEventListener('canplay', tryPlay, { once: true })
-    }
+    const off = onReveal(() => {
+      if (video.readyState >= 2) {
+        tryPlay()
+      } else {
+        video.addEventListener('canplay', tryPlay, { once: true })
+      }
+    })
 
-    return () => video.removeEventListener('canplay', tryPlay)
+    return () => {
+      off()
+      video.removeEventListener('canplay', tryPlay)
+    }
   }, [])
 
   // Brilho suave que segue o cursor sobre o claim (mesma mecânica da
@@ -93,24 +101,44 @@ export function Hero() {
     }
   }, [])
 
-  // Entrada da cena: troca de classe no load; a animação é CSS puro
-  // (ver hero.css) justamente pra não deixar estilos inline que o
-  // scrub do GSAP capturaria como estado inicial errado.
+  // Entrada da cena, em dois modos (decisão do PO): na primeira carga
+  // o hero entra FORMADO dentro da folha do loader (is-instant pula os
+  // keyframes; a subida da folha já é a animação). A entrada cinemática
+  // fica reservada pro retorno depois de repouso: saiu da aba por mais
+  // de 20s e voltou com o hero em quadro, a abertura roda de novo.
+  // Tudo CSS puro (ver hero.css), sem estilo inline pro scrub capturar.
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
 
-    const ready = () => {
-      section.classList.remove('is-entering')
+    const show = (instant: boolean) => {
+      section.classList.remove('is-entering', 'is-ready', 'is-instant')
+      // reflow descarta o estado anterior e deixa os keyframes reiniciarem
+      void section.offsetWidth
+      if (instant) section.classList.add('is-instant')
       section.classList.add('is-ready')
     }
 
-    if (document.readyState === 'complete') {
-      const t = window.setTimeout(ready, 120)
-      return () => window.clearTimeout(t)
+    const offReveal = onReveal(() => show(true))
+
+    let hiddenAt = 0
+    const onVisibility = () => {
+      if (document.hidden) {
+        hiddenAt = Date.now()
+        return
+      }
+      const away = hiddenAt ? Date.now() - hiddenAt : 0
+      const heroEmQuadro = window.scrollY < window.innerHeight * 0.5
+      if (away > 20000 && heroEmQuadro && section.classList.contains('is-ready')) {
+        show(false)
+      }
     }
-    window.addEventListener('load', ready, { once: true })
-    return () => window.removeEventListener('load', ready)
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      offReveal()
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
   }, [])
 
   useHeroScroll(sectionRef, frameRef, headlineRef, claimRef, grafismRef, videoRef, mascoteStaticRef)
@@ -143,7 +171,7 @@ export function Hero() {
           className="hero-mascote"
           src="/animation/mascote-hero.webm"
           poster="/branding/mascot/mascot-full-body/mascot-hero-fallback.png"
-          autoPlay
+          preload="auto"
           muted
           loop
           playsInline

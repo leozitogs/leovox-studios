@@ -1,0 +1,83 @@
+/* ============================================================
+   Abertura · loader
+   Preto, LVX vira LEOVOX e anel fino de progresso seguindo o
+   cursor com elastico. Tudo que anima aqui e transform/opacity:
+   nada de mascara repintando por frame.
+   ============================================================ */
+
+html.is-loading {
+  overflow: hidden;
+}
+
+/* o canvas R3F nao precisa rodar atras da abertura */
+html.is-loading .persistent-canvas {
+  display: none;
+}
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--color-black);
+  overflow: hidden;
+}
+
+.ld-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.ld-lvx,
+.ld-leo {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-green);
+}
+
+/* a cortina do wipe: um painel preto enviesado que desliza e revela
+   o monograma com aresta dura, so transform (barato) */
+.ld-lvx {
+  position: relative;
+  overflow: hidden;
+  padding: 4%;
+}
+
+.ld-wipe {
+  position: absolute;
+  inset: -12%;
+  background: var(--color-black);
+  transform: skewX(-22deg) translateX(0%);
+  will-change: transform;
+}
+
+.ld-leo {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ld-svg {
+  fill: currentColor;
+}
+
+.ld-svg-lvx {
+  width: clamp(180px, 22vw, 340px);
+}
+
+.ld-svg-leo {
+  width: clamp(300px, 38vw, 600px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-lvx {
+    display: none;
+  }
+
+  .ld-leo {
+    opacity: 1;
+    visibility: visible;
+  }
+}

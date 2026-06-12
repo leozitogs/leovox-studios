@@ -233,6 +233,18 @@ export function Manifesto() {
           <span className="mf-encosta" aria-hidden="true">
             ei, psiu! encosta nas letras aí
           </span>
+          <svg className="mf-enc-arrow" viewBox="0 0 130 90" aria-hidden="true">
+            <path
+              d="M96,6 C124,28 122,58 86,72 M86,72 L108,70 M86,72 L98,54"
+              pathLength="1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray="1"
+              strokeDashoffset="1"
+            />
+          </svg>
         </div>
         <p className="mf-selo">ISSO É LEOVOX.</p>
       </div>

@@ -58,6 +58,28 @@ button {
   pointer-events: none;
 }
 
+/* A folha do site: o loader a sobe de baixo na abertura; fora da
+   abertura ela e um wrapper neutro */
+.site {
+  position: relative;
+  z-index: 90;
+  background: var(--color-black);
+}
+
+/* durante o load a folha espera invisivel e sem custo de paint */
+.site.site-waiting {
+  visibility: hidden;
+}
+
+/* na cavalgada, so a janela visivel vira camada composta: sem isso o
+   site inteiro (varias telas de altura) vira uma textura gigante e
+   derruba o framerate da subida */
+.site.is-riding {
+  height: 100vh;
+  overflow: hidden;
+  will-change: transform;
+}
+
 /* Destino provisório do scroll após o manifesto (vira a Cena 3) */
 .scene-spacer {
   height: 100vh;

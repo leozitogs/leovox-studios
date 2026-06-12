@@ -13,6 +13,7 @@ com mecânica própria, e nenhuma transição parece reload. Este documento
 | --- | --- | --- | --- |
 | 1 | Hero · A primeira tomada | Abre já em movimento, sem loading | Entregue |
 | 2 | Manifesto · A recusa em 4 atos | O coração verbal, a luz se apagando | Entregue |
+| A | Abertura · LVX vira LEOVOX | Loader com progresso real e folha de entrada | Em revisão |
 | 3 | Pilares · As 4 frentes | Um ecossistema. Não quatro serviços. | Roteirizada |
 | 4 | Selected Projects · O trailer | 3 a 4 trabalhos curados pra seduzir | Roteirizada |
 | 5 | Case Index · O acervo | Lista completa com filtros | Em revisão (ver nota) |

@@ -178,9 +178,14 @@ export function useHeroScroll(
               el.style.opacity = String(alpha)
               el.style.visibility = alpha <= 0.001 ? 'hidden' : 'visible'
             }
-            fade(headline, 1 - clamp01((p10 - 2.4) / 0.4))
-            fade(video, 1 - clamp01((p10 - 7.65) / 0.4))
-            fade(mascoteStatic, clamp01((p10 - 7.6) / 0.4))
+            // Antes do reveal os fades nao escrevem inline: a opacidade
+            // inline venceria o CSS do is-entering e vazava a headline e
+            // o poster do mascote durante a subida da folha da abertura.
+            if (!section.classList.contains('is-entering')) {
+              fade(headline, 1 - clamp01((p10 - 2.4) / 0.4))
+              fade(video, 1 - clamp01((p10 - 7.65) / 0.4))
+              fade(mascoteStatic, clamp01((p10 - 7.6) / 0.4))
+            }
 
             // O vídeo roda a cena inteira e só congela quando o card
             // começa a encolher e o palco branco aparece.
