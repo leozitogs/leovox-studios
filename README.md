@@ -38,15 +38,13 @@ Scripts individuais: `lint`, `format`, `format:check`, `typecheck`,
 
 ## Documentação
 
-| Onde                                                | O que                                         |
-| --------------------------------------------------- | --------------------------------------------- |
-| `docs/leovox-portfolio-contexto-compactado-v1_0.md` | Briefing canônico do build                    |
-| `docs/DECISOES.md`                                  | Registro de decisões travadas durante o build |
-| `CONTRIBUTING.md`                                   | Contrato de trabalho e regras de execução     |
+| Onde               | O que                                                |
+| ------------------ | ---------------------------------------------------- |
+| `docs/PIPELINE.md` | O roteiro do filme: cenas, estados e como são feitas |
+| `CONTRIBUTING.md`  | Como o trabalho acontece neste repositório           |
 
 A identidade completa da Leovox (brand manual, tom de voz, mascote,
-direção criativa) vive fora deste repositório. O roteiro antigo
-(sem-corte v1.0) está defasado e não guia nada aqui.
+direção criativa) vive fora deste repositório.
 
 ## Assets
 

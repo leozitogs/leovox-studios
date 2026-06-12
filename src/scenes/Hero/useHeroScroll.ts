@@ -57,7 +57,6 @@ export function useHeroScroll(
         navPill.classList.add('is-open')
       }
       if (navCta) gsap.set(navCta, { autoAlpha: 1, scale: 1 })
-      gsap.set('.hero-stage-mark', { autoAlpha: 1, x: 0 })
       video.pause()
 
       // progresso da página sem inércia
@@ -100,9 +99,14 @@ export function useHeroScroll(
       }
 
       // ---------- Pill inteligente: some descendo, volta subindo ----------
-      // Ativa só depois do hero, pra não brigar com a coreografia.
+      // Ativa só depois do hero. Histerese por distância: só reage a
+      // 90px contínuos na mesma direção, imune aos micro vaivéns do
+      // lerp do Lenis e do snap dos pins (que invertem a direção por
+      // um tick e faziam a pill mergulhar e corrigir).
       let pastHero = false
       let pillHidden = false
+      let pillAcc = 0
+      let pillLastY = 0
 
       const hidePill = () => {
         if (!navPill || pillHidden) return
@@ -125,10 +129,14 @@ export function useHeroScroll(
         end: 'max',
         onUpdate: (self) => {
           progressTo?.(self.progress)
-          if (pastHero) {
-            if (self.direction === 1) hidePill()
-            else showPill()
-          }
+          const y = self.scroll()
+          const delta = y - pillLastY
+          pillLastY = y
+          if (!pastHero || delta === 0) return
+          if (delta > 0 !== pillAcc > 0) pillAcc = 0
+          pillAcc += delta
+          if (pillAcc > 90) hidePill()
+          else if (pillAcc < -90) showPill()
         },
       })
 
@@ -249,12 +257,6 @@ export function useHeroScroll(
           immediateRender: false,
         },
         6.6,
-      )
-      tl.fromTo(
-        '.hero-stage-mark',
-        { autoAlpha: 0, x: -40 },
-        { autoAlpha: 0.14, x: 0, duration: 2, ease: 'expo.out' },
-        7.8,
       )
     }, section)
 

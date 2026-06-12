@@ -1,0 +1,156 @@
+// Cena 2 · Manifesto · A recusa em 4 atos.
+// O pin e o snap dao o ritmo; a lamina e GESTO, nao camera: cruzou o
+// limiar, a transicao dispara em tempo real e sempre conclui, em
+// qualquer direcao e ritmo de scroll. O scroll nunca descansa no meio
+// de uma fatiada (exigencia do PO). As entradas de conteudo sao CSS
+// puro disparado por classe (lei da entrada de cena), e o estado da
+// cena e funcao do ato corrente, trocado sob a cobertura da lamina.
+
+import { type RefObject, useEffect } from 'react'
+import { gsap, ScrollTrigger } from '../../lib/gsap'
+
+const D = 13.2 // duracao virtual da cena
+const SWAPS = [3.6, 7.2, 11.2] // limiares de troca de ato
+const RESTS = [0, 1.8, 5.4, 9.2, 13.2] // pontos de descanso do snap (1.8 segura o ato 1)
+const DEADBAND = 0.22 // banda morta em volta do limiar, contra tremor
+
+const ACT_BG = ['#fbfbfb', '#222222', '#19bc00', '#222222']
+const ACT_LINE = [
+  'rgba(0, 0, 0, 0.1)',
+  'rgba(251, 251, 251, 0.09)',
+  'rgba(0, 0, 0, 0.16)',
+  'rgba(251, 251, 251, 0.09)',
+]
+
+export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): void {
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      section.classList.add('is-static')
+      return
+    }
+
+    const atos = Array.from(section.querySelectorAll<HTMLElement>('.mf-ato'))
+    const bladeGreen = section.querySelector<HTMLElement>('.mf-blade-green')
+    const bladeDark = section.querySelector<HTMLElement>('.mf-blade-dark')
+    if (!bladeGreen || !bladeDark) return
+
+    let current = 0
+    let lastT = 0
+    let tl: gsap.core.Timeline | null = null
+    let tlFrom = 0
+    let tlTo = 0
+
+    const applyAct = (k: number) => {
+      current = k
+      section.style.backgroundColor = ACT_BG[k]
+      section.style.setProperty('--mf-line', ACT_LINE[k])
+      atos.forEach((el, i) => {
+        el.style.visibility = i === k ? 'visible' : 'hidden'
+        el.classList.toggle('is-on', i === k)
+      })
+    }
+
+    // as laminas nascem com transform de posse do GSAP: o translateY(100%)
+    // do CSS e decomposto em px (y: 900) e contaminaria a soma com o
+    // yPercent das tweens (a saida -100% terminava em zero, coberta)
+    gsap.set([bladeGreen, bladeDark], { y: 0, yPercent: 100 })
+
+    // estado inicial sem disparar a entrada do ato 1 (quem dispara e o
+    // gatilho de viewport, pra cena nunca chegar em branco)
+    section.style.backgroundColor = ACT_BG[0]
+    section.style.setProperty('--mf-line', ACT_LINE[0])
+    atos.forEach((el, i) => {
+      el.style.visibility = i === 0 ? 'visible' : 'hidden'
+    })
+
+    const desiredAct = (t: number) => {
+      let k = current
+      while (k < 3 && t > SWAPS[k] + DEADBAND) k += 1
+      while (k > 0 && t < SWAPS[k - 1] - DEADBAND) k -= 1
+      return k
+    }
+
+    const playBlade = (from: number, to: number) => {
+      // a lamina veste a cor do ato de destino: cobre, troca e se funde
+      // com o novo fundo na saida (decisao do PO, transicao mais suave)
+      const blade = bladeGreen
+      blade.style.backgroundColor = ACT_BG[to]
+      const dir = to > from ? 1 : -1
+      tlFrom = from
+      tlTo = to
+      tl = gsap.timeline({
+        onComplete: () => {
+          tl = null
+        },
+        onReverseComplete: () => {
+          tl = null
+        },
+      })
+      tl.fromTo(
+        blade,
+        { yPercent: dir > 0 ? 100 : -100 },
+        { yPercent: 0, duration: 0.42, ease: 'power3.in' },
+      )
+      // o call dispara nos dois sentidos: na ida aplica o destino, na
+      // volta restaura a origem (troca sempre sob a lamina)
+      tl.call(() => applyAct(tl && tl.reversed() ? tlFrom : tlTo))
+      tl.to(blade, { yPercent: dir > 0 ? -100 : 100, duration: 0.55, ease: 'power3.out' })
+    }
+
+    const st = ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=400%',
+      pin: true,
+      anticipatePin: 1,
+      onUpdate: (self) => {
+        const t = self.progress * D
+        const jumped = Math.abs(t - lastT) > 2.4
+        lastT = t
+        const want = desiredAct(t)
+
+        if (tl) {
+          // reverteu no meio da fatiada: a lamina volta, sem nunca parar
+          if (want === tlFrom && !tl.reversed()) tl.reversed(true)
+          else if (want === tlTo && tl.reversed()) tl.reversed(false)
+          return
+        }
+        if (want === current) return
+
+        // so o salto instantaneo real (ancora, drag da barra) corta seco;
+        // travessia rapida de mais de um ato tambem ganha lamina
+        if (jumped) {
+          gsap.set([bladeGreen, bladeDark], { y: 0, yPercent: 100 })
+          applyAct(want)
+          return
+        }
+        playBlade(current, want)
+      },
+      snap: {
+        snapTo: RESTS.map((r) => r / D),
+        duration: { min: 0.2, max: 0.55 },
+        ease: 'power2.inOut',
+        delay: 0.02,
+        directional: true,
+      },
+    })
+
+    // entrada do ato 1 quando a cena entra em quadro, antes do pin:
+    // a tela nunca fica so com as linhas de fundo
+    const intro = ScrollTrigger.create({
+      trigger: section,
+      start: 'top 40%',
+      once: true,
+      onEnter: () => atos[0].classList.add('is-on'),
+    })
+
+    return () => {
+      tl?.kill()
+      st.kill()
+      intro.kill()
+    }
+  }, [sectionRef])
+}

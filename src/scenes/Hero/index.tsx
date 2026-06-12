@@ -4,6 +4,7 @@
 
 import { useEffect, useRef } from 'react'
 import { gsap } from '../../lib/gsap'
+import { ContourField } from '../../components/ContourField'
 import { GlobeHub } from './GlobeHub'
 import { HeadlineGhost } from './HeadlineGhost'
 import { useHeroScroll } from './useHeroScroll'
@@ -83,7 +84,7 @@ export function Hero() {
     sweep.fromTo(
       claim,
       { '--csweep': '-30%' },
-      { '--csweep': '130%', duration: 0.9, ease: 'power2.inOut' },
+      { '--csweep': '130%', duration: 0.7, ease: 'power2.inOut' },
     )
 
     return () => {
@@ -122,12 +123,7 @@ export function Hero() {
     >
       {/* Palco: aparece quando o frame encolhe pro card */}
       <div className="hero-stage" role="presentation">
-        <img
-          className="hero-stage-mark"
-          src="/branding/monogram/leovox-manuscrito-l.svg"
-          alt=""
-          draggable={false}
-        />
+        <ContourField />
       </div>
 
       {/* Frame: a cena inteira, que vira card no beat 3 */}
