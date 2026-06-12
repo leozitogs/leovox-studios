@@ -58,6 +58,19 @@ button {
   pointer-events: none;
 }
 
+/* A folha do site: o loader a sobe de baixo na abertura; fora da
+   abertura ela e um wrapper neutro */
+.site {
+  position: relative;
+  z-index: 90;
+  background: var(--color-black);
+}
+
+.site.is-riding {
+  overflow: hidden;
+  will-change: transform;
+}
+
 /* Destino provisório do scroll após o manifesto (vira a Cena 3) */
 .scene-spacer {
   height: 100vh;

@@ -1,0 +1,114 @@
+/* ============================================================
+   Abertura · loader
+   Preto, LVX vira LEOVOX, porcentagem discreta e anel no cursor.
+   ============================================================ */
+
+html.is-loading {
+  overflow: hidden;
+}
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--color-black);
+  overflow: hidden;
+}
+
+.ld-hud {
+  position: absolute;
+  left: 3.5vw;
+  top: 4.8vh;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(1.1rem, 1.8vw, 1.9rem);
+  color: var(--color-green);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ld-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.ld-lvx,
+.ld-leo {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-green);
+  will-change: transform, opacity;
+}
+
+/* revelacao por mascara em duas passadas, no angulo do traco */
+.ld-lvx {
+  --mw: -20%;
+  -webkit-mask-image: linear-gradient(115deg, #000 calc(var(--mw) - 12%), transparent var(--mw));
+  mask-image: linear-gradient(115deg, #000 calc(var(--mw) - 12%), transparent var(--mw));
+}
+
+.ld-leo {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ld-svg {
+  fill: currentColor;
+}
+
+.ld-svg-lvx {
+  width: clamp(180px, 22vw, 340px);
+}
+
+.ld-svg-leo {
+  width: clamp(300px, 38vw, 600px);
+}
+
+/* anel de progresso junto do cursor */
+.ld-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  pointer-events: none;
+}
+
+.ld-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ld-ring circle {
+  fill: none;
+  stroke-width: 4;
+}
+
+.ld-ring-bg {
+  stroke: rgba(25, 188, 0, 0.18);
+}
+
+.ld-ring-arc {
+  stroke: var(--color-green);
+  stroke-linecap: round;
+  stroke-dasharray: 150.8;
+  stroke-dashoffset: 150.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-lvx,
+  .ld-ring {
+    display: none;
+  }
+
+  .ld-leo {
+    opacity: 1;
+    visibility: visible;
+  }
+}

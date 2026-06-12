@@ -144,7 +144,10 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       trigger: section,
       start: 'top 40%',
       once: true,
-      onEnter: () => atos[0].classList.add('is-on'),
+      onEnter: () => {
+        // num teleporte o ato corrente ja pode ser outro: nao suja
+        if (current === 0) atos[0].classList.add('is-on')
+      },
     })
 
     return () => {

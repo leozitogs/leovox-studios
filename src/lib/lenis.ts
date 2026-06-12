@@ -26,6 +26,16 @@ export function getLenis(): Lenis | null {
   return lenis
 }
 
+// Trava e destrava o scroll (roda, touch e teclado via Lenis). O
+// loader trava no boot e so destrava quando o hero esta fixado.
+export function stopLenis(): void {
+  lenis?.stop()
+}
+
+export function startLenis(): void {
+  lenis?.start()
+}
+
 export function destroyLenis(): void {
   gsap.ticker.remove(onTick)
   lenis?.destroy()

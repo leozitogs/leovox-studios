@@ -4,6 +4,7 @@
 
 import { useEffect, useRef } from 'react'
 import { gsap } from '../../lib/gsap'
+import { onReveal } from '../../lib/reveal'
 import { ContourField } from '../../components/ContourField'
 import { GlobeHub } from './GlobeHub'
 import { HeadlineGhost } from './HeadlineGhost'
@@ -93,9 +94,9 @@ export function Hero() {
     }
   }, [])
 
-  // Entrada da cena: troca de classe no load; a animação é CSS puro
-  // (ver hero.css) justamente pra não deixar estilos inline que o
-  // scrub do GSAP capturaria como estado inicial errado.
+  // Entrada da cena: dispara no reveal do loader (decisão 29 paga).
+  // A animação segue CSS puro (ver hero.css) pra não deixar estilos
+  // inline que o scrub do GSAP capturaria como estado inicial errado.
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
@@ -105,12 +106,7 @@ export function Hero() {
       section.classList.add('is-ready')
     }
 
-    if (document.readyState === 'complete') {
-      const t = window.setTimeout(ready, 120)
-      return () => window.clearTimeout(t)
-    }
-    window.addEventListener('load', ready, { once: true })
-    return () => window.removeEventListener('load', ready)
+    return onReveal(ready)
   }, [])
 
   useHeroScroll(sectionRef, frameRef, headlineRef, claimRef, grafismRef, videoRef, mascoteStaticRef)
