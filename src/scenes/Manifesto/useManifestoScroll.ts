@@ -8,10 +8,11 @@
 
 import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
+import { getLenis } from '../../lib/lenis'
 
 const D = 13.2 // duracao virtual da cena
 const SWAPS = [3.6, 7.2, 11.2] // limiares de troca de ato
-const RESTS = [0, 1.8, 5.4, 9.2, 13.2] // pontos de descanso do snap (1.8 segura o ato 1)
+const REST_BY_ACT = [1.8, 5.4, 9.2, 13.2] // descanso de cada ato
 const DEADBAND = 0.22 // banda morta em volta do limiar, contra tremor
 
 const ACT_BG = ['#fbfbfb', '#222222', '#19bc00', '#222222']
@@ -42,6 +43,7 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     let tl: gsap.core.Timeline | null = null
     let tlFrom = 0
     let tlTo = 0
+    let idle = 0
 
     const applyAct = (k: number) => {
       current = k
@@ -84,9 +86,13 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       tl = gsap.timeline({
         onComplete: () => {
           tl = null
+          window.clearTimeout(idle)
+          idle = window.setTimeout(settle, 80)
         },
         onReverseComplete: () => {
           tl = null
+          window.clearTimeout(idle)
+          idle = window.setTimeout(settle, 80)
         },
       })
       tl.fromTo(
@@ -100,6 +106,20 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       tl.to(blade, { yPercent: dir > 0 ? -100 : 100, duration: 0.55, ease: 'power3.out' })
     }
 
+    // Gravidade de ato (no lugar do snap cego): quando o scroll para,
+    // a tela assenta no descanso do ato CORRENTE. Mudar de ato e so por
+    // travessia deliberada do limiar; inercia nunca pula ato sozinha.
+    const settle = () => {
+      if (tl) return
+      const restT = current === 0 && lastT < 0.9 ? 0 : REST_BY_ACT[current]
+      if (Math.abs(lastT - restT) < 0.04) return
+      const pos = st.start + (restT / D) * (st.end - st.start)
+      getLenis()?.scrollTo(pos, {
+        duration: 0.6,
+        easing: (x: number) => 1 - Math.pow(1 - x, 3),
+      })
+    }
+
     const st = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
@@ -110,6 +130,8 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
         const t = self.progress * D
         const jumped = Math.abs(t - lastT) > 2.4
         lastT = t
+        window.clearTimeout(idle)
+        idle = window.setTimeout(settle, 150)
         const want = desiredAct(t)
 
         if (tl) {
@@ -129,13 +151,6 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
         }
         playBlade(current, want)
       },
-      snap: {
-        snapTo: RESTS.map((r) => r / D),
-        duration: { min: 0.2, max: 0.55 },
-        ease: 'power2.inOut',
-        delay: 0.02,
-        directional: true,
-      },
     })
 
     // entrada do ato 1 quando a cena entra em quadro, antes do pin:
@@ -151,6 +166,7 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     })
 
     return () => {
+      window.clearTimeout(idle)
       tl?.kill()
       st.kill()
       intro.kill()

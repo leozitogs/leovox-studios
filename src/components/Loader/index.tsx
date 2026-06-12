@@ -15,10 +15,8 @@ interface LoaderProps {
 export function Loader({ siteRef }: LoaderProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const lvxRef = useRef<HTMLDivElement>(null)
+  const coverRef = useRef<HTMLSpanElement>(null)
   const leoRef = useRef<HTMLDivElement>(null)
-  const hudRef = useRef<HTMLParagraphElement>(null)
-  const ringRef = useRef<HTMLDivElement>(null)
-  const arcRef = useRef<SVGCircleElement>(null)
   const [gone, setGone] = useState(false)
 
   const progressRef = useLoadProgress()
@@ -32,10 +30,8 @@ export function Loader({ siteRef }: LoaderProps) {
   useLoaderChoreography({
     rootRef,
     lvxRef,
+    coverRef,
     leoRef,
-    hudRef,
-    ringRef,
-    arcRef,
     siteRef,
     progressRef,
     onDone: () => setGone(true),
@@ -45,22 +41,14 @@ export function Loader({ siteRef }: LoaderProps) {
 
   return (
     <div ref={rootRef} className="loader" role="status" aria-label="Carregando Leovox Studios">
-      <p ref={hudRef} className="ld-hud">
-        0%
-      </p>
       <div className="ld-stage">
         <div ref={lvxRef} className="ld-lvx">
           <LvxMark />
+          <span ref={coverRef} className="ld-wipe" aria-hidden="true" />
         </div>
         <div ref={leoRef} className="ld-leo">
           <LeovoxMark />
         </div>
-      </div>
-      <div ref={ringRef} className="ld-ring" aria-hidden="true">
-        <svg viewBox="0 0 56 56">
-          <circle className="ld-ring-bg" cx="28" cy="28" r="24" />
-          <circle ref={arcRef} className="ld-ring-arc" cx="28" cy="28" r="24" />
-        </svg>
       </div>
     </div>
   )

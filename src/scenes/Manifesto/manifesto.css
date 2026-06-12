@@ -685,6 +685,26 @@
   white-space: nowrap;
 }
 
+/* a setinha desenhada apontando da anotacao pro wordmark */
+.mf-enc-arrow {
+  position: absolute;
+  right: -2.5%;
+  top: -1.4rem;
+  width: clamp(44px, 4vw, 70px);
+  color: rgba(251, 251, 251, 0.75);
+  transform: rotate(6deg);
+  pointer-events: none;
+}
+
+.mf-enc-arrow path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.mf-ato-4.is-on .mf-enc-arrow path {
+  animation: mf-draw-l 0.4s 3.45s ease-out both;
+}
+
 .mf-ato-4.is-on .mf-encosta {
   animation: mf-write 0.7s 2.9s cubic-bezier(0.45, 0.05, 0.55, 0.95) both;
 }
@@ -819,6 +839,7 @@
   clip-path: none;
 }
 
-.manifesto.is-static .mf-risco-l path {
+.manifesto.is-static .mf-risco-l path,
+.manifesto.is-static .mf-enc-arrow path {
   stroke-dashoffset: 0;
 }

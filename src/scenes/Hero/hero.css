@@ -329,6 +329,7 @@
 
 .hero.is-entering .hero-bg,
 .hero.is-entering .hero-grafism,
+.hero.is-entering .hero-paper,
 .hero.is-entering video.hero-mascote,
 .hero.is-entering .hero-headline,
 .hero.is-entering .globe-hub {
@@ -351,8 +352,23 @@
   animation: hero-fade 0.8s cubic-bezier(0.33, 1, 0.68, 1) 0.45s backwards;
 }
 
+.hero.is-ready .hero-paper {
+  animation: hero-fade 0.8s cubic-bezier(0.33, 1, 0.68, 1) 0.3s backwards;
+}
+
 .hero.is-ready .globe-hub {
   animation: hero-up 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.6s backwards;
+}
+
+/* primeira carga: o hero ja entra formado dentro da folha do loader,
+   sem dobrar animacao com a subida */
+.hero.is-ready.is-instant .hero-bg,
+.hero.is-ready.is-instant .hero-grafism,
+.hero.is-ready.is-instant .hero-paper,
+.hero.is-ready.is-instant video.hero-mascote,
+.hero.is-ready.is-instant .hero-headline,
+.hero.is-ready.is-instant .globe-hub {
+  animation: none;
 }
 
 @keyframes hero-settle {
@@ -385,6 +401,7 @@
 @media (prefers-reduced-motion: reduce) {
   .hero.is-entering .hero-bg,
   .hero.is-entering .hero-grafism,
+  .hero.is-entering .hero-paper,
   .hero.is-entering video.hero-mascote,
   .hero.is-entering .hero-headline,
   .hero.is-entering .globe-hub {
@@ -394,6 +411,7 @@
   .hero.is-ready .hero-bg,
   .hero.is-ready video.hero-mascote,
   .hero.is-ready .hero-grafism,
+  .hero.is-ready .hero-paper,
   .hero.is-ready .hero-headline,
   .hero.is-ready .globe-hub {
     animation: none;

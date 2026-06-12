@@ -66,7 +66,16 @@ button {
   background: var(--color-black);
 }
 
+/* durante o load a folha espera invisivel e sem custo de paint */
+.site.site-waiting {
+  visibility: hidden;
+}
+
+/* na cavalgada, so a janela visivel vira camada composta: sem isso o
+   site inteiro (varias telas de altura) vira uma textura gigante e
+   derruba o framerate da subida */
 .site.is-riding {
+  height: 100vh;
   overflow: hidden;
   will-change: transform;
 }

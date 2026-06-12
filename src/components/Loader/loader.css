@@ -1,10 +1,17 @@
 /* ============================================================
    Abertura · loader
-   Preto, LVX vira LEOVOX, porcentagem discreta e anel no cursor.
+   Preto, LVX vira LEOVOX e anel fino de progresso seguindo o
+   cursor com elastico. Tudo que anima aqui e transform/opacity:
+   nada de mascara repintando por frame.
    ============================================================ */
 
 html.is-loading {
   overflow: hidden;
+}
+
+/* o canvas R3F nao precisa rodar atras da abertura */
+html.is-loading .persistent-canvas {
+  display: none;
 }
 
 .loader {
@@ -13,18 +20,6 @@ html.is-loading {
   z-index: 80;
   background: var(--color-black);
   overflow: hidden;
-}
-
-.ld-hud {
-  position: absolute;
-  left: 3.5vw;
-  top: 4.8vh;
-  font-family: var(--font-body);
-  font-weight: 300;
-  font-size: clamp(1.1rem, 1.8vw, 1.9rem);
-  color: var(--color-green);
-  letter-spacing: 0.02em;
-  font-variant-numeric: tabular-nums;
 }
 
 .ld-stage {
@@ -41,14 +36,22 @@ html.is-loading {
   align-items: center;
   justify-content: center;
   color: var(--color-green);
-  will-change: transform, opacity;
 }
 
-/* revelacao por mascara em duas passadas, no angulo do traco */
+/* a cortina do wipe: um painel preto enviesado que desliza e revela
+   o monograma com aresta dura, so transform (barato) */
 .ld-lvx {
-  --mw: -20%;
-  -webkit-mask-image: linear-gradient(115deg, #000 calc(var(--mw) - 12%), transparent var(--mw));
-  mask-image: linear-gradient(115deg, #000 calc(var(--mw) - 12%), transparent var(--mw));
+  position: relative;
+  overflow: hidden;
+  padding: 4%;
+}
+
+.ld-wipe {
+  position: absolute;
+  inset: -12%;
+  background: var(--color-black);
+  transform: skewX(-22deg) translateX(0%);
+  will-change: transform;
 }
 
 .ld-leo {
@@ -68,42 +71,8 @@ html.is-loading {
   width: clamp(300px, 38vw, 600px);
 }
 
-/* anel de progresso junto do cursor */
-.ld-ring {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 56px;
-  height: 56px;
-  margin: -28px 0 0 -28px;
-  pointer-events: none;
-}
-
-.ld-ring svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.ld-ring circle {
-  fill: none;
-  stroke-width: 4;
-}
-
-.ld-ring-bg {
-  stroke: rgba(25, 188, 0, 0.18);
-}
-
-.ld-ring-arc {
-  stroke: var(--color-green);
-  stroke-linecap: round;
-  stroke-dasharray: 150.8;
-  stroke-dashoffset: 150.8;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .ld-lvx,
-  .ld-ring {
+  .ld-lvx {
     display: none;
   }
 
