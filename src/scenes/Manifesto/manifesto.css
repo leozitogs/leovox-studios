@@ -285,23 +285,36 @@
 
 .mf-marquee {
   position: absolute;
-  top: 50%;
   left: 0;
   width: 100%;
-  transform: translateY(-50%);
   display: flex;
   overflow: hidden;
   z-index: -1;
   font-family: var(--font-display);
-  font-size: 8.5vw;
+  font-size: 10.5vw;
+  line-height: 1;
   white-space: nowrap;
   color: rgba(251, 251, 251, 0.05);
   user-select: none;
 }
 
+/* duas faixas fixas, uma acima e uma abaixo: a frase principal vive
+   exatamente no meio delas */
+.mf-marquee-a {
+  top: 11%;
+}
+
+.mf-marquee-b {
+  bottom: 11%;
+}
+
 .mf-marquee span {
   flex-shrink: 0;
   animation: mf-marquee 32s linear infinite;
+}
+
+.mf-marquee-b span {
+  animation-direction: reverse;
 }
 
 @keyframes mf-marquee {

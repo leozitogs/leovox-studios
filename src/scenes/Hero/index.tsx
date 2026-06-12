@@ -84,7 +84,7 @@ export function Hero() {
     sweep.fromTo(
       claim,
       { '--csweep': '-30%' },
-      { '--csweep': '130%', duration: 0.9, ease: 'power2.inOut' },
+      { '--csweep': '130%', duration: 0.7, ease: 'power2.inOut' },
     )
 
     return () => {

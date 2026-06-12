@@ -12,14 +12,14 @@ import { gsap, ScrollTrigger } from '../../lib/gsap'
 const D = 13.2 // duracao virtual da cena
 const SWAPS = [3.6, 7.2, 11.2] // limiares de troca de ato
 const RESTS = [0, 1.8, 5.4, 9.2, 13.2] // pontos de descanso do snap (1.8 segura o ato 1)
-const DEADBAND = 0.15 // banda morta em volta do limiar, contra tremor
+const DEADBAND = 0.22 // banda morta em volta do limiar, contra tremor
 
 const ACT_BG = ['#fbfbfb', '#222222', '#19bc00', '#222222']
 const ACT_LINE = [
   'rgba(0, 0, 0, 0.1)',
   'rgba(251, 251, 251, 0.09)',
   'rgba(0, 0, 0, 0.16)',
-  'rgba(25, 188, 0, 0.14)',
+  'rgba(251, 251, 251, 0.09)',
 ]
 
 export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): void {
@@ -74,8 +74,10 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     }
 
     const playBlade = (from: number, to: number) => {
-      // saindo do ato 3 (fundo verde) a lamina verde sumiria: usa a preta
-      const blade = from === 2 ? bladeDark : bladeGreen
+      // a lamina veste a cor do ato de destino: cobre, troca e se funde
+      // com o novo fundo na saida (decisao do PO, transicao mais suave)
+      const blade = bladeGreen
+      blade.style.backgroundColor = ACT_BG[to]
       const dir = to > from ? 1 : -1
       tlFrom = from
       tlTo = to
@@ -118,8 +120,9 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
         }
         if (want === current) return
 
-        // salto instantaneo (ancora, drag da barra): estado direto
-        if (jumped || Math.abs(want - current) > 1) {
+        // so o salto instantaneo real (ancora, drag da barra) corta seco;
+        // travessia rapida de mais de um ato tambem ganha lamina
+        if (jumped) {
           gsap.set([bladeGreen, bladeDark], { y: 0, yPercent: 100 })
           applyAct(want)
           return
@@ -128,9 +131,9 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       },
       snap: {
         snapTo: RESTS.map((r) => r / D),
-        duration: { min: 0.25, max: 0.85 },
+        duration: { min: 0.2, max: 0.55 },
         ease: 'power2.inOut',
-        delay: 0.05,
+        delay: 0.02,
         directional: true,
       },
     })

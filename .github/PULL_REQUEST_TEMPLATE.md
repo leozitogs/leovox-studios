@@ -8,7 +8,7 @@
 
 - [ ] `npm run validate` passou localmente (travessão, typecheck, lint, format, testes, build)
 - [ ] Nenhum travessão em string, comentário ou copy
-- [ ] Off-white é `#FBFBFB`, nunca `#FFFFFF`
+- [ ] Paleta oficial respeitada (`#000000`, `#222222`, `#19BC00`, `#FBFBFB`, `#FFFFFF`, apoio `#C5F49D`)
 - [ ] Nenhum efeito banido (glow, neon, bloom, glitch, scanline, RGB split, holograma)
 - [ ] Nenhum fade branco ou reload visível (corte proibido)
 - [ ] Validado no dev server da porta `:5173`

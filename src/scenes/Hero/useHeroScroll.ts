@@ -99,9 +99,14 @@ export function useHeroScroll(
       }
 
       // ---------- Pill inteligente: some descendo, volta subindo ----------
-      // Ativa só depois do hero, pra não brigar com a coreografia.
+      // Ativa só depois do hero. Histerese por distância: só reage a
+      // 90px contínuos na mesma direção, imune aos micro vaivéns do
+      // lerp do Lenis e do snap dos pins (que invertem a direção por
+      // um tick e faziam a pill mergulhar e corrigir).
       let pastHero = false
       let pillHidden = false
+      let pillAcc = 0
+      let pillLastY = 0
 
       const hidePill = () => {
         if (!navPill || pillHidden) return
@@ -124,10 +129,14 @@ export function useHeroScroll(
         end: 'max',
         onUpdate: (self) => {
           progressTo?.(self.progress)
-          if (pastHero) {
-            if (self.direction === 1) hidePill()
-            else showPill()
-          }
+          const y = self.scroll()
+          const delta = y - pillLastY
+          pillLastY = y
+          if (!pastHero || delta === 0) return
+          if (delta > 0 !== pillAcc > 0) pillAcc = 0
+          pillAcc += delta
+          if (pillAcc > 90) hidePill()
+          else if (pillAcc < -90) showPill()
         },
       })
 

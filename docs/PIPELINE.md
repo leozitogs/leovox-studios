@@ -12,7 +12,7 @@ com mecânica própria, e nenhuma transição parece reload. Este documento
 | # | Cena | Papel em uma linha | Status |
 | --- | --- | --- | --- |
 | 1 | Hero · A primeira tomada | Abre já em movimento, sem loading | Entregue |
-| 2 | Manifesto · A recusa em 4 atos | O coração verbal, a luz se apagando | Em revisão |
+| 2 | Manifesto · A recusa em 4 atos | O coração verbal, a luz se apagando | Entregue |
 | 3 | Pilares · As 4 frentes | Um ecossistema. Não quatro serviços. | Roteirizada |
 | 4 | Selected Projects · O trailer | 3 a 4 trabalhos curados pra seduzir | Roteirizada |
 | 5 | Case Index · O acervo | Lista completa com filtros | Em revisão (ver nota) |
@@ -43,7 +43,7 @@ opacidades como função pura do progresso de scroll, entradas de cena em
 CSS puro, e QA de animação com reprodução em browser antes de qualquer
 correção.
 
-## Cena 2 · Manifesto · A recusa em 4 atos · EM REVISÃO
+## Cena 2 · Manifesto · A recusa em 4 atos · ENTREGUE
 
 O coração verbal do site. Depois do impacto visual do hero, a Leovox
 fala. Estrutura fixa de 4 atos, tipografia protagonista, e a

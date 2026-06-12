@@ -234,7 +234,7 @@
 
 .claim-text {
   display: block;
-  opacity: 0.8; /* truque de opacidade: a base nunca esta 100% acesa */
+  opacity: 0.87; /* truque de opacidade: a base nunca esta 100% acesa */
 }
 
 /* mesma mecânica da headline de abertura: a base fica a 80% e o

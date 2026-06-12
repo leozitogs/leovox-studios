@@ -157,7 +157,11 @@ export function Manifesto() {
 
       {/* Ato 2 · Diagnóstico · cinza */}
       <div className="mf-ato mf-ato-2">
-        <div className="mf-marquee" aria-hidden="true">
+        <div className="mf-marquee mf-marquee-a" aria-hidden="true">
+          <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
+          <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
+        </div>
+        <div className="mf-marquee mf-marquee-b" aria-hidden="true">
           <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
           <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
         </div>
