@@ -12,7 +12,7 @@ com mecânica própria, e nenhuma transição parece reload. Este documento
 | # | Cena | Papel em uma linha | Status |
 | --- | --- | --- | --- |
 | 1 | Hero · A primeira tomada | Abre já em movimento, sem loading | Entregue |
-| 2 | Manifesto · A recusa em 4 atos | O coração verbal, inversão de luz | Em briefing |
+| 2 | Manifesto · A recusa em 4 atos | O coração verbal, a luz se apagando | Em revisão |
 | 3 | Pilares · As 4 frentes | Um ecossistema. Não quatro serviços. | Roteirizada |
 | 4 | Selected Projects · O trailer | 3 a 4 trabalhos curados pra seduzir | Roteirizada |
 | 5 | Case Index · O acervo | Lista completa com filtros | Em revisão (ver nota) |
@@ -43,38 +43,44 @@ opacidades como função pura do progresso de scroll, entradas de cena em
 CSS puro, e QA de animação com reprodução em browser antes de qualquer
 correção.
 
-## Cena 2 · Manifesto · A recusa em 4 atos · EM BRIEFING
+## Cena 2 · Manifesto · A recusa em 4 atos · EM REVISÃO
 
 O coração verbal do site. Depois do impacto visual do hero, a Leovox
-fala. Estrutura fixa de 4 atos com a mecânica-assinatura da inversão de
-luz: preto, cinza escuro, off-white no clímax, e preto de novo com peso
-máximo. A transição entre atos é a lâmina de verde chapado cruzando a
-tela. A tipografia é a protagonista; os dispositivos visuais vêm da
-serigrafia: stack de repetição, palavra circulada à mão, e o
-riscar-e-corrigir que executa o argumento na tela.
+fala. Estrutura fixa de 4 atos, tipografia protagonista, e a
+mecânica-assinatura da inversão de luz, agora partindo de onde o hero
+parou: o manifesto começa no palco off-white e escurece ato a ato. A
+transição entre atos é a lâmina de verde chapado cruzando a tela.
 
-Texto canônico (zero paráfrase):
+Direção visual travada em briefing: continuação direta do palco do
+hero; fundo minimamente interativo (linhas finas que reagem ao cursor);
+mistura criativa de fontes dentro da mesma frase (peso Anton com
+acentos em Lost in South, kickers em Bebas, anotações em Schoolbell);
+estética streetwear com sensibilidade de composição Y2K (sem as
+texturas Y2K banidas); microinterações em tudo que o olho toca.
+Referências de régua: landonorris.com (cadeia de textos simples muito
+bem feita, fundo vivo discreto, assinatura sobre o conteúdo) e
+niccolomiranda.com (capítulos com mudança de clima).
 
-> Ato 1 · Recusa (preto)
+Texto canônico (zero paráfrase, revisado em briefing):
+
+> Ato 1 · Recusa
 > A LEOVOX NASCEU DE UMA RECUSA.
 > stack: A recusa de se encaixar. / A recusa de escolher entre criativo
 > ou técnico. / A recusa de achar que marca boa é só logo bonito.
 
-> Ato 2 · Diagnóstico (cinza)
+> Ato 2 · Diagnóstico
 > O MERCADO ERROU FEIO.
-> riscado: criativo OU técnico vira CRIATIVO E TÉCNICO
 
-> Ato 3 · Solução (off-white, DIVISÃO circulada, amplificar em verde)
+> Ato 3 · Solução (DIVISÃO circulada, amplificar em destaque)
 > A LEOVOX É O QUE ACONTECE QUANDO VOCÊ IGNORA ESSA DIVISÃO.
 > EM VEZ DE SE ADEQUAR, A GENTE DECIDIU AMPLIFICAR.
 
-> Ato 4 · Assinatura (preto, peso máximo)
-> stack: A GENTE FAZ COM INTENÇÃO. / A GENTE FAZ COM CÓDIGO. / A GENTE
-> FAZ COM AUTENTICIDADE.
+> Ato 4 · Assinatura (peso máximo)
+> AQUI SE FAZ COM INTENÇÃO, COM TÉCNICA E COM AUTENTICIDADE.
 > DESENVOLVA SEUS SONHOS. / ISSO É LEOVOX.
 
-Detalhes de mecânica, scroll e participação do mascote saem do briefing
-dedicado da cena.
+A atribuição de luz por ato sai do protótipo aprovado, não do roteiro
+antigo. Mecânica de scroll e participação do mascote idem.
 
 ## Cena 3 · Pilares · As 4 frentes · ROTEIRIZADA
 

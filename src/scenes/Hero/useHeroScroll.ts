@@ -57,7 +57,6 @@ export function useHeroScroll(
         navPill.classList.add('is-open')
       }
       if (navCta) gsap.set(navCta, { autoAlpha: 1, scale: 1 })
-      gsap.set('.hero-stage-mark', { autoAlpha: 1, x: 0 })
       video.pause()
 
       // progresso da página sem inércia
@@ -249,12 +248,6 @@ export function useHeroScroll(
           immediateRender: false,
         },
         6.6,
-      )
-      tl.fromTo(
-        '.hero-stage-mark',
-        { autoAlpha: 0, x: -40 },
-        { autoAlpha: 0.14, x: 0, duration: 2, ease: 'expo.out' },
-        7.8,
       )
     }, section)
 
