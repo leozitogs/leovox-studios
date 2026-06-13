@@ -30,11 +30,13 @@ npm run validate
 ```
 
 Roda em sequência: checagem de travessão, typecheck, lint, formatação,
-testes de marca e build. É o portão antes de qualquer commit, e o CI
-repete tudo em cada push e PR.
+testes (marca, matemática das cenas, existência de assets) e build. É o
+portão antes de qualquer commit, e o CI repete tudo em cada push e PR,
+mais o smoke de browser (`npm run smoke`): Chromium real percorrendo o
+filme inteiro e falhando com qualquer erro de console ou asset quebrado.
 
 Scripts individuais: `lint`, `format`, `format:check`, `typecheck`,
-`test`, `check:travessao`.
+`test`, `check:travessao`, `smoke`.
 
 ## Documentação
 

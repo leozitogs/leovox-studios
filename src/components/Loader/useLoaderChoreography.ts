@@ -14,6 +14,7 @@
 
 import { useEffect, type RefObject } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
+import { approach } from './progressMath'
 import { startLenis } from '../../lib/lenis'
 import { dispatchReveal } from '../../lib/reveal'
 
@@ -160,10 +161,10 @@ export function useLoaderChoreography({
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick)
       if (exiting) return
-      const dt = Math.min((now - last) / 1000, 0.12)
+      const dt = (now - last) / 1000
       last = now
       const target = Math.min(progressRef.current ?? 0, danceDone ? 1 : DANCE_CAP)
-      displayed += (target - displayed) * (1 - Math.exp(-4.2 * dt))
+      displayed = approach(displayed, target, dt)
       if (displayed > 0.995) exit()
     }
     raf = requestAnimationFrame(tick)

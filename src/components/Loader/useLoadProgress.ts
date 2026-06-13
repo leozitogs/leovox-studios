@@ -4,6 +4,7 @@
 // pra sempre.
 
 import { useEffect, useRef, type RefObject } from 'react'
+import { combineMarks, type Marks } from './progressMath'
 
 const KEY_IMAGES = [
   '/background/bg-buildings.png',
@@ -12,7 +13,6 @@ const KEY_IMAGES = [
   '/branding/mascot/mascot-full-body/mascot-hero-fallback.png',
 ]
 
-const WEIGHTS = { fonts: 0.3, video: 0.3, images: 0.25, page: 0.15 }
 const FAILSAFE_MS = 9000
 
 export function useLoadProgress(): RefObject<number> {
@@ -20,15 +20,11 @@ export function useLoadProgress(): RefObject<number> {
 
   useEffect(() => {
     let alive = true
-    const marks = { fonts: 0, video: 0, images: 0, page: 0 }
+    const marks: Marks = { fonts: 0, video: 0, images: 0, page: 0 }
 
     const update = () => {
       if (!alive) return
-      progress.current =
-        marks.fonts * WEIGHTS.fonts +
-        marks.video * WEIGHTS.video +
-        marks.images * WEIGHTS.images +
-        marks.page * WEIGHTS.page
+      progress.current = combineMarks(marks)
     }
 
     document.fonts.ready.then(() => {

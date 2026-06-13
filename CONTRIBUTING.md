@@ -37,9 +37,21 @@ npm run validate
 ```
 
 Roda em sequência: checagem de travessão, typecheck, lint, formatação,
-testes de marca e build. O CI repete tudo em cada push e PR. Scripts
+testes (marca, matemática das cenas, existência de assets) e build.
+O CI repete tudo em cada push e PR, e ainda roda o smoke de browser:
+
+```
+npm run build && npm run smoke
+```
+
+O smoke sobe o build num Chromium real, percorre o filme inteiro
+(abertura, hero, os 4 atos do manifesto e a reversão) e falha com
+qualquer console.error, exceção, rejeição de promise ou 404 de asset.
+`SMOKE_QUICK=1` encurta as esperas em máquina lenta. Em dev, o HUD de
+erros mostra qualquer captura na tela, sem abrir o devtools; em
+produção, um ErrorBoundary segura a queda na voz da marca. Scripts
 individuais: `lint`, `format`, `format:check`, `typecheck`, `test`,
-`check:travessao`.
+`check:travessao`, `smoke`.
 
 ## Regras de marca no código
 

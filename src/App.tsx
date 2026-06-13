@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { PersistentCanvas } from './canvas/PersistentCanvas'
 import { Header } from './components/Header'
+import { ErrorHud } from './components/ErrorHud'
 import { Loader } from './components/Loader'
 import { destroyLenis, initLenis, stopLenis } from './lib/lenis'
 import { Hero } from './scenes/Hero'
@@ -19,6 +20,7 @@ export default function App() {
 
   return (
     <>
+      {import.meta.env.DEV ? <ErrorHud /> : null}
       <Loader siteRef={siteRef} />
       <div ref={siteRef} className="site">
         <PersistentCanvas />

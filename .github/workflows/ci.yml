@@ -23,3 +23,26 @@ jobs:
 
       - name: Validar tudo
         run: npm run validate
+
+  smoke:
+    name: Smoke de browser (console limpo, fluxo íntegro)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npx vite build
+
+      - name: Smoke
+        run: npm run smoke
