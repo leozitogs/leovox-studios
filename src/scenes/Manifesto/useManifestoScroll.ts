@@ -9,19 +9,7 @@
 import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
 import { getLenis } from '../../lib/lenis'
-
-const D = 13.2 // duracao virtual da cena
-const SWAPS = [3.6, 7.2, 11.2] // limiares de troca de ato
-const REST_BY_ACT = [1.8, 5.4, 9.2, 13.2] // descanso de cada ato
-const DEADBAND = 0.22 // banda morta em volta do limiar, contra tremor
-
-const ACT_BG = ['#fbfbfb', '#222222', '#19bc00', '#222222']
-const ACT_LINE = [
-  'rgba(0, 0, 0, 0.1)',
-  'rgba(251, 251, 251, 0.09)',
-  'rgba(0, 0, 0, 0.16)',
-  'rgba(251, 251, 251, 0.09)',
-]
+import { ACT_BG, ACT_LINE, D, desiredAct, restFor } from './actMath'
 
 export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): void {
   useEffect(() => {
@@ -68,13 +56,6 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       el.style.visibility = i === 0 ? 'visible' : 'hidden'
     })
 
-    const desiredAct = (t: number) => {
-      let k = current
-      while (k < 3 && t > SWAPS[k] + DEADBAND) k += 1
-      while (k > 0 && t < SWAPS[k - 1] - DEADBAND) k -= 1
-      return k
-    }
-
     const playBlade = (from: number, to: number) => {
       // a lamina veste a cor do ato de destino: cobre, troca e se funde
       // com o novo fundo na saida (decisao do PO, transicao mais suave)
@@ -111,7 +92,7 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     // travessia deliberada do limiar; inercia nunca pula ato sozinha.
     const settle = () => {
       if (tl) return
-      const restT = current === 0 && lastT < 0.9 ? 0 : REST_BY_ACT[current]
+      const restT = restFor(current, lastT)
       if (Math.abs(lastT - restT) < 0.04) return
       const pos = st.start + (restT / D) * (st.end - st.start)
       getLenis()?.scrollTo(pos, {
@@ -132,7 +113,7 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
         lastT = t
         window.clearTimeout(idle)
         idle = window.setTimeout(settle, 150)
-        const want = desiredAct(t)
+        const want = desiredAct(current, t)
 
         if (tl) {
           // reverteu no meio da fatiada: a lamina volta, sem nunca parar

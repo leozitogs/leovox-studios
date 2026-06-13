@@ -1,0 +1,46 @@
+/* HUD de erros (dev): toasts no canto inferior direito, na voz da marca */
+
+.error-hud {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: min(420px, 90vw);
+}
+
+.error-toast {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.94);
+  border: 2px solid var(--color-green);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+}
+
+.error-kind {
+  font-family: var(--font-numeric);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-green);
+}
+
+.error-message {
+  font-family: var(--font-conversational);
+  font-size: 0.85rem;
+  color: var(--color-offwhite);
+  word-break: break-word;
+}
+
+.error-detail {
+  font-family: var(--font-conversational);
+  font-size: 0.72rem;
+  color: rgba(251, 251, 251, 0.55);
+  word-break: break-all;
+}

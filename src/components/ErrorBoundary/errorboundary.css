@@ -1,0 +1,39 @@
+/* O corte: fallback de erro na voz da marca, nunca tela branca */
+
+.error-corte {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: var(--color-black);
+  color: var(--color-offwhite);
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-corte-titulo {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 10rem);
+  line-height: 1;
+  color: var(--color-green);
+}
+
+.error-corte-texto {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+}
+
+.error-corte-botao {
+  margin-top: 1rem;
+  font-family: var(--font-numeric);
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  color: var(--color-black);
+  background: var(--color-green);
+  border-radius: 10px;
+  padding: 0.8em 1.6em;
+}

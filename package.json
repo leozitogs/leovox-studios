@@ -17,7 +17,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "check:travessao": "node scripts/check-travessao.mjs",
-    "validate": "npm run check:travessao && npm run typecheck && npm run lint && npm run format:check && npm run test && npm run build"
+    "validate": "npm run check:travessao && npm run typecheck && npm run lint && npm run format:check && npm run test && npm run build",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "@barba/core": "^2.10.3",
@@ -41,6 +42,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "playwright": "^1.60.0",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.0",
