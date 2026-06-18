@@ -7,3 +7,7 @@ Thumbs.db
 
 # Registro de decisoes fica local, fora do remoto (decisao 19)
 docs/DECISOES.md
+
+# Claude
+.claude/
+CLAUDE.md

@@ -100,6 +100,12 @@ try {
     if (atoFinal !== 1) registra('fluxo', `reversao terminou no ato ${atoFinal}, esperado 1`)
   }
 
+  // a cena 404 tambem precisa de console limpo
+  await page.goto(`http://localhost:${PORTA}/404.html`)
+  await page.waitForTimeout(RAPIDO ? 1500 : 2500)
+  const tem404 = await page.evaluate(() => !!document.querySelector('.nf-404'))
+  if (!tem404) registra('fluxo', 'a cena 404 nao montou')
+
   await browser.close()
 } catch (erro) {
   registra('smoke', String(erro?.message ?? erro))

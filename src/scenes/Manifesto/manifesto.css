@@ -12,6 +12,13 @@
   overflow: hidden;
   background-color: var(--color-offwhite);
   --mf-line: rgba(0, 0, 0, 0.1);
+  /* Costura com o Hero: na troca de pin, a folha preta da .site podia
+     vazar no sulco de subpixel entre os dois pin-spacers (some em tela
+     2K com escala fracionaria). O box-shadow off-white pinta 2px acima
+     da borda, fora do box e imune ao overflow:hidden, sem mexer no
+     layout nem na conta do pin. O manifesto pinta depois do hero, entao
+     a sombra cobre o sulco com off-white nos dois lados. */
+  box-shadow: 0 -2px 0 0 var(--color-offwhite);
 }
 
 .manifesto .contour-field {
