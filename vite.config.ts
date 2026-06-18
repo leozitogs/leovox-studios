@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -8,5 +9,15 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+  },
+  build: {
+    rollupOptions: {
+      // build multipagina: a home e a cena 404 (servida pela
+      // hospedagem em qualquer URL quebrada)
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        notfound: resolve(__dirname, '404.html'),
+      },
+    },
   },
 })

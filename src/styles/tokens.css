@@ -21,6 +21,7 @@
   --font-conversational: 'Poppins', Arial, sans-serif; /* formulário, microcopy próximo */
   --font-seal: 'Lost in South', cursive; /* selo Isso é Leovox, frases-assinatura */
   --font-hand: 'Schoolbell', cursive; /* anotação à mão, voz humana */
+  --font-brush: 'Brush Up', cursive; /* excecao aprovada: protagonista da cena 404 */
 
   /* ---------- Escala tipográfica ---------- */
   --text-xs: 0.75rem;
@@ -122,6 +123,22 @@
   font-family: 'Poppins';
   src: url('/fonts/Poppins/Poppins-Medium.ttf') format('truetype');
   font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins/Poppins-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Brush Up';
+  src: url('/fonts/brush-up-regular/BrushUp-Regular.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
