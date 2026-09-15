@@ -5,7 +5,7 @@ arquivos versionados.
 
 ## Fonte de dados
 
-- `src/data/projects.ts`: a lista de projetos e o tipo de domínio. O tipo `Frente` (as 4 frentes da Leovox) fica aberto até o briefing da cena Pilares (ver `docs/DECISOES.md`).
+- `src/data/projects.ts`: a lista de projetos e o tipo de domínio. O tipo `Frente` contém as 3 frentes oficiais definidas no briefing da cena Pilares.
 
 ## Entidade Projeto / Case (proposta canônica)
 
@@ -18,7 +18,7 @@ interface Projeto {
   nome: string
   cliente: string
   ano: number
-  frente: Frente // identidade | presenca-digital | tech | crescimento
+  frente: Frente // identidade | presenca-digital | tech
   resumo: string // curto, vira a tomada no Selected Projects
   thumb: { src: string; alt: string; aspect: '4/5' | '16/9' | '1/1' }
   galeria?: Array<{ src: string; alt: string }>

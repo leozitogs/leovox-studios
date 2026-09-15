@@ -80,8 +80,54 @@ button {
   will-change: transform;
 }
 
-/* Destino provisório do scroll após o manifesto (vira a Cena 3) */
+/* Fim da página enquanto a Cena 4 não existe: um respiro no #222222
+   da tira dos Pilares, nunca um void preto nem um clarão off-white.
+   Quando o Selected Projects entrar, esta seção vira a cena. */
 .scene-spacer {
+  height: 40vh;
+  background: var(--color-gray-dark);
+  /* costura da emenda com o fim do pin dos Pilares: pinta 2px acima
+     da borda contra o sulco de subpixel, padrao das outras emendas */
+  box-shadow: 0 -2px 0 0 var(--color-gray-dark);
+}
+
+/* Um unico papel acompanha o fechamento do Manifesto e os Pilares. */
+.story-paper {
+  position: relative;
+  background: var(--color-offwhite);
+}
+.story-paper-bg {
+  display: none;
+}
+.has-paper-transition .story-paper-bg {
+  display: block;
+  position: sticky;
+  top: 0;
   height: 100vh;
-  background: var(--color-black);
+  margin-bottom: -100vh;
+  background: var(--paper-color, #fbfbfb);
+  pointer-events: none;
+}
+.has-paper-transition .story-paper-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/textures/texture-paper-two.png') center / cover;
+  filter: brightness(0.45);
+  opacity: var(--paper-texture, 0);
+}
+.has-paper-transition .manifesto,
+.has-paper-transition .pilares {
+  background: transparent;
+  box-shadow: none;
+}
+.has-paper-transition .pl-textura {
+  display: none;
+}
+.has-paper-transition .mf-bg {
+  opacity: var(--paper-lines, 1);
+}
+.nav-pill {
+  filter: opacity(var(--paper-menu, 1));
+  transition: filter 0.18s linear;
 }

@@ -6,6 +6,7 @@ import { Loader } from './components/Loader'
 import { destroyLenis, initLenis, stopLenis } from './lib/lenis'
 import { Hero } from './scenes/Hero'
 import { Manifesto } from './scenes/Manifesto'
+import { Pilares } from './scenes/Pilares'
 
 export default function App() {
   // O site inteiro vive na .site: e ela que sobe como folha na
@@ -26,8 +27,12 @@ export default function App() {
         <PersistentCanvas />
         <main>
           <Hero />
-          <Manifesto />
-          {/* Destino provisório do scroll: vira a Cena 3 (Pilares) */}
+          <div className="story-paper">
+            <div className="story-paper-bg" aria-hidden="true" />
+            <Manifesto />
+            <Pilares />
+          </div>
+          {/* Respiro pós-tira: destino provisório até a Cena 4 */}
           <section className="scene-spacer" aria-hidden="true" />
         </main>
         <Header />

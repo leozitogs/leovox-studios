@@ -1,8 +1,7 @@
 // Fonte de dados do Selected Projects (cena 4) e do Case Index (cena 5).
-// As 4 frentes serão nomeadas no briefing da cena Pilares;
-// por ora o tipo fica aberto de propósito.
+// As 3 frentes oficiais são definidas no briefing da cena Pilares.
 
-export type Frente = string
+export type Frente = 'identidade' | 'digital' | 'tecnologia'
 
 export interface Project {
   slug: string

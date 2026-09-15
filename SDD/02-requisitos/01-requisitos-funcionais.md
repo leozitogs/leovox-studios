@@ -12,7 +12,9 @@ Identificadores RF. Cada cena é detalhada em `docs/PIPELINE.md`.
 
 - RF-04 Hero em três estados: abertura em movimento, mergulho da headline por trás do mascote, e encolhimento para o card sobre palco off-white.
 - RF-05 Manifesto em 4 atos, com a luz se apagando e a lâmina de verde entre atos; snap por ato.
-- RF-06 Pilares: as 4 frentes provadas pelo teste dos 5 segundos.
+- RF-06 Pilares: Identidade & Design, Presença Digital e Tecnologia &
+  Automação provadas pelo teste dos 5 segundos. Produção de conteúdo e
+  edição de vídeo aparecem brevemente dentro de Presença Digital.
 - RF-07 Selected Projects: 3 a 4 trabalhos curados; a miniatura vira a transição para o case (FLIP).
 - RF-08 Sobre: making-of do fundador e elenco da equipe.
 - RF-09 Contato: a tagline vira CTA, com fricção mínima.

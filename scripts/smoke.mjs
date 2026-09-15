@@ -1,11 +1,12 @@
 // Smoke de browser: sobe o build em preview, roda o filme inteiro
-// (abertura, hero, os 4 atos do manifesto, reversao) e FALHA se
-// aparecer console.error, excecao, rejeicao de promise ou 404 de
-// asset. E a lei da casa (bug se prova em browser) como portao de CI.
+// (abertura, hero, os 4 atos do manifesto, a tira dos pilares,
+// reversao) e FALHA se aparecer console.error, excecao, rejeicao de
+// promise ou 404 de asset. E a lei da casa (bug se prova em browser)
+// como portao de CI.
 //
 // Uso: npm run build && npm run smoke
 
-/* global document, window, getComputedStyle */
+/* global document, window, getComputedStyle, DOMMatrixReadOnly */
 // (os globals acima vivem dentro dos page.evaluate, executados no browser)
 
 import { spawn } from 'node:child_process'
@@ -25,6 +26,7 @@ function registra(tipo, texto) {
 const preview = spawn('npx', ['vite', 'preview', '--port', String(PORTA), '--strictPort'], {
   stdio: 'ignore',
   detached: false,
+  shell: true,
 })
 
 async function esperaServidor() {
@@ -73,31 +75,108 @@ try {
   )
   if (!heroPronto) registra('fluxo', 'o hero nao ficou pronto apos o reveal')
 
-  // viagem completa pelo manifesto, ida e volta
-  const top = await page.evaluate(() => {
-    const mf = document.querySelector('.manifesto')
-    const sp = mf?.closest('.pin-spacer')
-    return sp ? sp.offsetTop : 0
+  // viagem completa pelo manifesto (pagina longa de scroll natural,
+  // sem pin), ida e volta: cada ato liga quando entra em quadro e a
+  // reversao desliga o que ficou pra tras
+  const mf = await page.evaluate(() => {
+    const el = document.querySelector('.manifesto')
+    if (!el) return null
+    const r = el.getBoundingClientRect()
+    return { top: r.top + window.scrollY, height: r.height, vh: window.innerHeight }
   })
-  if (!top) {
-    registra('fluxo', 'manifesto sem pin (refresh falhou?)')
+  if (!mf || mf.height < mf.vh * 2) {
+    registra('fluxo', 'manifesto nao montou como pagina longa')
   } else {
-    const D = 13.2
-    for (const t of [1.8, 5.4, 9.2, 13.2, 5.4, 0]) {
-      await page.evaluate(({ top, t, D }) => window.scrollTo(0, top + (t / D) * 3600), {
-        top,
-        t,
-        D,
+    let ligadosNoFundo = 0
+    for (const p of [0.15, 0.45, 0.75, 1, 0.45, 0]) {
+      await page.evaluate(
+        ({ mf, p }) => window.scrollTo(0, mf.top + p * (mf.height - window.innerHeight)),
+        { mf, p },
+      )
+      await page.waitForTimeout(PAUSA_ATO)
+
+      const ligados = await page.evaluate(() => document.querySelectorAll('.mf-ato.is-on').length)
+      if (p > 0.1 && ligados === 0) registra('fluxo', `nenhum ato ligado em ${p} da cena`)
+      if (p === 1) ligadosNoFundo = ligados
+    }
+    if (ligadosNoFundo < 4) {
+      registra('fluxo', `no fundo da cena os 4 atos deveriam estar ligados (${ligadosNoFundo})`)
+    }
+    const estado = await page.evaluate(() =>
+      [...document.querySelectorAll('.mf-ato')].map((a) => a.classList.contains('is-on')),
+    )
+    if (!estado[0] || estado[3])
+      registra('fluxo', `reversao suja: atos ligados [${estado.join(', ')}]`)
+  }
+
+  // Cena 3 (Pilares): a chegada apaga a luz do palco, o cartaz
+  // assembla, a travessia desliza o trilho um painel por vez e a
+  // reversao devolve o cartaz limpo
+  const pl = await page.evaluate(() => {
+    const el = document.querySelector('.pilares')
+    if (!el) return null
+    const r = el.getBoundingClientRect()
+    return { top: r.top + window.scrollY, vh: window.innerHeight }
+  })
+  if (!pl) {
+    registra('fluxo', 'a cena pilares nao montou')
+  } else {
+    const vaiPra = async (fator) => {
+      await page.evaluate(({ pl, fator }) => window.scrollTo(0, pl.top + fator * pl.vh), {
+        pl,
+        fator,
       })
       await page.waitForTimeout(PAUSA_ATO)
     }
-    const atoFinal = await page.evaluate(
-      () =>
-        [...document.querySelectorAll('.mf-ato')].findIndex(
-          (a) => getComputedStyle(a).visibility === 'visible',
-        ) + 1,
-    )
-    if (atoFinal !== 1) registra('fluxo', `reversao terminou no ato ${atoFinal}, esperado 1`)
+
+    // t = 2.5 da duracao virtual: beat do cartaz, luz ja caida
+    await vaiPra(1.0)
+    const cartaz = await page.evaluate(() => ({
+      bg: getComputedStyle(document.querySelector('.story-paper-bg')).backgroundColor,
+      on: !!document.querySelector('.pl-abertura.is-on'),
+      quadros: document.querySelectorAll('.pl-quadro').length,
+      capitulos: document.querySelectorAll('.pl-nav-btn').length,
+    }))
+    if (cartaz.bg !== 'rgb(34, 34, 34)') {
+      registra('fluxo', `a luz dos pilares nao caiu pro cinza da tira: ${cartaz.bg}`)
+    }
+    if (!cartaz.on) registra('fluxo', 'o cartaz dos pilares nao assemblou')
+    if (cartaz.quadros !== 3 || cartaz.capitulos !== 3) {
+      registra(
+        'fluxo',
+        `pilares deveria ter 3 quadros e 3 capitulos (${cartaz.quadros}/${cartaz.capitulos})`,
+      )
+    }
+
+    // t = 4.0: cruza o limiar e a travessia leva ao quadro 01
+    await vaiPra(1.6)
+    await page.waitForTimeout(1200)
+    const q1 = await page.evaluate(() => {
+      const track = document.querySelector('.pl-track')
+      const m = new DOMMatrixReadOnly(getComputedStyle(track).transform)
+      return { x: m.e, alvo: -window.innerWidth, on: !!document.querySelector('.pl-quadro.is-on') }
+    })
+    if (Math.abs(q1.x - q1.alvo) > 40) {
+      registra('fluxo', `a travessia nao chegou no quadro 01: x=${Math.round(q1.x)}`)
+    }
+    if (!q1.on) registra('fluxo', 'o quadro 01 nao ligou na chegada')
+
+    // de volta ao cartaz: a travessia reverte e o estado fica limpo
+    await vaiPra(1.0)
+    await page.waitForTimeout(1200)
+    const volta = await page.evaluate(() => {
+      const track = document.querySelector('.pl-track')
+      const m = new DOMMatrixReadOnly(getComputedStyle(track).transform)
+      return {
+        x: m.e,
+        cartaz: !!document.querySelector('.pl-abertura.is-on'),
+        sujo: !!document.querySelector('.pl-quadro.is-on'),
+      }
+    })
+    if (Math.abs(volta.x) > 40) {
+      registra('fluxo', `a reversao nao devolveu o cartaz: x=${Math.round(volta.x)}`)
+    }
+    if (!volta.cartaz || volta.sujo) registra('fluxo', 'reversao suja nos pilares')
   }
 
   // a cena 404 tambem precisa de console limpo
