@@ -11,7 +11,16 @@ import { join, relative } from 'node:path'
 
 const ROOT = process.cwd()
 
-const IGNORED_DIRS = new Set(['node_modules', 'dist', '.git', '.vite', 'docs'])
+const IGNORED_DIRS = new Set([
+  'node_modules',
+  'dist',
+  '.git',
+  '.vite',
+  '.cache',
+  'docs',
+  'playwright-report',
+  'test-results',
+])
 
 // .txt fica fora: os unicos txt do repo sao metadados de terceiros
 // (licencas de fontes do Google etc.), que nao sao conteudo Leovox.

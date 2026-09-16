@@ -1,0 +1,40 @@
+name: Harness completo
+
+on:
+  schedule:
+    - cron: '20 6 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  browsers:
+    name: Chromium, Firefox e WebKit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Build
+        run: npm run build
+
+      - name: Executar harness completo
+        run: npm run test:browser
+
+      - name: Publicar evidências
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-nightly
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

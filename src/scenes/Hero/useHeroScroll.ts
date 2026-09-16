@@ -53,7 +53,11 @@ export function useHeroScroll(
       gsap.set(video, { autoAlpha: 0 })
       gsap.set(mascoteStatic, { autoAlpha: 1 })
       if (navPill) {
-        gsap.set(navPill, { autoAlpha: 1, maxWidth: 760, borderRadius: 16 })
+        gsap.set(navPill, {
+          autoAlpha: 1,
+          maxWidth: 'min(47.5rem, calc(100vw - 2rem))',
+          borderRadius: 16,
+        })
         navPill.classList.add('is-open')
       }
       if (navCta) gsap.set(navCta, { autoAlpha: 1, scale: 1 })
@@ -86,7 +90,15 @@ export function useHeroScroll(
         // O circulo e so da bola: na largada da expansao o raio fecha
         // rapido pra 16px e a barra ja se forma retangular.
         headerTl.to(navPill, { borderRadius: 16, duration: 0.25, ease: 'power2.out' }, 0.45)
-        headerTl.to(navPill, { maxWidth: 760, duration: 0.9, ease: 'power2.inOut' }, 0.45)
+        headerTl.to(
+          navPill,
+          {
+            maxWidth: 'min(47.5rem, calc(100vw - 2rem))',
+            duration: 0.9,
+            ease: 'power2.inOut',
+          },
+          0.45,
+        )
         headerTl.call(() => navPill.classList.add('is-open'), undefined, 0.7)
       }
       if (navCta) {

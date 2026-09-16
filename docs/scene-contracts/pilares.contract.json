@@ -1,0 +1,16 @@
+{
+  "$schema": "../../harness/schemas/scene-contract.schema.json",
+  "id": "pilares",
+  "title": "Três pilares Leovox",
+  "route": "/",
+  "viewports": ["desktop", "mobile", "reduced-motion"],
+  "states": ["abertura", "identidade", "digital", "tecnologia"],
+  "acceptance": [
+    "Existem exatamente três quadros de pilares",
+    "A navegação informa o quadro ativo",
+    "Reverse conclui em um estado de descanso válido",
+    "Produção de conteúdo e edição de vídeo pertencem a Presença Digital",
+    "Reduced motion apresenta os quadros em fluxo vertical"
+  ],
+  "forbidden": ["quarto pilar", "administração de redes e tráfego", "glow", "neon", "estado intermediário após settle"]
+}

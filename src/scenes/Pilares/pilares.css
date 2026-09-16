@@ -60,6 +60,22 @@
   isolation: isolate;
 }
 
+/* Em tablet, o artboard 16:9 vira um cartaz central em vez de tentar
+   cobrir uma tela mais alta e cortar o personagem ou o lockup. */
+@media (min-width: 768px) and (max-width: 1199px) and (max-aspect-ratio: 3 / 2) {
+  .pl-cartaz {
+    width: 135vw;
+  }
+
+  .pl-cartaz::after {
+    display: none;
+  }
+
+  .pl-lockup {
+    left: 20%;
+  }
+}
+
 .pl-cartaz::after {
   content: '';
   position: absolute;
@@ -328,6 +344,8 @@
   color: var(--color-offwhite);
   border: 2px solid rgba(251, 251, 251, 0.38);
   border-radius: 999px;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   padding: 0.5em 0.85em 0.38em;
   transition:
     background-color 0.25s ease,

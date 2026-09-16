@@ -4,10 +4,12 @@ import './styles/tokens.css'
 import './styles/global.css'
 import { captureErrors } from './lib/errors'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { installHarness } from './harness/runtime'
 import App from './App'
 
 // a captura entra antes de tudo: erro de boot tambem e explicitado
 captureErrors()
+installHarness()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

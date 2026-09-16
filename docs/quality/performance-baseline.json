@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-09-16",
+  "environment": "Windows local, Node 22, Vite 8 production build",
+  "mainBundle": {
+    "minifiedBytes": 1045060,
+    "gzipBytes": 294510
+  },
+  "policy": "baseline-observational",
+  "note": "O teto de falha será definido depois de três medições comparáveis no CI. Até lá, aumento exige justificativa no PR."
+}

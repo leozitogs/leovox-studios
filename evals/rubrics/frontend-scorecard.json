@@ -1,0 +1,11 @@
+{
+  "function": 25,
+  "visual": 20,
+  "motion": 20,
+  "accessibility": 10,
+  "performance": 10,
+  "architecture": 5,
+  "brand": 5,
+  "maintainability": 5,
+  "vetoes": ["console-error", "asset-404", "critical-journey", "dirty-reverse", "critical-security"]
+}

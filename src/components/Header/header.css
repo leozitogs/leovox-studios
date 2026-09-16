@@ -139,3 +139,13 @@
 .nav-cta:focus-visible .nav-cta-card-b {
   transform: translateY(0);
 }
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .nav-pill {
+    top: 1rem;
+  }
+
+  .nav-links {
+    gap: clamp(1.25rem, 3vw, 2.2rem);
+  }
+}
