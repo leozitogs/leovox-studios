@@ -18,6 +18,7 @@ import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
 
 const HEADER_TRIGGER = 0.66 // progresso do pin em que o encolhimento começa
+const MANIFESTO_PREVIEW_EVENT = 'leovox:manifesto-preview'
 
 export function useHeroScroll(
   sectionRef: RefObject<HTMLElement | null>,
@@ -43,6 +44,12 @@ export function useHeroScroll(
     const navPill = document.querySelector<HTMLElement>('.nav-pill')
     const navCta = navPill?.querySelector<HTMLElement>('.nav-cta') ?? null
     const navProgress = navPill?.querySelector<HTMLElement>('.nav-progress') ?? null
+    let manifestoPreviewVisible = false
+    const setManifestoPreview = (visible: boolean) => {
+      if (manifestoPreviewVisible === visible) return
+      manifestoPreviewVisible = visible
+      window.dispatchEvent(new CustomEvent(MANIFESTO_PREVIEW_EVENT, { detail: { visible } }))
+    }
 
     // Reduced-motion: direto no estado final, sem pin nem timelines.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -164,10 +171,12 @@ export function useHeroScroll(
           anticipatePin: 1,
           onLeave: () => {
             pastHero = true
+            setManifestoPreview(false)
           },
           onEnterBack: () => {
             pastHero = false
             showPill()
+            setManifestoPreview(true)
           },
           onUpdate: (self) => {
             // O vídeo congela assim que a câmera começa a andar
@@ -202,9 +211,13 @@ export function useHeroScroll(
             // O vídeo roda a cena inteira e só congela quando o card
             // começa a encolher e o palco branco aparece.
             if (self.progress >= HEADER_TRIGGER) {
+              setManifestoPreview(true)
               if (!video.paused) video.pause()
             } else if (video.paused) {
+              setManifestoPreview(false)
               void video.play().catch(() => {})
+            } else {
+              setManifestoPreview(false)
             }
 
             // O header dispara em tempo próprio quando o encolhimento
@@ -277,6 +290,9 @@ export function useHeroScroll(
       )
     }, section)
 
-    return () => ctx.revert()
+    return () => {
+      setManifestoPreview(false)
+      ctx.revert()
+    }
   }, [sectionRef, frameRef, headlineRef, claimRef, grafismRef, videoRef, mascoteStaticRef])
 }

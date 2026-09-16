@@ -27,3 +27,30 @@ test('Manifesto e Pilares aceitam posicionamento determinístico', async ({ app 
   if (test.info().project.name === 'chromium-reduced-motion') expect(pilares.progress).toBeNull()
   else expect(pilares.progress).toBeGreaterThan(0.65)
 })
+
+test('índice do Manifesto acompanha e navega entre os quatro atos', async ({ app }) => {
+  test.skip(
+    !['chromium-desktop', 'chromium-compact'].includes(test.info().project.name),
+    'O índice visual desta rodada começa em tablet e desktop',
+  )
+
+  const nav = app.locator('.mf-act-nav')
+  const buttons = nav.locator('.mf-act-nav-btn')
+  await expect(buttons).toHaveCount(4)
+
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('hero', 0.6))
+  await expect(nav).not.toHaveClass(/is-visible/)
+
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('hero', 0.7))
+  await expect(nav).toHaveClass(/is-visible/)
+
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('manifesto', 0.5))
+  await expect(nav).toHaveClass(/is-visible/)
+  await expect(buttons.nth(2)).toHaveAttribute('aria-current', 'step')
+
+  await buttons.first().evaluate((button) => (button as HTMLButtonElement).click())
+  await expect(buttons.first()).toHaveAttribute('aria-current', 'step', { timeout: 4000 })
+
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.enterScene('pilares'))
+  await expect(nav).not.toHaveClass(/is-visible/)
+})

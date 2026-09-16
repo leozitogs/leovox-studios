@@ -7,6 +7,8 @@
   "states": ["ato-1", "ato-2", "ato-3", "ato-4"],
   "acceptance": [
     "Os quatro atos seguem a ordem semântica do DOM",
+    "O índice lateral contém quatro marcadores e acompanha o ato corrente",
+    "Cada marcador do índice navega para o ato correspondente",
     "Cada ato revela ao entrar e volta ao estado inicial no reverse",
     "A transição para Pilares preserva a textura compartilhada",
     "Reduced motion mantém os quatro atos legíveis"
