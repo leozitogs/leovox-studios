@@ -1,36 +1,43 @@
 /* ============================================================
    Cena 2 · Manifesto
-   A luz se apaga: off-white, cinza, verde chapado, preto.
-   Entradas por ato em CSS puro (classe is-on no ato corrente,
-   aplicada sob a cobertura da lâmina). Elementos .mf-in nascem
-   invisíveis e entram com stagger via --d.
+   O caderno: UMA página longa (4 viewports em fluxo normal, scroll
+   natural, referência getquoti.ai), com as ondas interativas em
+   sticky ao fundo. Entradas por ato em CSS puro (classe is-on
+   quando o ato entra em quadro). Elementos .mf-in nascem invisíveis
+   e entram com stagger via --d.
    ============================================================ */
 
 .manifesto {
   position: relative;
-  height: 100vh;
-  overflow: hidden;
+  overflow: clip;
   background-color: var(--color-offwhite);
   --mf-line: rgba(0, 0, 0, 0.1);
   /* Costura com o Hero: na troca de pin, a folha preta da .site podia
      vazar no sulco de subpixel entre os dois pin-spacers (some em tela
      2K com escala fracionaria). O box-shadow off-white pinta 2px acima
-     da borda, fora do box e imune ao overflow:hidden, sem mexer no
-     layout nem na conta do pin. O manifesto pinta depois do hero, entao
-     a sombra cobre o sulco com off-white nos dois lados. */
+     da borda, fora do box, sem mexer no layout nem na conta do pin.
+     O manifesto pinta depois do hero, entao a sombra cobre o sulco
+     com off-white nos dois lados. */
   box-shadow: 0 -2px 0 0 var(--color-offwhite);
 }
 
-.manifesto .contour-field {
+/* as ondas acompanham a leitura: caixa sticky de um viewport que
+   nao ocupa fluxo (margem negativa devolve a altura) */
+.mf-bg {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  margin-bottom: -100vh;
   z-index: 1;
+  pointer-events: none;
 }
 
-/* ---------- Atos ---------- */
+/* ---------- Atos: blocos de um viewport em fluxo normal ---------- */
 
 .mf-ato {
-  position: absolute;
-  inset: 0;
+  position: relative;
   z-index: 3;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,16 +45,14 @@
   gap: 2.2rem;
   padding: 0 6vw;
   text-align: center;
-  visibility: hidden;
 }
 
 .mf-ato-1 {
-  visibility: visible;
   color: var(--color-black);
 }
 
 .mf-ato-2 {
-  color: var(--color-offwhite);
+  color: var(--color-black);
 }
 
 .mf-ato-3 {
@@ -55,7 +60,7 @@
 }
 
 .mf-ato-4 {
-  color: var(--color-offwhite);
+  color: var(--color-black);
 }
 
 /* ---------- Entradas (disparadas pela classe is-on) ---------- */
@@ -70,9 +75,6 @@
   animation-delay: var(--d, 0s);
 }
 
-.d1 {
-  --d: 0.05s;
-}
 .d2 {
   --d: 0.22s;
 }
@@ -161,22 +163,6 @@
 }
 
 /* ---------- Tipografia ---------- */
-
-.mf-kicker {
-  font-family: var(--font-numeric);
-  font-size: 1rem;
-  letter-spacing: 0.42em;
-}
-
-.mf-ato-1 .mf-kicker,
-.mf-ato-3 .mf-kicker {
-  color: rgba(0, 0, 0, 0.55);
-}
-
-.mf-ato-2 .mf-kicker,
-.mf-ato-4 .mf-kicker {
-  color: rgba(251, 251, 251, 0.55);
-}
 
 .mf-title {
   font-family: var(--font-display);
@@ -288,48 +274,6 @@
   }
 }
 
-/* ---------- Ato 2 · marquee ---------- */
-
-.mf-marquee {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  display: flex;
-  overflow: hidden;
-  z-index: -1;
-  font-family: var(--font-display);
-  font-size: 10.5vw;
-  line-height: 1;
-  white-space: nowrap;
-  color: rgba(251, 251, 251, 0.05);
-  user-select: none;
-}
-
-/* duas faixas fixas, uma acima e uma abaixo: a frase principal vive
-   exatamente no meio delas */
-.mf-marquee-a {
-  top: 11%;
-}
-
-.mf-marquee-b {
-  bottom: 11%;
-}
-
-.mf-marquee span {
-  flex-shrink: 0;
-  animation: mf-marquee 32s linear infinite;
-}
-
-.mf-marquee-b span {
-  animation-direction: reverse;
-}
-
-@keyframes mf-marquee {
-  to {
-    transform: translateX(-100%);
-  }
-}
-
 /* ---------- Ato 3 · a tese em letras que caem com bounce ---------- */
 
 .mf-tese {
@@ -411,10 +355,10 @@
   }
 }
 
-/* IGNORA: sticker branco que carimba */
+/* IGNORA: sticker verde chapado que carimba na página */
 .mf-sticker {
   display: inline-block;
-  background: var(--color-offwhite);
+  background: var(--color-green);
   color: var(--color-black);
   padding: 0.06em 0.16em 0;
   border-radius: 8px;
@@ -434,7 +378,7 @@
   font-family: var(--font-hand);
   font-size: 0.3em;
   letter-spacing: 0.04em;
-  color: var(--color-green-pastel);
+  color: var(--color-green);
   vertical-align: 0.78em;
   margin-right: 0.22em;
   transform: rotate(-4deg);
@@ -450,9 +394,10 @@
   display: inline-block;
 }
 
-/* eco de impressao desalinhada atras de cada letra */
+/* eco de impressao desalinhada atras de cada letra, em serigrafia
+   verde sobre a página */
 .mf-divisao-l .mf-chi {
-  text-shadow: 0.05em 0.05em 0 rgba(251, 251, 251, 0.28);
+  text-shadow: 0.05em 0.05em 0 rgba(25, 188, 0, 0.3);
 }
 
 /* o rabisco de caneta corta DIVISAO em duas passadas rapidas */
@@ -469,7 +414,7 @@
 
 .mf-risco-l path {
   fill: none;
-  stroke: var(--color-green-pastel);
+  stroke: var(--color-green);
   stroke-linecap: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -519,13 +464,13 @@
   }
 }
 
-/* halftone verde fechando os cantos do preto */
+/* halftone fechando os cantos da página */
 .mf-ht {
   position: absolute;
   width: 36vw;
   height: 36vw;
   pointer-events: none;
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.3) 1.4px, transparent 1.5px);
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.18) 1.4px, transparent 1.5px);
   background-size: 11px 11px;
 }
 
@@ -685,7 +630,7 @@
   top: -1.6em;
   font-family: var(--font-hand);
   font-size: clamp(1.05rem, 1.45vw, 1.55rem);
-  color: rgba(251, 251, 251, 0.75);
+  color: rgba(0, 0, 0, 0.65);
   transform: rotate(-6deg);
   opacity: 0;
   pointer-events: none;
@@ -698,7 +643,7 @@
   right: -2.5%;
   top: -1.4rem;
   width: clamp(44px, 4vw, 70px);
-  color: rgba(251, 251, 251, 0.75);
+  color: rgba(0, 0, 0, 0.65);
   transform: rotate(6deg);
   pointer-events: none;
 }
@@ -757,58 +702,12 @@
   }
 }
 
-/* ---------- Lâminas ---------- */
+/* ---------- Reduced motion: a página parada, tudo legível ----------
+   O layout base já é a página longa; aqui só desligamos o canvas das
+   ondas e forçamos o estado final de tudo que anima. */
 
-.mf-blade {
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  transform: translateY(100%);
-  will-change: transform;
-  pointer-events: none;
-}
-
-.mf-blade-green {
-  background: var(--color-green);
-}
-
-.mf-blade-dark {
-  background: var(--color-black);
-}
-
-/* ---------- Reduced motion: os 4 atos empilhados ---------- */
-
-.manifesto.is-static {
-  height: auto;
-  overflow: visible;
-}
-
-.manifesto.is-static .contour-field,
-.manifesto.is-static .mf-blade {
+.manifesto.is-static .mf-bg {
   display: none;
-}
-
-.manifesto.is-static .mf-ato {
-  position: relative;
-  inset: auto;
-  visibility: visible;
-  min-height: 100vh;
-}
-
-.manifesto.is-static .mf-ato-1 {
-  background: var(--color-offwhite);
-}
-
-.manifesto.is-static .mf-ato-2 {
-  background: var(--color-gray-dark);
-}
-
-.manifesto.is-static .mf-ato-3 {
-  background: var(--color-green);
-}
-
-.manifesto.is-static .mf-ato-4 {
-  background: var(--color-gray-dark);
 }
 
 .manifesto.is-static .mf-in,

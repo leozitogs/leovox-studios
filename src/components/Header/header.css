@@ -81,21 +81,61 @@
   opacity: 1 !important;
 }
 
+/* CTA no padrao getquoti, spec final do PO: o botao E a mascara (o
+   card novo nasce da borda de baixo do PROPRIO botao, nao da pill), e
+   o card antigo nao e arremessado: ele recua um passo pra cima,
+   inclina e fica PRA TRAS enquanto o card novo sobe pela frente
+   cobrindo ele. Troca de baralho, nao lancamento. A raiz e so o slot;
+   scale/opacity dela pertencem a coreografia GSAP do hero. */
 .nav-cta {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  margin-right: 0.2rem;
+  border-radius: 12px;
+  background: transparent;
+  opacity: 0; /* entra no fim da coreografia */
+  transform: scale(0.7);
+}
+
+.nav-cta-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-black);
-  background: var(--color-white);
-  padding: 0.8rem 1.5rem;
-  margin-right: 0.2rem;
-  border-radius: 12px;
-  opacity: 0; /* entra no fim da coreografia */
-  transform: scale(0.7);
-  transition: background var(--duration-micro) ease;
+  will-change: transform;
+  transition: transform 0.42s cubic-bezier(0.6, 0, 0.3, 1);
 }
 
-.nav-cta:hover,
-.nav-cta:focus-visible {
+/* o card da frente define o tamanho do slot; no hover ele recua pra
+   tras (z menor), sobe um passo e inclina, sendo coberto pelo novo */
+.nav-cta-card-a {
+  position: relative;
+  z-index: 1;
+  background: var(--color-white);
+}
+
+/* o card novo espera no bolso DENTRO da mascara do botao e sobe pela
+   FRENTE (z maior), cobrindo o antigo */
+.nav-cta-card-b {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   background: var(--color-green);
+  transform: translateY(103%);
+}
+
+.nav-cta:hover .nav-cta-card-a,
+.nav-cta:focus-visible .nav-cta-card-a {
+  transform: translateY(-34%) rotate(-6deg) scale(0.97);
+}
+
+.nav-cta:hover .nav-cta-card-b,
+.nav-cta:focus-visible .nav-cta-card-b {
+  transform: translateY(0);
 }

@@ -36,8 +36,16 @@ export function Header() {
           Serviços
         </a>
       </nav>
+      {/* CTA no padrão getquoti (spec final do PO): o botão é a
+          máscara. No hover o card branco recua pra trás (sobe um
+          passo, inclina) e o card verde nasce da borda de baixo do
+          próprio botão, subindo pela FRENTE e cobrindo o antigo:
+          troca de baralho, não lançamento. CSS puro. */}
       <a className="nav-cta" href="#" onClick={blockPlaceholder}>
-        Contato
+        <span className="nav-cta-card nav-cta-card-a">Contato</span>
+        <span className="nav-cta-card nav-cta-card-b" aria-hidden="true">
+          Contato
+        </span>
       </a>
     </header>
   )

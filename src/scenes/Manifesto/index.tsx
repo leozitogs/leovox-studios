@@ -1,9 +1,10 @@
 // Cena 2 · Manifesto · A Leovox fala.
-// Continuação direta do palco off-white onde o hero terminou. Quatro
-// atos com a luz se apagando. A coreografia vive em useManifestoScroll;
-// as entradas de cada ato são CSS puro disparado pela classe is-on.
-// Atos 3 e 4 estão em rebriefing com o PO: a composição atual é
-// provisória e segura o lugar na sequência.
+// O caderno (direção do PO, 2026-07-05): UMA página longa de scroll
+// natural, como no getquoti.ai. Os 4 atos empilham em fluxo normal
+// (um viewport cada) e as ondas interativas ficam em sticky atrás de
+// tudo. As entradas de cada ato são CSS puro disparado pela classe
+// is-on quando o ato entra em quadro. O fio verde que costurava a
+// página saiu de cena por direção do PO em 2026-08-15.
 
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { ContourField } from '../../components/ContourField'
@@ -127,11 +128,15 @@ export function Manifesto() {
 
   return (
     <section ref={sectionRef} className="manifesto" aria-label="Manifesto Leovox">
-      <ContourField />
+      {/* as ondas do caderno em sticky: um canvas de um viewport que
+          acompanha a leitura da página inteira (canvas do tamanho da
+          seção seria pesado demais) */}
+      <div className="mf-bg" aria-hidden="true">
+        <ContourField />
+      </div>
 
-      {/* Ato 1 · Recusa · off-white, continuando o palco do hero */}
+      {/* Ato 1 · Recusa · a primeira linha do caderno */}
       <div className="mf-ato mf-ato-1">
-        <p className="mf-kicker mf-in d1">MANIFESTO / ATO 1</p>
         <h2 className="mf-title">
           <span className="mf-title-main mf-in d2">A LEOVOX NASCEU DE</span>{' '}
           <span className="mf-nowrap">
@@ -155,28 +160,18 @@ export function Manifesto() {
         </ul>
       </div>
 
-      {/* Ato 2 · Diagnóstico · cinza */}
+      {/* Ato 2 · Diagnóstico */}
       <div className="mf-ato mf-ato-2">
-        <div className="mf-marquee mf-marquee-a" aria-hidden="true">
-          <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
-          <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
-        </div>
-        <div className="mf-marquee mf-marquee-b" aria-hidden="true">
-          <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
-          <span>MARCA AUTÊNTICA · EXECUÇÃO TÉCNICA · RESULTADO REAL ·&nbsp;</span>
-        </div>
-        <p className="mf-kicker mf-in d1">MANIFESTO / ATO 2</p>
         <h2 className="mf-title">
           <span className="mf-title-main mf-in d2">O MERCADO ERROU</span>{' '}
           <em className="mf-script mf-stamp-in">feio.</em>
         </h2>
       </div>
 
-      {/* Ato 3 · Solução · verde chapado, letras em queda com bounce */}
+      {/* Ato 3 · Solução · a tese em letras que caem com bounce */}
       <div className="mf-ato mf-ato-3">
         <div className="mf-ht mf-ht-a" aria-hidden="true" />
         <div className="mf-ht mf-ht-b" aria-hidden="true" />
-        <p className="mf-kicker mf-in d1">MANIFESTO / ATO 3</p>
         <h2
           className="mf-tese"
           aria-label="A LEOVOX É O QUE ACONTECE QUANDO VOCÊ IGNORA ESSA DIVISÃO."
@@ -211,7 +206,6 @@ export function Manifesto() {
       {/* Ato 4 · Assinatura · centrado como os demais; o wordmark
           reage ao cursor (fisica em useEffect acima) */}
       <div className="mf-ato mf-ato-4">
-        <p className="mf-kicker mf-in d1">MANIFESTO / ATO 4</p>
         <h2 className="mf-aqui">
           <span className="mf-aq mf-aq-t1">AQUI SE FAZ COM</span>{' '}
           <span className="mf-chip mf-chip-1">INTENÇÃO</span>
@@ -248,10 +242,6 @@ export function Manifesto() {
         </div>
         <p className="mf-selo">ISSO É LEOVOX.</p>
       </div>
-
-      {/* Lâminas de transição entre atos */}
-      <div className="mf-blade mf-blade-green" aria-hidden="true" />
-      <div className="mf-blade mf-blade-dark" aria-hidden="true" />
     </section>
   )
 }

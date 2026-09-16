@@ -14,7 +14,7 @@ com mecânica própria, e nenhuma transição parece reload. Este documento
 | 1 | Hero · A primeira tomada | Abre já em movimento, sem loading | Entregue |
 | 2 | Manifesto · A recusa em 4 atos | O coração verbal, a luz se apagando | Entregue |
 | A | Abertura · LVX vira LEOVOX | Loader com progresso real e folha de entrada | Em revisão |
-| 3 | Pilares · As 4 frentes | Um ecossistema. Não quatro serviços. | Roteirizada |
+| 3 | Pilares · As 3 frentes | Um ecossistema. Três frentes integradas. | Em produção |
 | 4 | Selected Projects · O trailer | 3 a 4 trabalhos curados pra seduzir | Roteirizada |
 | 5 | Case Index · O acervo | Lista completa com filtros | Em revisão (ver nota) |
 | 6 | Case Study · O close-up | Página dedicada de cada projeto | Roteirizada |
@@ -83,10 +83,15 @@ Texto canônico (zero paráfrase, revisado em briefing):
 A atribuição de luz por ato sai do protótipo aprovado, não do roteiro
 antigo. Mecânica de scroll e participação do mascote idem.
 
-## Cena 3 · Pilares · As 4 frentes · ROTEIRIZADA
+Atualização de 2026-08-15: o fio verde que costurava a página (a
+serpentina de 2026-07-27) saiu de cena por direção do PO, junto com a
+matemática dele. A página segue como caderno longo de scroll natural,
+com as entradas por ato intactas.
+
+## Cena 3 · Pilares · As 3 frentes · EM PRODUÇÃO
 
 Prova que a Leovox entrega o ecossistema inteiro, não serviços soltos.
-Headline: "Um ecossistema. Não quatro serviços."
+Headline de apoio: "Um ecossistema. Três frentes integradas."
 
 Nota de produção sobre a dúvida de texto: portfólio não é leitura, é
 demonstração. A regra desta cena vai ser o teste dos 5 segundos: cada
@@ -96,6 +101,36 @@ mostrar. Texto de apoio: no máximo uma linha por frente, e se a
 evidência visual for boa o suficiente, nem isso. O briefing da cena
 decide o formato (painéis, cartões ou faixas), mas o princípio está
 travado: explicação perde pra prova.
+
+Atualização de produção (2026-08-15): a cena entrou em build. A
+abertura é o cartaz PILARES DA LEOVOX aprovado pelo PO (palco #222222
+com papel amassado, grafismos half-style sangrando pela esquerda,
+lockup tipográfico e o personagem de contorno verde). Na chegada, a
+luz cai do off-white em que o manifesto termina pro #222222 da tira,
+scrubada pelo scroll; depois do cartaz o scroll vira travessia
+horizontal por gatilho pelos 3 quadros das frentes, com navegação por
+capítulos 01 a 03 (mecânica do briefing v3, "Três quadros, um
+traço"). Os quadros estão em placeholder aprovado (número, frente e
+palavra-âncora); linha-cara, evidências, poses do mascote e emendas de
+papel rasgado entram conforme a produção de assets do PO. A headline
+"Um ecossistema. Três frentes integradas." vive por ora como carimbo
+persistente durante os quadros; o posicionamento monumental dela é
+decisão pendente do PO.
+
+Atualizacao de transicao (2026-09-14): Manifesto e Pilares compartilham
+um fundo sticky de papel. A textura aparece no fechamento do ato 4,
+a luz cai com o scroll. O personagem entra de baixo e da direita com
+ajuste de escala e rotacao; o titulo desliza da esquerda e os grafismos
+chegam pelas bordas em ritmos distintos. Os percursos sao reversiveis
+e terminam no cartaz aprovado, sem fade dos elementos. O menu desaparece gradualmente e volta nos quadros. A
+abertura nao assenta o scroll automaticamente; a travessia dos tres
+quadros mantem sua mecanica. Reduced-motion preserva a leitura estatica.
+
+Atualização de escopo (2026-09-14): a cena passa a apresentar somente
+Identidade & Design, Presença Digital e
+Tecnologia & Automação. Produção de conteúdo e edição de vídeo entram
+como entregas complementares de Presença Digital, com menção breve e
+sem criar uma quarta frente.
 
 ## Cena 4 · Selected Projects · O trailer · ROTEIRIZADA
 
@@ -108,7 +143,7 @@ o plano-sequência mesmo na troca de rota.
 
 ## Cena 5 · Case Index · O acervo · EM REVISÃO
 
-Roteiro original: lista completa e navegável com filtros pelas 4
+Roteiro original: lista completa e navegável com filtros pelas 3
 frentes. Risco identificado em produção: peso, navegação confusa e
 utilidade questionável; ninguém contrata depois de auditar o histórico
 completo de alguém, contrata depois de ver 3 trabalhos fortes e uma
