@@ -37,14 +37,17 @@ export default defineConfig({
     },
     {
       name: 'chromium-compact',
+      testIgnore: /responsive\.spec\.ts/,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
     },
     {
       name: 'chromium-mobile',
+      testIgnore: /responsive\.spec\.ts/,
       use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } },
     },
     {
       name: 'chromium-reduced-motion',
+      testIgnore: /responsive\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 900 },
@@ -53,10 +56,12 @@ export default defineConfig({
     },
     {
       name: 'firefox-desktop',
+      testIgnore: /responsive\.spec\.ts/,
       use: { ...devices['Desktop Firefox'], viewport: { width: 1440, height: 900 } },
     },
     {
       name: 'webkit-mobile',
+      testIgnore: /responsive\.spec\.ts/,
       use: { ...devices['iPhone 13'], viewport: { width: 390, height: 844 } },
     },
   ],

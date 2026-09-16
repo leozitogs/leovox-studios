@@ -15,6 +15,15 @@ html {
   scroll-behavior: auto; /* o Lenis assume o scroll */
 }
 
+/* A direção de arte nasceu em 1920 x 1080. Acima dessa base, o menor
+   eixo escala os limites em rem sem deixar ultrawide inflar pelo eixo
+   horizontal. Em 4K, 1rem vira 32px e a proporção física é preservada. */
+@media (min-width: 1920px) and (min-height: 900px) {
+  html {
+    font-size: clamp(16px, min(0.833333vw, 1.481481vh), 40px);
+  }
+}
+
 body {
   background: var(--color-black);
   color: var(--color-offwhite);
