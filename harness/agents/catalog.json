@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "sourceDirectory": ".claude/agents",
+  "policy": {
+    "alwaysReviewers": ["leovox-brand-guard", "leovox-a11y-auditor"],
+    "catalogOwners": ["leovox-conductor", "leovox-frontend-architect"],
+    "conductorDomainThreshold": 3,
+    "handoffFields": ["summary", "evidence", "risks", "followUps"]
+  },
+  "agents": [
+    {
+      "id": "leovox-conductor",
+      "file": ".claude/agents/leovox-conductor.md",
+      "phase": "orchestrate",
+      "writesProduction": false,
+      "domains": ["orchestration", "harness"],
+      "pathPatterns": ["^(AGENTS|CLAUDE)\\.md$", "^harness/agents/", "^docs/harness/"],
+      "keywords": ["multidisciplinar", "orquestrar", "harness", "pipeline", "arquitetura"],
+      "requires": [],
+      "evidence": ["plano de execução", "mapa de especialistas", "síntese dos handoffs"]
+    },
+    {
+      "id": "leovox-art-director",
+      "file": ".claude/agents/leovox-art-director.md",
+      "phase": "plan",
+      "writesProduction": false,
+      "domains": ["visual"],
+      "pathPatterns": ["^docs/product-specs/", "^docs/references/", "^docs/scene-contracts/"],
+      "keywords": [
+        "cena nova",
+        "referência",
+        "direção de arte",
+        "layout",
+        "visual",
+        "pixel perfect"
+      ],
+      "requires": [],
+      "evidence": ["visual spec", "estados e hierarquia", "reduced motion"]
+    },
+    {
+      "id": "leovox-asset-curator",
+      "file": ".claude/agents/leovox-asset-curator.md",
+      "phase": "plan",
+      "writesProduction": false,
+      "domains": ["assets"],
+      "pathPatterns": ["^public/", "^src/.+(asset|image|texture|font)"],
+      "keywords": ["asset", "imagem", "textura", "fonte", "mascote", "ícone"],
+      "requires": [],
+      "evidence": ["paths confirmados", "variantes e fallback", "licença ou origem"]
+    },
+    {
+      "id": "leovox-frontend-architect",
+      "file": ".claude/agents/leovox-frontend-architect.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["frontend"],
+      "pathPatterns": [
+        "^src/(components|scenes|hooks|data)/",
+        "^src/App\\.tsx$",
+        "^src/main\\.tsx$",
+        "^harness/browser/",
+        "^playwright\\.config\\.ts$"
+      ],
+      "keywords": [
+        "react",
+        "typescript",
+        "componente",
+        "layout",
+        "responsivo",
+        "refatorar",
+        "playwright"
+      ],
+      "requires": [],
+      "evidence": ["diff estrutural", "typecheck", "teste funcional"]
+    },
+    {
+      "id": "leovox-animation-engineer",
+      "file": ".claude/agents/leovox-animation-engineer.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["motion"],
+      "pathPatterns": ["^src/(components|scenes)/.+(use|motion|animation|\\.css$)"],
+      "keywords": ["animação", "timeline", "gsap", "hover", "microinteração", "entrada", "gatilho"],
+      "requires": ["leovox-frontend-architect"],
+      "evidence": ["estado inicial e final", "interrupção", "cleanup"]
+    },
+    {
+      "id": "leovox-scroll-storyteller",
+      "file": ".claude/agents/leovox-scroll-storyteller.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["scroll", "motion"],
+      "pathPatterns": ["^src/scenes/.+/use.+Scroll\\.ts$", "^src/lib/(gsap|lenis)\\.ts$"],
+      "keywords": ["scroll", "scrub", "pin", "scrolltrigger", "reverse", "snap", "gravidade"],
+      "requires": ["leovox-animation-engineer"],
+      "evidence": ["ida e volta", "ritmos de scroll", "estado por progresso"]
+    },
+    {
+      "id": "leovox-transitions-engineer",
+      "file": ".claude/agents/leovox-transitions-engineer.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["transition", "routing"],
+      "pathPatterns": ["^src/lib/(lenis|barba|reveal)\\.ts$", "^src/scenes/.+/use.+Scroll\\.ts$"],
+      "keywords": ["transição", "lenis", "barba", "flip", "navegação", "plano sequência"],
+      "requires": ["leovox-scroll-storyteller"],
+      "evidence": ["continuidade visual", "entrada e saída", "navegação sem reload"]
+    },
+    {
+      "id": "leovox-3d-engineer",
+      "file": ".claude/agents/leovox-3d-engineer.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["3d", "performance"],
+      "pathPatterns": ["^src/canvas/", "^public/models/"],
+      "keywords": ["3d", "r3f", "three", "glb", "canvas", "totem", "webgl"],
+      "requires": ["leovox-asset-curator"],
+      "evidence": ["fallback", "context loss", "custo de render"]
+    },
+    {
+      "id": "leovox-shader-artist",
+      "file": ".claude/agents/leovox-shader-artist.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["shader", "3d"],
+      "pathPatterns": ["^src/.+\\.(glsl|vert|frag)$", "^src/canvas/"],
+      "keywords": ["shader", "glsl", "fragment", "vertex", "halftone", "serigrafia"],
+      "requires": ["leovox-3d-engineer"],
+      "evidence": ["comparação visual", "fallback", "tempo de frame"]
+    },
+    {
+      "id": "leovox-video-pipeline",
+      "file": ".claude/agents/leovox-video-pipeline.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["video", "assets", "performance"],
+      "pathPatterns": ["^public/animation/", "^public/.+\\.(webm|mp4|mov)$"],
+      "keywords": ["vídeo", "webm", "alpha", "chroma", "ffmpeg", "mascote animado"],
+      "requires": ["leovox-asset-curator"],
+      "evidence": ["codec e fps", "alpha validado", "peso final"]
+    },
+    {
+      "id": "leovox-case-builder",
+      "file": ".claude/agents/leovox-case-builder.md",
+      "phase": "build",
+      "writesProduction": true,
+      "domains": ["cases", "frontend"],
+      "pathPatterns": [
+        "^src/scenes/(SelectedProjects|CaseIndex|CaseStudy)/",
+        "^src/data/projects\\.ts$"
+      ],
+      "keywords": ["case", "projeto", "selected projects", "case study", "portfólio"],
+      "requires": ["leovox-frontend-architect"],
+      "evidence": ["dados do projeto", "transição do case", "estado de hover"]
+    },
+    {
+      "id": "leovox-ux-microcopy",
+      "file": ".claude/agents/leovox-ux-microcopy.md",
+      "phase": "polish",
+      "writesProduction": true,
+      "domains": ["copy", "brand"],
+      "pathPatterns": ["^src/(components|scenes|notfound)/.+\\.tsx$", "^src/data/"],
+      "keywords": ["copy", "microcopy", "cta", "headline", "erro", "tooltip", "texto"],
+      "requires": [],
+      "evidence": ["copy final", "contexto e estado", "checagem de travessão"]
+    },
+    {
+      "id": "leovox-brand-guard",
+      "file": ".claude/agents/leovox-brand-guard.md",
+      "phase": "evaluate",
+      "writesProduction": false,
+      "domains": ["brand"],
+      "pathPatterns": ["^src/", "^public/", "^docs/scene-contracts/"],
+      "keywords": ["marca", "visual", "copy", "cor", "tipografia"],
+      "requires": [],
+      "evidence": ["violações por severidade", "arquivos e linhas", "veredito"]
+    },
+    {
+      "id": "leovox-a11y-auditor",
+      "file": ".claude/agents/leovox-a11y-auditor.md",
+      "phase": "evaluate",
+      "writesProduction": false,
+      "domains": ["accessibility"],
+      "pathPatterns": ["^src/", "^harness/browser/"],
+      "keywords": ["acessibilidade", "wcag", "teclado", "aria", "foco", "reduced motion"],
+      "requires": [],
+      "evidence": ["teclado", "semântica", "reduced motion", "limites da automação"]
+    },
+    {
+      "id": "leovox-performance-watchdog",
+      "file": ".claude/agents/leovox-performance-watchdog.md",
+      "phase": "evaluate",
+      "writesProduction": false,
+      "domains": ["performance"],
+      "pathPatterns": [
+        "^src/canvas/",
+        "^public/",
+        "^package(-lock)?\\.json$",
+        "^vite\\.config\\.ts$",
+        "^docs/quality/"
+      ],
+      "keywords": ["performance", "bundle", "fps", "peso", "lcp", "inp", "cls", "memória"],
+      "requires": [],
+      "evidence": ["baseline comparável", "delta", "orçamento e recomendação"]
+    }
+  ]
+}

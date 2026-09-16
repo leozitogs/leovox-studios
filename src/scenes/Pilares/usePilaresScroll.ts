@@ -96,17 +96,19 @@ export function usePilaresScroll(sectionRef: RefObject<HTMLElement | null>): voi
     const playSlide = (from: number, to: number) => {
       tlFrom = from
       tlTo = to
+      const finishSlide = () => {
+        tl = null
+        const pending = desiredBeat(current, lastT)
+        if (pending !== current) {
+          playSlide(current, pending)
+          return
+        }
+        window.clearTimeout(idle)
+        idle = window.setTimeout(settle, 80)
+      }
       tl = gsap.timeline({
-        onComplete: () => {
-          tl = null
-          window.clearTimeout(idle)
-          idle = window.setTimeout(settle, 80)
-        },
-        onReverseComplete: () => {
-          tl = null
-          window.clearTimeout(idle)
-          idle = window.setTimeout(settle, 80)
-        },
+        onComplete: finishSlide,
+        onReverseComplete: finishSlide,
       })
       tl.fromTo(
         track,
