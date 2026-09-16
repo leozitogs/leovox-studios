@@ -60,7 +60,7 @@
   display: inline-block;
   font-family: var(--font-signature);
   font-weight: 400;
-  font-size: 11vw; /* monumental, sangrando nas bordas como no protótipo */
+  font-size: min(11vw, 19.555556vh); /* monumental sem inflar em ultrawide */
   line-height: 1;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -128,7 +128,7 @@
   top: 9vh;
   left: 50%;
   transform: translateX(-50%);
-  width: min(62vw, 1180px);
+  width: min(62vw, 73.75rem);
   pointer-events: none;
 }
 
@@ -138,6 +138,7 @@
   left: 50%;
   transform: translateX(-50%);
   height: 94vh;
+  max-width: none;
   pointer-events: none;
 }
 
@@ -225,7 +226,7 @@
   position: relative;
   display: block;
   font-family: var(--font-display);
-  font-size: 11vw; /* Anton, escala do mock */
+  font-size: min(11vw, 19.555556vh); /* Anton, escala do mock */
   letter-spacing: -0.015em; /* fecha levemente o espaçamento natural do corpo grande */
   line-height: 0.95;
   color: var(--color-offwhite);
@@ -276,10 +277,10 @@
 .claim-sonhos {
   position: absolute;
   left: 50%;
-  top: 5.9vw;
+  top: min(5.9vw, 10.488889vh);
   transform: translateX(-50%) rotate(-4deg);
   font-family: var(--font-seal);
-  font-size: 7.3vw;
+  font-size: min(7.3vw, 12.977778vh);
   line-height: 1;
   color: var(--color-green);
   white-space: nowrap;

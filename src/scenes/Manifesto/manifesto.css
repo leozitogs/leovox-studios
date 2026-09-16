@@ -749,3 +749,18 @@
 .manifesto.is-static .mf-enc-arrow path {
   stroke-dashoffset: 0;
 }
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .mf-ato {
+    gap: clamp(1.4rem, 2.8vh, 2.2rem);
+    padding-inline: clamp(2rem, 6vw, 4.5rem);
+  }
+
+  .mf-recusas {
+    max-width: 28ch;
+  }
+
+  .mf-encosta {
+    right: 0;
+  }
+}
