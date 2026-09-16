@@ -19,7 +19,12 @@ export function Pilares() {
   usePilaresScroll(sectionRef)
 
   return (
-    <section ref={sectionRef} className="pilares" aria-label="Pilares da Leovox">
+    <section
+      ref={sectionRef}
+      className="pilares"
+      aria-label="Pilares da Leovox"
+      data-harness-scene="pilares"
+    >
       {/* o papel entra junto com a luz caindo: opacidade e cor de fundo
           sao funcao pura do progresso, pintadas pelo hook */}
       <div className="pl-textura" aria-hidden="true" />

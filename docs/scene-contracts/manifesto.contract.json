@@ -1,0 +1,15 @@
+{
+  "$schema": "../../harness/schemas/scene-contract.schema.json",
+  "id": "manifesto",
+  "title": "Manifesto Leovox",
+  "route": "/",
+  "viewports": ["desktop", "mobile", "reduced-motion"],
+  "states": ["ato-1", "ato-2", "ato-3", "ato-4"],
+  "acceptance": [
+    "Os quatro atos seguem a ordem semântica do DOM",
+    "Cada ato revela ao entrar e volta ao estado inicial no reverse",
+    "A transição para Pilares preserva a textura compartilhada",
+    "Reduced motion mantém os quatro atos legíveis"
+  ],
+  "forbidden": ["travessao", "fade branco entre cenas", "conteudo focavel fora do estado ativo"]
+}

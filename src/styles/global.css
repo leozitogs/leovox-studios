@@ -58,6 +58,14 @@ button {
   pointer-events: none;
 }
 
+/* O Canvas do R3F recebe estilo próprio e pode voltar a participar do
+   hit-test em alguns browsers. O totem é decorativo; nenhum pixel dele
+   pode bloquear controles DOM das cenas. */
+.persistent-canvas,
+.persistent-canvas * {
+  pointer-events: none !important;
+}
+
 /* A folha do site: o loader a sobe de baixo na abertura; fora da
    abertura ela e um wrapper neutro */
 .site {

@@ -37,7 +37,7 @@ npm run validate
 ```
 
 Roda em sequência: checagem de travessão, typecheck, lint, formatação,
-testes (marca, matemática das cenas, existência de assets) e build.
+contratos de cena, testes (marca, matemática das cenas, existência de assets) e build.
 O CI repete tudo em cada push e PR, e ainda roda o smoke de browser:
 
 ```
@@ -52,6 +52,11 @@ erros mostra qualquer captura na tela, sem abrir o devtools; em
 produção, um ErrorBoundary segura a queda na voz da marca. Scripts
 individuais: `lint`, `format`, `format:check`, `typecheck`, `test`,
 `check:travessao`, `smoke`.
+
+O harness reproduz cenas e coleta evidências em browser. O fluxo,
+os comandos e a governança de baselines vivem em
+`docs/harness/README.md`. Mudança visual, responsiva ou de movimento
+também roda `npm run test:browser:chromium` antes da entrega.
 
 ## Regras de marca no código
 
@@ -100,6 +105,9 @@ individuais: `lint`, `format`, `format:check`, `typecheck`, `test`,
 | ------------------ | ------------------------------------------------------------------------ |
 | `docs/PIPELINE.md` | O roteiro do filme: as cenas, o estado de cada uma e como são produzidas |
 | `CONTRIBUTING.md`  | Este documento: como o trabalho acontece                                 |
+| `AGENTS.md`        | Mapa curto para agentes e comandos obrigatórios                          |
+| `ARCHITECTURE.md`  | Limites e dependências do sistema                                        |
+| `docs/harness/`    | Contratos de engenharia, avaliação e evidências                          |
 
 A identidade completa da Leovox (brand manual, tom de voz, mascote,
 direção criativa) vive fora deste repositório. Este código é público

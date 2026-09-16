@@ -127,7 +127,12 @@ export function Manifesto() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="manifesto" aria-label="Manifesto Leovox">
+    <section
+      ref={sectionRef}
+      className="manifesto"
+      aria-label="Manifesto Leovox"
+      data-harness-scene="manifesto"
+    >
       {/* as ondas do caderno em sticky: um canvas de um viewport que
           acompanha a leitura da página inteira (canvas do tamanho da
           seção seria pesado demais) */}

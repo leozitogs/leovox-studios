@@ -147,6 +147,7 @@ export function Hero() {
     <section
       ref={sectionRef}
       className="hero is-entering"
+      data-harness-scene="hero"
       aria-label="Leovox Studios. Desenvolva seus sonhos."
     >
       {/* Palco: aparece quando o frame encolhe pro card */}

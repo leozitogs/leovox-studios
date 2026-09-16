@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la public/animation/ && echo \"---MOTION---\" && ls -la \"Motion\" 2>/dev/null; ls -la ../Motion 2>/dev/null; find . -iname \"*.mov\" -o -iname \"mascote-hero*\" 2>/dev/null | head -40)",
+      "Bash(npm run *)",
+      "Bash(npx vitest *)"
+    ]
+  }
+}
