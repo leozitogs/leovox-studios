@@ -44,6 +44,10 @@ for (const viewport of VIEWPORTS) {
     ).toBeGreaterThan(viewport.width * 0.5)
 
     await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.4))
+    await expect(app.locator('.pl-project--identity')).toHaveClass(/is-on/)
+    await expect(app.locator('.pl-project--identity .pl-project-intro')).toBeInViewport()
+    await expect(app.locator('.pl-identity-hero')).toBeInViewport()
+
     const navBoxes = await app.locator('.pl-nav-btn').evaluateAll((buttons) =>
       buttons.map((button) => {
         const rect = button.getBoundingClientRect()

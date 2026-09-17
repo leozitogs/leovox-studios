@@ -15,6 +15,38 @@ test('Pilares contém exatamente três frentes oficiais', async ({ app }) => {
   await expect(app.locator('.pl-nav-btn')).toHaveCount(3)
 })
 
+test('Pilares prepara três trabalhos reais sem fingir assets publicados', async ({ app }) => {
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.4))
+
+  const projects = app.locator('.pl-project')
+  await expect(projects).toHaveCount(3)
+  expect(
+    await projects.evaluateAll((items) =>
+      items.map((item) => item.getAttribute('data-project-placeholder')),
+    ),
+  ).toEqual(['true', 'true', 'true'])
+  await expect(app.locator('.pl-asset[data-asset-request]')).toHaveCount(10)
+  await expect(app.locator('.pl-asset.is-placeholder figcaption').first()).toContainText(
+    'ASSET SOLICITADO',
+  )
+
+  if (test.info().project.name === 'chromium-mobile') return
+
+  const identityToggle = app.locator('.pl-view-switch')
+  await identityToggle.click()
+  await expect(identityToggle).toHaveAttribute('aria-pressed', 'true')
+
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.63))
+  const landscapeFormat = app.locator('.pl-format-controls button').nth(2)
+  await landscapeFormat.click()
+  await expect(landscapeFormat).toHaveAttribute('aria-pressed', 'true')
+
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.84))
+  const runFlow = app.locator('.pl-run-flow')
+  await runFlow.click()
+  await expect(runFlow).toHaveAttribute('aria-pressed', 'true')
+})
+
 test('Manifesto e Pilares aceitam posicionamento determinístico', async ({ app }) => {
   const manifesto = await app.evaluate(() =>
     window.__LEOVOX_HARNESS__!.setProgress('manifesto', 0.5),

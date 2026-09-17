@@ -7,6 +7,8 @@
   "states": ["abertura", "identidade", "digital", "tecnologia"],
   "acceptance": [
     "Existem exatamente três quadros de pilares",
+    "Cada quadro contém um preview de projeto e slots nomeados para os assets reais",
+    "Os placeholders são identificados como solicitações de asset e não como cases publicados",
     "A navegação informa o quadro ativo",
     "Reverse conclui em um estado de descanso válido",
     "Produção de conteúdo e edição de vídeo pertencem a Presença Digital",

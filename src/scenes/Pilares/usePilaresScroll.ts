@@ -74,6 +74,13 @@ export function usePilaresScroll(sectionRef: RefObject<HTMLElement | null>): voi
         // fora de quadro nada recebe foco nem leitura
         if (i === k) el.removeAttribute('inert')
         else el.setAttribute('inert', '')
+        el.querySelectorAll<HTMLVideoElement>('.pl-asset video').forEach((video) => {
+          if (i === k) void video.play().catch(() => {})
+          else {
+            video.pause()
+            video.currentTime = 0
+          }
+        })
       })
       navBtns.forEach((btn, i) => {
         btn.classList.toggle('is-ativo', i + 1 === k)

@@ -110,9 +110,11 @@ luz cai do off-white em que o manifesto termina pro #222222 da tira,
 scrubada pelo scroll; depois do cartaz o scroll vira travessia
 horizontal por gatilho pelos 3 quadros das frentes, com navegação por
 capítulos 01 a 03 (mecânica do briefing v3, "Três quadros, um
-traço"). Os quadros estão em placeholder aprovado (número, frente e
-palavra-âncora); linha-cara, evidências, poses do mascote e emendas de
-papel rasgado entram conforme a produção de assets do PO. A headline
+traço"). Os quadros apresentam previews editoriais de trabalhos reais,
+um por pilar, com slots nomeados para key visual, aplicações, formatos
+de conteúdo, vídeo e interfaces. Enquanto os materiais não chegam,
+cada slot declara o asset solicitado e preserva a composição sem
+fingir um case publicado. A headline
 "Um ecossistema. Três frentes integradas." vive por ora como carimbo
 persistente durante os quadros; o posicionamento monumental dela é
 decisão pendente do PO.
