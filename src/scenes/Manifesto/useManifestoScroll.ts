@@ -22,7 +22,7 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     const nav = section.querySelector<HTMLElement>('.mf-act-nav')
     const navButtons = Array.from(section.querySelectorAll<HTMLButtonElement>('.mf-act-nav-btn'))
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    let heroPreviewVisible = false
+    let heroPreviewVisible = document.documentElement.dataset.manifestoNavReady === 'true'
     let manifestoVisible = false
 
     if (reducedMotion) section.classList.add('is-static')
@@ -34,7 +34,8 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       nav.setAttribute('aria-hidden', String(!visible))
     }
 
-    const syncVisibility = () => setVisible(heroPreviewVisible || manifestoVisible)
+    const syncVisibility = () =>
+      setVisible(reducedMotion ? manifestoVisible : heroPreviewVisible && manifestoVisible)
 
     const onHeroPreview = (event: Event) => {
       heroPreviewVisible = (event as CustomEvent<{ visible: boolean }>).detail.visible

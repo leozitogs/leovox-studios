@@ -70,11 +70,15 @@ test('índice do Manifesto acompanha e navega entre os quatro atos', async ({ ap
   const buttons = nav.locator('.mf-act-nav-btn')
   await expect(buttons).toHaveCount(4)
 
-  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('hero', 0.6))
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('hero', 0.1))
   await expect(nav).not.toHaveClass(/is-visible/)
 
-  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('hero', 0.7))
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('hero', 0.82))
+  await expect(nav).not.toHaveClass(/is-visible/)
+
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('hero', 0.94))
   await expect(nav).toHaveClass(/is-visible/)
+  await expect(buttons.first()).toHaveAttribute('aria-current', 'step')
 
   await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('manifesto', 0.5))
   await expect(nav).toHaveClass(/is-visible/)

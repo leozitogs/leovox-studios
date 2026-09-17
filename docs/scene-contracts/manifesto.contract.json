@@ -8,6 +8,7 @@
   "acceptance": [
     "Os quatro atos seguem a ordem semântica do DOM",
     "O índice lateral contém quatro marcadores e acompanha o ato corrente",
+    "O índice permanece oculto até o Hero alcançar o enquadramento final de card",
     "Cada marcador do índice navega para o ato correspondente",
     "Cada ato revela ao entrar e volta ao estado inicial no reverse",
     "A transição para Pilares preserva a textura compartilhada",

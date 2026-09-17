@@ -140,9 +140,10 @@ export function Manifesto() {
           <button
             key={label}
             type="button"
-            className="mf-act-nav-btn"
+            className={`mf-act-nav-btn ${index === 0 ? 'is-active' : ''}`}
             data-manifesto-act={index + 1}
             aria-label={`Ir para o ato ${index + 1}: ${label}`}
+            aria-current={index === 0 ? 'step' : undefined}
             style={{ '--act-i': index } as CSSProperties}
           />
         ))}

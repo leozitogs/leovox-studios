@@ -18,6 +18,7 @@ import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
 
 const HEADER_TRIGGER = 0.66 // progresso do pin em que o encolhimento começa
+const MANIFESTO_NAV_TRIGGER = 0.92 // card quase no enquadramento final da referência
 const MANIFESTO_PREVIEW_EVENT = 'leovox:manifesto-preview'
 
 export function useHeroScroll(
@@ -48,6 +49,7 @@ export function useHeroScroll(
     const setManifestoPreview = (visible: boolean) => {
       if (manifestoPreviewVisible === visible) return
       manifestoPreviewVisible = visible
+      document.documentElement.dataset.manifestoNavReady = String(visible)
       window.dispatchEvent(new CustomEvent(MANIFESTO_PREVIEW_EVENT, { detail: { visible } }))
     }
 
@@ -171,7 +173,7 @@ export function useHeroScroll(
           anticipatePin: 1,
           onLeave: () => {
             pastHero = true
-            setManifestoPreview(false)
+            setManifestoPreview(true)
           },
           onEnterBack: () => {
             pastHero = false
@@ -210,14 +212,11 @@ export function useHeroScroll(
 
             // O vídeo roda a cena inteira e só congela quando o card
             // começa a encolher e o palco branco aparece.
+            setManifestoPreview(self.progress >= MANIFESTO_NAV_TRIGGER)
             if (self.progress >= HEADER_TRIGGER) {
-              setManifestoPreview(true)
               if (!video.paused) video.pause()
             } else if (video.paused) {
-              setManifestoPreview(false)
               void video.play().catch(() => {})
-            } else {
-              setManifestoPreview(false)
             }
 
             // O header dispara em tempo próprio quando o encolhimento
@@ -292,6 +291,7 @@ export function useHeroScroll(
 
     return () => {
       setManifestoPreview(false)
+      delete document.documentElement.dataset.manifestoNavReady
       ctx.revert()
     }
   }, [sectionRef, frameRef, headlineRef, claimRef, grafismRef, videoRef, mascoteStaticRef])

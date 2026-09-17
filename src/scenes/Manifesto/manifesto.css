@@ -43,7 +43,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  transform: translate(1rem, -50%);
+  transform: translate(1rem, -50%) scale(0.92);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -54,7 +54,7 @@
 }
 
 .mf-act-nav.is-visible {
-  transform: translate(0, -50%);
+  transform: translate(0, -50%) scale(1);
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
