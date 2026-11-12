@@ -207,6 +207,7 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
         // fora de quadro nada recebe foco nem leitura
         const fora = ad > 0.75
         if (fora !== el.hasAttribute('inert')) el.toggleAttribute('inert', fora)
+        if (i === paineis.length - 1) section.classList.toggle('is-fecho-perto', ad < 0.95)
       })
 
       const perto = nearestPanel(x, layout)
@@ -221,12 +222,23 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
       updateMenu()
     }
 
+    // Assentou: a câmera parou num descanso (ou fora do pin). Só então
+    // as fichas dos trabalhos saem de trás dos cartões (is-andando).
+    // Se a rolagem de assentamento for interrompida e a câmera não andar
+    // mais, o settle tenta de novo; depois de duas tentativas sem
+    // movimento, as fichas saem assim mesmo (nunca ficam presas).
+    let tentativas = 0
     const settle = () => {
       section.style.setProperty('--skew', '0')
-      if (!st.isActive) return
-      const target = settleTarget(s, layout)
-      if (target === null) return
+      const target = st.isActive ? settleTarget(s, layout) : null
+      if (target === null || tentativas >= 2) {
+        section.classList.remove('is-andando')
+        return
+      }
+      tentativas += 1
       getLenis()?.scrollTo(st.start + target, { duration: 0.6, easing: easeOutCubic })
+      window.clearTimeout(idle)
+      idle = window.setTimeout(settle, 900)
     }
 
     const st = ScrollTrigger.create({
@@ -240,8 +252,10 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
         layout = measure()
       },
       onUpdate: (self) => {
+        section.classList.add('is-andando')
         render(self.scroll() - self.start)
         section.style.setProperty('--skew', velocitySkew(self.getVelocity()).toFixed(3))
+        tentativas = 0
         window.clearTimeout(idle)
         idle = window.setTimeout(settle, 150)
       },
@@ -332,7 +346,7 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
         '--pl-paper-reveal',
       ])
         section.style.removeProperty(name)
-      section.classList.remove('is-aceso', 'has-trilho')
+      section.classList.remove('is-aceso', 'has-trilho', 'is-andando', 'is-fecho-perto')
       header?.style.removeProperty('--paper-menu')
       if (header) header.inert = false
     }

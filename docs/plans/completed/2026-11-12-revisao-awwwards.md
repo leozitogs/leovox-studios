@@ -23,6 +23,15 @@ papel solto com o cursor. Laptop primeiro; placeholders mantidos.
   porque o gatilho atravessado inteiro não dispara onToggle; a visibilidade agora lê o progresso a
   cada atualização.
 
+## Segunda rodada: a ficha de parede (decisão 71)
+
+- O nome do trabalho saiu de cima do cartão e foi pra uma ficha presa embaixo dele: recolhida enquanto
+  a câmera anda, à mostra quando a tira assenta, marca-texto verde no hover, sempre à mostra sem pin.
+- Cartão limitado também pela altura da tela; conferido em 1366x768, 1440x900 e 1850x880.
+- O settle tenta de novo se a rolagem de assentamento for interrompida; depois de duas tentativas a
+  ficha sai assim mesmo.
+- Contador do trilho some quando o fecho verde espia na beirada.
+
 ## Evidências
 
 - `npm run validate`: 33 testes de unidade (11 novos da física), contratos, tipos, lint, formato e

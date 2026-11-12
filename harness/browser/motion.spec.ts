@@ -74,6 +74,43 @@ test('as folhas soltas balançam com o cursor e voltam ao prumo', async ({ app }
   await expect.poll(async () => Math.abs((await ler()).ang), { timeout: 8000 }).toBeLessThan(0.3)
 })
 
+test('a ficha do trabalho sai quando a tira assenta e não cobre a peça', async ({ app }) => {
+  test.skip(!DESKTOP.includes(test.info().project.name), 'A ficha recolhe com a tira pinada')
+  const cena = app.locator('[data-harness-scene="pilares"]')
+  // procura um trabalho assentado
+  for (const p of [0.3, 0.55, 0.8]) {
+    await app.evaluate((v) => window.__LEOVOX_HARNESS__!.setProgress('pilares', v), p)
+    await app.evaluate(() => window.__LEOVOX_HARNESS__!.settle(3000))
+    if ((await cena.getAttribute('data-kind')) === 'trabalho') break
+  }
+  await expect(cena).toHaveAttribute('data-kind', 'trabalho')
+  await expect(cena).not.toHaveClass(/is-andando/, { timeout: 4000 })
+  const painel = (await cena.getAttribute('data-panel')) ?? ''
+  const midia = app.locator(`[data-panel-id="${painel}"] .tr-midia`)
+  const ficha = app.locator(`[data-panel-id="${painel}"] .tr-ficha`)
+
+  // à mostra: a ficha desce abaixo do cartão, presa só pela beirada
+  await expect
+    .poll(async () => {
+      const m = (await midia.boundingBox())!
+      const f = (await ficha.boundingBox())!
+      return f.y + f.height - (m.y + m.height)
+    })
+    .toBeGreaterThan(80)
+  const m = (await midia.boundingBox())!
+  const f = (await ficha.boundingBox())!
+  // invade no máximo a dobra de 1,4rem por baixo do cartão (mais o giro)
+  expect(m.y + m.height - f.y).toBeLessThanOrEqual(40)
+  // e não encosta no trilho
+  const trilho = (await app.locator('.tr-trilho').boundingBox())!
+  expect(f.y + f.height).toBeLessThan(trilho.y)
+
+  // a câmera andando recolhe a ficha
+  await app.mouse.move(m.x + m.width / 2, m.y + m.height / 2)
+  await app.mouse.wheel(0, 260)
+  await expect(cena).toHaveClass(/is-andando/)
+})
+
 test('sem pin, a tira inteira fica no fluxo vertical', async ({ app }) => {
   test.skip(DESKTOP.includes(test.info().project.name), 'Reduced motion e telas estreitas')
   await expect(app.locator('[data-harness-scene="pilares"]')).toHaveClass(/is-static/)

@@ -15,7 +15,8 @@
     "Produção de conteúdo e edição de vídeo pertencem a Presença Digital",
     "Reduced motion e telas abaixo de 900px apresentam a tira em fluxo vertical, sem pin",
     "Capas e cartões são folhas soltas: o cursor as sopra, a câmera as balança por inércia, a mão pode pegar e soltar, e soltas voltam ao prumo dentro do limite de giro",
-    "Painel vizinho na beirada da tela mostra a peça, nunca pedaços de texto"
+    "Painel vizinho na beirada da tela mostra a peça, nunca pedaços de texto",
+    "O nome do trabalho vive numa ficha presa embaixo do cartão: recolhida enquanto a câmera anda, à mostra quando a tira assenta, sem cobrir a peça e sem depender de hover"
   ],
   "forbidden": [
     "quarto pilar",

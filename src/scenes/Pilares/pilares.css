@@ -437,12 +437,18 @@
 
 /* ---------- Trabalho: a peça é o cartão ---------- */
 
+/* O cartão é limitado pela largura E pela altura da tela: numa janela
+   larga e baixa ele crescia até empurrar a ficha pro trilho (QA do PO
+   em 1850x880). O painel acompanha o cartão, pra os vizinhos espiarem
+   sempre na mesma medida. */
 .tr-trabalho {
-  width: 76vw;
+  --cartao-h: min(37.5vw, calc(86vh - 15rem));
+  width: calc(var(--cartao-h) * 1.6 + 16vw);
 }
 
 .tr-trabalho--retrato {
-  width: 62vw;
+  --cartao-h: min(68vh, calc(86vh - 15rem));
+  width: calc(var(--cartao-h) * 0.8 + 30vw);
 }
 
 /* marca d'água da frente: tinta cheia quase do tom do palco. Contorno
@@ -458,19 +464,18 @@
   line-height: 0.8;
   white-space: nowrap;
   color: rgba(251, 251, 251, 0.035);
-  transform: translate(calc(-50% + var(--d) * -46vw), -50%);
+  transform: translate(calc(-50% + var(--d) * -46vw), -50%) skewX(calc(var(--skew) * 1deg));
   pointer-events: none;
 }
 
 .tr-cartao {
   position: absolute;
   z-index: 1;
-  left: 7vw;
-  top: 46%;
-  width: 60vw;
+  left: 8vw;
+  top: 11vh;
+  height: var(--cartao-h);
   aspect-ratio: 16 / 10;
   margin: 0;
-  translate: 0 -50%;
   /* pendurado pela fita: gira e empena a partir do topo */
   transform-origin: 50% 0%;
   transform: perspective(1800px)
@@ -481,9 +486,7 @@
 }
 
 .tr-trabalho--retrato .tr-cartao {
-  left: 19vw;
-  width: auto;
-  height: 68vh;
+  left: 15vw;
   aspect-ratio: 4 / 5;
 }
 
@@ -506,6 +509,7 @@
 
 .tr-midia {
   position: absolute;
+  z-index: 1;
   inset: 0;
   overflow: hidden;
   background: var(--color-offwhite);
@@ -557,22 +561,25 @@
   font-size: 4.6vw;
 }
 
+/* aviso de placeholder no canto do próprio papel: só existe enquanto a
+   peça real não chega, então pode ficar sobre ela */
 .tr-ph-legenda {
   position: absolute;
-  right: 0;
-  top: calc(100% + 1rem);
+  z-index: 2;
+  right: 3%;
+  bottom: 3.5%;
   font-family: var(--font-numeric);
   font-size: 1rem;
   letter-spacing: 0.16em;
   white-space: nowrap;
-  color: rgba(251, 251, 251, 0.5);
+  color: rgba(34, 34, 34, 0.62);
   /* texto de vizinho não aparece na beirada da tela */
   opacity: clamp(0, calc((var(--near) - 0.5) * 2.4), 1);
 }
 
 .tr-fita {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   top: -0.9rem;
   width: 6.5rem;
   height: 1.9rem;
@@ -590,73 +597,112 @@
   rotate: 5deg;
 }
 
-/* nome, tipo e anotação: a etiqueta preta cola por cima da borda de
-   baixo do cartão. Vizinhos na beirada da tela mostram só a peça, não
-   pedaços de texto: a opacidade só sobe quando o painel chega. */
-.tr-info {
+/* ---------- A ficha de parede: nome, tipo e anotação ----------
+   Presa atrás da borda de baixo do cartão, como a ficha de museu sob a
+   obra: nunca cobre a peça. Três estados:
+   - recolhida: enquanto a câmera anda (ou o painel não chegou), sobe
+     pra trás do cartão e deixa só a beirada do papel à mostra;
+   - à mostra: quando a tira assenta no trabalho, desliza pra fora com
+     mola, um pouco torta, e a anotação aparece na parede ao lado;
+   - em destaque: com o cursor no cartão (ou foco dentro dele), endireita
+     e o marca-texto verde do manifesto passa por trás do título.
+   A informação não depende de hover: aparece sozinha ao assentar, e com
+   reduced motion fica sempre à mostra. */
+
+.tr-ficha {
   position: absolute;
-  z-index: 3;
-  left: 2vw;
-  /* a etiqueta assenta sobre a borda de baixo do cartão (46% + 30vh) */
-  top: calc(46% + 30vh - 2.6vw);
-  width: 40vw;
-  color: var(--color-offwhite);
-  opacity: clamp(0, calc((var(--near) - 0.5) * 2.4), 1);
-  transform: translateX(calc(var(--d) * -6vw)) skewX(calc(var(--skew) * 1deg));
-  pointer-events: none;
+  z-index: 0;
+  left: 6%;
+  top: calc(100% - 1.4rem);
+  width: max-content;
+  min-width: 15rem;
+  max-width: max(62%, 20rem);
+  padding: 2rem 1.6rem 1.15rem;
+  background: var(--color-offwhite) url('/textures/texture-paper.png') var(--papel-pos, 50% 50%) /
+    420% auto;
+  background-blend-mode: multiply;
+  color: var(--color-black);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
+  transform-origin: 30% 0%;
+  /* recolhida: sobe até sobrar 0,6rem de papel abaixo do cartão */
+  transform: translateY(calc(-100% + 2rem)) rotate(0deg);
+  transition: transform 0.32s cubic-bezier(0.55, 0, 0.75, 0.2);
 }
 
-.tr-trabalho--retrato .tr-info {
-  left: 4vw;
-  top: calc(46% + 34vh - 2.6vw);
+.pilares:not(.is-andando) .tr-trabalho.is-on .tr-ficha {
+  transform: translateY(0) rotate(calc(var(--papel-giro, 1) * -1.6deg));
+  transition: transform 0.7s cubic-bezier(0.34, 1.45, 0.64, 1) 0.06s;
+}
+
+.pilares:not(.is-andando) .tr-trabalho.is-on .tr-cartao:hover .tr-ficha,
+.pilares:not(.is-andando) .tr-trabalho.is-on .tr-cartao:focus-within .tr-ficha {
+  transform: translateY(0.4rem) rotate(0deg);
+  transition: transform 0.45s cubic-bezier(0.34, 1.45, 0.64, 1);
 }
 
 .tr-ordem {
-  margin-right: 0.6em;
+  display: inline-block;
+  padding: 0.28em 0.55em 0.12em;
+  font-family: var(--font-numeric);
+  font-size: 1.05rem;
+  line-height: 1;
+  letter-spacing: 0.16em;
   color: var(--color-green);
+  background: var(--color-black);
 }
 
 .tr-titulo {
+  margin-top: 0.75rem;
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 4.3vw, 5.4rem);
+  font-size: clamp(2rem, 2.9vw, 3.6rem);
   font-weight: 400;
-  line-height: 1;
+  line-height: 0.98;
   text-transform: uppercase;
   overflow-wrap: break-word;
-  transform-origin: 0 100%;
-  rotate: clamp(-3deg, calc(var(--d) * 5deg - 1.5deg), 3deg);
 }
 
-.tr-etiqueta {
-  display: inline;
-  padding: 0.1em 0.22em 0;
-  background: var(--color-black);
+/* o marca-texto do manifesto: verde chapado por trás da metade de baixo
+   das letras, correndo da esquerda pra direita */
+.tr-marca {
+  background-image: linear-gradient(var(--color-green), var(--color-green));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 0% 0.42em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+  transition: background-size 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tr-linha {
-  display: flex;
-  align-items: baseline;
-  gap: 1.4rem;
-  margin-top: 1rem;
+.tr-cartao:hover .tr-marca,
+.tr-cartao:focus-within .tr-marca {
+  background-size: 100% 0.42em;
 }
 
 .tr-tipo {
-  white-space: nowrap;
+  margin-top: 0.55rem;
   font-family: var(--font-numeric);
   font-size: 1.15rem;
   letter-spacing: 0.14em;
-  color: rgba(251, 251, 251, 0.72);
+  color: rgba(34, 34, 34, 0.78);
 }
 
+/* a anotação à mão fica na parede, ao lado da ficha */
 .tr-anotacao {
-  display: inline-block;
+  position: absolute;
+  left: calc(100% + 1.2rem);
+  bottom: 1.1rem;
   white-space: nowrap;
   font-family: var(--font-hand);
   font-size: 1.5rem;
   color: var(--color-green);
-  rotate: -4deg;
+  rotate: -5deg;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.pilares:not(.is-andando) .tr-trabalho.is-on .tr-anotacao {
+  opacity: 1;
+  transition: opacity 0.4s ease 0.45s;
 }
 
 /* ---------- Fecho: a headline em verde chapado ---------- */
@@ -696,11 +742,11 @@
 }
 
 .tr-fecho-titulo span:first-child {
-  transform: translateX(calc(var(--d) * -16vw));
+  transform: translateX(calc(var(--d) * -16vw)) skewX(calc(var(--skew) * 1deg));
 }
 
 .tr-fecho-titulo span:last-child {
-  transform: translateX(calc(var(--d) * 9vw));
+  transform: translateX(calc(var(--d) * 9vw)) skewX(calc(var(--skew) * 1deg));
 }
 
 .tr-fecho-sub {
@@ -734,6 +780,11 @@
 .pilares.has-trilho .tr-trilho {
   opacity: 1;
   visibility: visible;
+}
+
+/* o fecho verde espiando na beirada apagaria o contador verde */
+.pilares.is-fecho-perto .tr-atual {
+  opacity: 0;
 }
 
 .pilares[data-kind='fecho'] .tr-trilho {
@@ -811,6 +862,7 @@
 
 .tr-atual {
   justify-self: end;
+  transition: opacity 0.3s ease;
   display: flex;
   align-items: baseline;
   gap: 0.9rem;
@@ -912,37 +964,61 @@
   padding: 5rem 6vw;
 }
 
-.pilares.is-static .tr-info,
 .pilares.is-static .tr-cartao {
   position: relative;
   inset: auto;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  translate: none;
+  height: auto;
+  aspect-ratio: auto;
   transform: none;
 }
 
-.pilares.is-static .tr-info {
-  order: 1;
-  opacity: 1;
+/* sem pin o aviso de placeholder sobe pro canto de cima do papel: o pé
+   do cartão agora é a ficha */
+.pilares.is-static .tr-ph-legenda {
+  top: 3.5%;
+  bottom: auto;
 }
 
-.pilares.is-static .tr-linha {
-  flex-wrap: wrap;
+.pilares.is-static .tr-midia {
+  position: relative;
+  aspect-ratio: 16 / 10;
 }
 
 .pilares.is-static .tr-trabalho--retrato .tr-cartao {
   width: min(100%, 28rem);
-  height: auto;
 }
 
-.pilares.is-static .tr-ph-legenda {
+.pilares.is-static .tr-trabalho--retrato .tr-midia {
+  aspect-ratio: 4 / 5;
+}
+
+/* sem pin, a ficha fica sempre à mostra, colada embaixo do cartão */
+.pilares.is-static .tr-ficha {
+  order: 2;
+  align-self: flex-start;
+  position: relative;
+  top: auto;
+  left: auto;
+  margin: -0.6rem 0 0 6%;
+  transform: none;
+  transition: none;
+}
+
+.pilares.is-static .tr-anotacao {
   position: static;
-  text-align: right;
-  margin-top: 1rem;
-  white-space: normal;
+  display: block;
+  margin-top: 0.6rem;
+  /* no papel, o verde não tem contraste: a anotação vira grafite */
+  color: var(--color-gray-dark);
+  opacity: 1;
+  transition: none;
 }
 
 .pilares.is-static .tr-fantasma,
+.pilares.is-static .tr-sombra,
 .pilares.is-static .tr-trilho {
   display: none;
 }
