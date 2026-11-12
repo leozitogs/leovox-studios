@@ -1,0 +1,6 @@
+# O que existe em public/ para o time, mas não vai para o site no ar.
+# Mesmo formato do .gitignore.
+**/README.md
+fonts/**/*.pdf
+fonts/**/*.txt
+fonts/**/*.png

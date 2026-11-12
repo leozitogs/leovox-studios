@@ -16,3 +16,6 @@ docs/DECISOES.md
 !.claude/**
 !CLAUDE.md
 !AGENTS.md
+
+# Restos de montagem FUSE (sandbox de agentes)
+.fuse_hidden*

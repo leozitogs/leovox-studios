@@ -1,0 +1,12 @@
+# Cabeçalhos da Cloudflare para os assets estáticos.
+# A CSP fica de fora até o inventário de origens fechar: GSAP escreve
+# estilo inline e o Three pode usar workers por blob.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+# Arquivos com hash no nome nunca mudam.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

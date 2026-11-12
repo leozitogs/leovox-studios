@@ -1,0 +1,14 @@
+// Hospedagem: Cloudflare Workers com assets estáticos (plano free).
+// Não há código de Worker: a Cloudflare serve o dist/ direto.
+// Cabeçalhos em public/_headers; o que não sobe, em public/.assetsignore.
+{
+  "name": "leovox-studios",
+  "compatibility_date": "2026-11-12",
+  // Sem telemetria do Wrangler.
+  "send_metrics": false,
+  "assets": {
+    "directory": "./dist",
+    // URL que não existe recebe a cena 404 (dist/404.html) com status 404.
+    "not_found_handling": "404-page",
+  },
+}

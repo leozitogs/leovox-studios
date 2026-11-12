@@ -4,19 +4,23 @@
 // sangrando pela borda esquerda, o lockup tipografico e o personagem
 // de contorno verde. A luz cai do off-white do manifesto pro palco
 // escuro na chegada; depois do cartaz o scroll vira travessia lateral
-// pelos 3 quadros das frentes (briefing v3 da cena). Os quadros estao
-// em placeholder aprovado (numero, frente e palavra-ancora) ate a
-// producao de assets do PO chegar: linha-cara, evidencias e poses do
-// mascote entram nas proximas passadas.
+// pelos 3 quadros das frentes (briefing v3 da cena). Cada quadro agora
+// prepara um preview de trabalho real e declara os assets que ainda
+// precisam chegar, sem apresentar placeholder como case publicado.
 
 import { useRef } from 'react'
 import { FRENTES } from './frentes'
+import { DigitalProjectPanel } from './panels/DigitalProjectPanel'
+import { IdentityProjectPanel } from './panels/IdentityProjectPanel'
+import { TechnologyProjectPanel } from './panels/TechnologyProjectPanel'
+import { usePillarProjects } from './usePillarProjects'
 import { usePilaresScroll } from './usePilaresScroll'
 import './pilares.css'
 
 export function Pilares() {
   const sectionRef = useRef<HTMLElement>(null)
   usePilaresScroll(sectionRef)
+  usePillarProjects(sectionRef)
 
   return (
     <section
@@ -90,21 +94,9 @@ export function Pilares() {
           </div>
         </header>
 
-        {/* Beats 1 a 3 · um quadro por frente, placeholder do briefing */}
-        {FRENTES.map((f) => (
-          <section
-            key={f.id}
-            className="pl-painel pl-quadro"
-            aria-label={`${f.numero} · ${f.nome}`}
-          >
-            <span className="pl-q-numero" aria-hidden="true">
-              {f.numero}
-            </span>
-            <h3 className="pl-q-ancora">{f.ancora}</h3>
-            <p className="pl-q-frente">{f.nome}</p>
-            {f.complemento ? <p className="pl-q-complemento">{f.complemento}</p> : null}
-          </section>
-        ))}
+        <IdentityProjectPanel frente={FRENTES[0]} />
+        <DigitalProjectPanel frente={FRENTES[1]} />
+        <TechnologyProjectPanel frente={FRENTES[2]} />
       </div>
 
       {/* o carimbo que segura o argumento durante os quadros */}

@@ -26,6 +26,8 @@ const JITTER: Array<[number, number]> = [
   [3, -4],
 ]
 
+const ACT_LABELS = ['Recusa', 'Diagnóstico', 'Solução', 'Assinatura']
+
 function Letters({ text, jitter = false }: { text: string; jitter?: boolean }) {
   return (
     <>
@@ -133,6 +135,20 @@ export function Manifesto() {
       aria-label="Manifesto Leovox"
       data-harness-scene="manifesto"
     >
+      <nav className="mf-act-nav" aria-label="Atos do Manifesto" aria-hidden="true" inert>
+        {ACT_LABELS.map((label, index) => (
+          <button
+            key={label}
+            type="button"
+            className={`mf-act-nav-btn ${index === 0 ? 'is-active' : ''}`}
+            data-manifesto-act={index + 1}
+            aria-label={`Ir para o ato ${index + 1}: ${label}`}
+            aria-current={index === 0 ? 'step' : undefined}
+            style={{ '--act-i': index } as CSSProperties}
+          />
+        ))}
+      </nav>
+
       {/* as ondas do caderno em sticky: um canvas de um viewport que
           acompanha a leitura da página inteira (canvas do tamanho da
           seção seria pesado demais) */}
@@ -141,7 +157,7 @@ export function Manifesto() {
       </div>
 
       {/* Ato 1 · Recusa · a primeira linha do caderno */}
-      <div className="mf-ato mf-ato-1">
+      <div id="manifesto-ato-1" className="mf-ato mf-ato-1">
         <h2 className="mf-title">
           <span className="mf-title-main mf-in d2">A LEOVOX NASCEU DE</span>{' '}
           <span className="mf-nowrap">
@@ -166,7 +182,7 @@ export function Manifesto() {
       </div>
 
       {/* Ato 2 · Diagnóstico */}
-      <div className="mf-ato mf-ato-2">
+      <div id="manifesto-ato-2" className="mf-ato mf-ato-2">
         <h2 className="mf-title">
           <span className="mf-title-main mf-in d2">O MERCADO ERROU</span>{' '}
           <em className="mf-script mf-stamp-in">feio.</em>
@@ -174,7 +190,7 @@ export function Manifesto() {
       </div>
 
       {/* Ato 3 · Solução · a tese em letras que caem com bounce */}
-      <div className="mf-ato mf-ato-3">
+      <div id="manifesto-ato-3" className="mf-ato mf-ato-3">
         <div className="mf-ht mf-ht-a" aria-hidden="true" />
         <div className="mf-ht mf-ht-b" aria-hidden="true" />
         <h2
@@ -210,7 +226,7 @@ export function Manifesto() {
 
       {/* Ato 4 · Assinatura · centrado como os demais; o wordmark
           reage ao cursor (fisica em useEffect acima) */}
-      <div className="mf-ato mf-ato-4">
+      <div id="manifesto-ato-4" className="mf-ato mf-ato-4">
         <h2 className="mf-aqui">
           <span className="mf-aq mf-aq-t1">AQUI SE FAZ COM</span>{' '}
           <span className="mf-chip mf-chip-1">INTENÇÃO</span>

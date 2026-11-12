@@ -32,6 +32,90 @@
   pointer-events: none;
 }
 
+/* Índice dos quatro atos: a cápsula marca o ato corrente e os demais
+   pontos permanecem como capítulos disponíveis, conforme a referência. */
+.mf-act-nav {
+  position: fixed;
+  z-index: calc(var(--z-header) - 1);
+  top: 50%;
+  right: clamp(0.75rem, 2vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transform: translate(1rem, -50%) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.35s;
+}
+
+.mf-act-nav.is-visible {
+  transform: translate(0, -50%) scale(1);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.mf-act-nav-btn {
+  position: relative;
+  display: grid;
+  width: 2.75rem;
+  height: 1.75rem;
+  place-items: center;
+  opacity: 0;
+  transform: translateX(0.65rem);
+  will-change: height;
+  transition:
+    height 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease calc(var(--act-i) * 45ms),
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--act-i) * 45ms);
+}
+
+.mf-act-nav.is-visible .mf-act-nav-btn {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mf-act-nav-btn.is-active {
+  height: 3.25rem;
+}
+
+.mf-act-nav-btn::before {
+  content: '';
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 999px;
+  background: var(--color-black);
+  transition:
+    width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.25s ease;
+}
+
+.mf-act-nav-btn.is-active::before {
+  height: 2.875rem;
+}
+
+.mf-act-nav-btn:hover::before {
+  transform: scale(1.12);
+}
+
+.mf-act-nav-btn:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 0;
+  border-radius: 999px;
+}
+
+@media (max-width: 767px) {
+  .mf-act-nav {
+    display: none;
+  }
+}
+
 /* ---------- Atos: blocos de um viewport em fluxo normal ---------- */
 
 .mf-ato {

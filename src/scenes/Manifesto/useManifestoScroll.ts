@@ -9,27 +9,109 @@
 
 import { type RefObject, useEffect } from 'react'
 import { ScrollTrigger } from '../../lib/gsap'
+import { getLenis } from '../../lib/lenis'
+
+const MANIFESTO_PREVIEW_EVENT = 'leovox:manifesto-preview'
 
 export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): void {
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      section.classList.add('is-static')
-      return
+    const atos = Array.from(section.querySelectorAll<HTMLElement>('.mf-ato'))
+    const nav = section.querySelector<HTMLElement>('.mf-act-nav')
+    const navButtons = Array.from(section.querySelectorAll<HTMLButtonElement>('.mf-act-nav-btn'))
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let heroPreviewVisible = document.documentElement.dataset.manifestoNavReady === 'true'
+    let manifestoVisible = false
+
+    if (reducedMotion) section.classList.add('is-static')
+
+    const setVisible = (visible: boolean) => {
+      if (!nav) return
+      nav.classList.toggle('is-visible', visible)
+      nav.inert = !visible
+      nav.setAttribute('aria-hidden', String(!visible))
     }
 
-    const atos = Array.from(section.querySelectorAll<HTMLElement>('.mf-ato'))
-    const reveals = atos.map((el) =>
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 62%',
-        onEnter: () => el.classList.add('is-on'),
-        onLeaveBack: () => el.classList.remove('is-on'),
-      }),
-    )
+    const syncVisibility = () =>
+      setVisible(reducedMotion ? manifestoVisible : heroPreviewVisible && manifestoVisible)
 
-    return () => reveals.forEach((r) => r.kill())
+    const onHeroPreview = (event: Event) => {
+      heroPreviewVisible = (event as CustomEvent<{ visible: boolean }>).detail.visible
+      syncVisibility()
+    }
+    window.addEventListener(MANIFESTO_PREVIEW_EVENT, onHeroPreview)
+
+    const setActive = (index: number) => {
+      navButtons.forEach((button, buttonIndex) => {
+        button.classList.toggle('is-active', buttonIndex === index)
+        if (buttonIndex === index) button.setAttribute('aria-current', 'step')
+        else button.removeAttribute('aria-current')
+      })
+    }
+
+    const updateActive = () => {
+      const marker = window.innerHeight * 0.55
+      const containing = atos.findIndex((ato) => {
+        const rect = ato.getBoundingClientRect()
+        return rect.top <= marker && rect.bottom > marker
+      })
+      if (containing >= 0) setActive(containing)
+    }
+
+    const navTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: (self) => {
+        manifestoVisible = self.isActive
+        syncVisibility()
+        if (self.isActive) updateActive()
+      },
+      onUpdate: updateActive,
+      onRefresh: (self) => {
+        manifestoVisible = self.isActive
+        syncVisibility()
+        updateActive()
+      },
+    })
+
+    const reveals = reducedMotion
+      ? []
+      : atos.map((el) =>
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 62%',
+            onEnter: () => el.classList.add('is-on'),
+            onLeaveBack: () => el.classList.remove('is-on'),
+          }),
+        )
+
+    const navHandlers = navButtons.map((button, index) => {
+      const handler = () => {
+        const target = atos[index]
+        if (!target) return
+        const top = window.scrollY + target.getBoundingClientRect().top
+        const lenis = getLenis()
+        if (lenis) {
+          lenis.scrollTo(
+            top,
+            reducedMotion
+              ? { immediate: true }
+              : { duration: 0.8, easing: (x: number) => 1 - Math.pow(1 - x, 3) },
+          )
+        } else window.scrollTo({ top, behavior: reducedMotion ? 'auto' : 'smooth' })
+      }
+      button.addEventListener('click', handler)
+      return handler
+    })
+
+    return () => {
+      navTrigger.kill()
+      window.removeEventListener(MANIFESTO_PREVIEW_EVENT, onHeroPreview)
+      reveals.forEach((reveal) => reveal.kill())
+      navButtons.forEach((button, index) => button.removeEventListener('click', navHandlers[index]))
+    }
   }, [sectionRef])
 }
