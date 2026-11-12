@@ -122,11 +122,15 @@ export function railFill(panel: PanelBox, x: number, vw: number): number {
   return clamp((vw / 2 - (panel.left + x)) / panel.width)
 }
 
+/** Inclinação máxima do texto pela velocidade, em graus. */
+export const SKEW_MAX = 4.5
+
 /**
- * A velocidade vira matéria: o papel inclina no sentido contrário ao da
- * travessia, no máximo 2 graus. Velocidade em px de scroll por segundo.
+ * A velocidade vira matéria: o texto inclina no sentido contrário ao da
+ * travessia, até SKEW_MAX graus. Velocidade em px de scroll por segundo.
+ * (As folhas não usam isto: elas balançam pela física em folhaFisica.)
  */
 export function velocitySkew(velocity: number): number {
-  const skew = 0 - clamp(velocity / 1800, -1, 1) * 2
+  const skew = 0 - clamp(velocity / 1800, -1, 1) * SKEW_MAX
   return Math.abs(skew) < 0.01 ? 0 : skew
 }

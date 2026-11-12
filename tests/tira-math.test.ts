@@ -21,6 +21,7 @@ import {
   reveal,
   settleTarget,
   travel,
+  SKEW_MAX,
   velocitySkew,
 } from '../src/scenes/Pilares/tiraMath'
 
@@ -129,8 +130,9 @@ describe('o trilho e a velocidade', () => {
 
   it('a inclinação é limitada a 2 graus e some parada', () => {
     expect(velocitySkew(0)).toBe(0)
-    expect(Math.abs(velocitySkew(1e6))).toBe(2)
-    expect(Math.abs(velocitySkew(-1e6))).toBe(2)
+    expect(Math.abs(velocitySkew(1e6))).toBe(SKEW_MAX)
+    expect(Math.abs(velocitySkew(-1e6))).toBe(SKEW_MAX)
+    expect(SKEW_MAX).toBeGreaterThanOrEqual(4)
     expect(Math.sign(velocitySkew(900))).toBe(-1)
   })
 })

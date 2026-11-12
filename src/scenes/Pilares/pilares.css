@@ -274,41 +274,109 @@
   outline-offset: 3px;
 }
 
-/* ---------- Capa de capítulo: folha off-white rasgada ---------- */
+/* ---------- Folhas soltas: o que a física escreve ----------
+   useFolhas escreve por folha --f-ang (giro em graus, pendurada pelo
+   topo), --f-rx e --f-ry (a folha empena no ar) e --f-lift (0 a 1, o
+   quanto ela descola da parede perto do cursor). Sem física (reduced
+   motion e telas estreitas), tudo fica em zero. */
+
+[data-folha] {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+[data-folha].is-pega {
+  cursor: grabbing;
+}
+
+/* ---------- Capa de capítulo: folha rasgada pendurada ---------- */
 
 .tr-capa {
-  width: 64vw;
+  width: 62vw;
 }
 
 .tr-capa-folha {
   position: absolute;
-  inset: 10vh 0 12vh;
-  background: var(--color-offwhite) url('/textures/texture-paper-two.png') center / cover;
-  background-blend-mode: multiply;
-  color: var(--color-black);
-  transform-origin: 50% 100%;
-  transform: translateY(calc(var(--d) * 5vh))
-    rotate(calc(var(--d) * -1.4deg + var(--skew) * 0.6deg));
+  left: 5vw;
+  right: 5vw;
+  top: 14vh;
+  bottom: 15vh;
+  transform-origin: 50% 0%;
+  transform: perspective(1800px) translateY(calc(var(--d) * 5vh))
+    rotate(calc(var(--d) * -1.4deg + var(--f-ang, 0) * 1deg)) rotateX(calc(var(--f-rx, 0) * 1deg))
+    rotateY(calc(var(--f-ry, 0) * 1deg)) translateY(calc(var(--f-lift, 0) * -6px));
+  will-change: transform;
 }
 
+.tr-capa-papel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-offwhite) url('/textures/texture-paper.png') var(--papel-pos, 30% 60%) /
+    260% auto;
+  background-blend-mode: multiply;
+  color: var(--color-black);
+}
+
+.tr-capa[data-frente='digital'] .tr-capa-papel {
+  --papel-pos: 82% 20%;
+}
+
+.tr-capa[data-frente='tecnologia'] .tr-capa-papel {
+  --papel-pos: 12% 90%;
+}
+
+/* o número da frente em tinta cheia, grande o bastante pra vazar do
+   papel: o rasgo e a guilhotina cortam o algarismo como num cartaz */
 .tr-capa-num {
   position: absolute;
-  left: 7%;
-  top: -6%;
+  right: -5%;
+  bottom: -19%;
   font-family: var(--font-numeric);
-  font-size: 48vh;
+  font-size: 66vh;
   line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 3px var(--color-black);
-  transform: translateX(calc(var(--d) * -12vw));
+  color: var(--color-gray-dark);
+  transform: translateX(calc(var(--d) * -10vw));
+}
+
+/* o grafismo half-style da marca, serigrafado no meio da folha */
+.tr-capa-grafismo {
+  position: absolute;
+  left: 4%;
+  top: 30%;
+  width: 66%;
+  height: auto;
+  pointer-events: none;
+  rotate: -9deg;
+  transform: translateX(calc(var(--d) * 7vw));
+}
+
+.tr-capa-grafismo--digital {
+  left: 6%;
+  top: 22%;
+  width: 46%;
+  rotate: 14deg;
+  /* a estrela branca vira tinta preta sobre o papel */
+  filter: brightness(0.14);
+  opacity: 0.85;
+}
+
+.tr-capa-grafismo--tecnologia {
+  left: 10%;
+  top: 26%;
+  width: 40%;
+  rotate: -6deg;
+  filter: brightness(0.14);
+  opacity: 0.85;
 }
 
 .tr-capa-kicker {
   position: absolute;
-  right: 8%;
-  top: 9%;
+  left: 8%;
+  top: 8%;
   font-family: var(--font-numeric);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   letter-spacing: 0.22em;
   transform: translateX(calc(var(--d) * 6vw));
 }
@@ -316,29 +384,30 @@
 .tr-capa-nome {
   position: absolute;
   left: 8%;
-  bottom: 9%;
-  width: 84%;
+  top: 14%;
+  width: 72%;
   font-family: var(--font-display);
-  font-size: clamp(3rem, 6.2vw, 7.5rem);
+  font-size: clamp(3rem, 5.6vw, 7rem);
   font-weight: 400;
-  line-height: 0.9;
+  line-height: 0.88;
   text-transform: uppercase;
-  transform: translateX(calc(var(--d) * 5vw));
+  transform: translateX(calc(var(--d) * 4vw));
 }
 
 .tr-capa-ancora {
   position: absolute;
-  right: 8%;
-  top: 30%;
+  left: 8%;
+  bottom: 10%;
   transform: translateX(calc(var(--d) * 9vw));
 }
 
 .tr-carimbo {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 4.4vw, 5.2rem);
+  font-size: clamp(2.4rem, 4vw, 4.8rem);
   line-height: 1;
   color: var(--color-green);
+  background: var(--color-offwhite);
   border: 0.12em solid var(--color-green);
   border-radius: 0.14em;
   padding: 0.12em 0.3em 0.04em;
@@ -350,96 +419,89 @@
   animation: pl-carimba 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) both;
 }
 
-/* ---------- Trabalho: evidência num cartão colado com fita ---------- */
-
-.tr-trabalho {
-  width: 78vw;
+/* uma fita só no topo: a capa pende dela */
+.tr-fita--capa {
+  left: 50%;
+  top: -1rem;
+  translate: -50% 0;
+  rotate: -3deg;
 }
 
-/* a âncora da frente atravessa o fundo a 0,4 da câmera */
+.tr-capa .tr-fita--capa {
+  opacity: 1;
+}
+
+.tr-capa .tr-sombra {
+  opacity: calc(0.85 + var(--f-lift, 0) * 0.15);
+}
+
+/* ---------- Trabalho: a peça é o cartão ---------- */
+
+.tr-trabalho {
+  width: 76vw;
+}
+
+.tr-trabalho--retrato {
+  width: 62vw;
+}
+
+/* marca d'água da frente: tinta cheia quase do tom do palco. Contorno
+   fino em letra gigante disputava atenção com o cartão (QA de
+   2026-11-12); a mancha chapada fica atrás e não pede leitura. */
 .tr-fantasma {
   position: absolute;
   z-index: 0;
   left: 50%;
-  top: 46%;
+  top: 30%;
   font-family: var(--font-display);
-  font-size: 42vh;
+  font-size: 46vh;
   line-height: 0.8;
   white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(251, 251, 251, 0.14);
+  color: rgba(251, 251, 251, 0.035);
   transform: translate(calc(-50% + var(--d) * -46vw), -50%);
   pointer-events: none;
-}
-
-.tr-info {
-  position: absolute;
-  z-index: 2;
-  left: 3.5vw;
-  bottom: 18vh;
-  width: 25vw;
-  color: var(--color-offwhite);
-  opacity: calc(0.15 + var(--near) * 0.85);
-  transform: translateX(calc(var(--d) * -5vw));
-}
-
-.tr-ordem {
-  font-family: var(--font-numeric);
-  font-size: 1.05rem;
-  letter-spacing: 0.18em;
-  color: var(--color-green);
-}
-
-.tr-titulo {
-  margin-top: 0.9rem;
-  font-family: var(--font-display);
-  font-size: clamp(2.6rem, 4.6vw, 5.8rem);
-  font-weight: 400;
-  line-height: 0.9;
-  text-transform: uppercase;
-  overflow-wrap: break-word;
-  transform-origin: 0 100%;
-  rotate: clamp(-3deg, calc(var(--d) * 5deg), 3deg);
-}
-
-.tr-tipo {
-  margin-top: 1.1rem;
-  font-family: var(--font-numeric);
-  font-size: 1.1rem;
-  letter-spacing: 0.14em;
-  color: rgba(251, 251, 251, 0.68);
-}
-
-.tr-anotacao {
-  display: inline-block;
-  margin-top: 1.5rem;
-  font-family: var(--font-hand);
-  font-size: 1.4rem;
-  color: var(--color-green);
-  rotate: -4deg;
-  opacity: var(--near);
 }
 
 .tr-cartao {
   position: absolute;
   z-index: 1;
-  right: 3vw;
-  top: 47%;
-  width: 45vw;
+  left: 7vw;
+  top: 46%;
+  width: 60vw;
   aspect-ratio: 16 / 10;
   margin: 0;
   translate: 0 -50%;
-  /* pendurado pela fita: gira e inclina a partir do topo */
+  /* pendurado pela fita: gira e empena a partir do topo */
   transform-origin: 50% 0%;
-  transform: rotate(calc(var(--d) * 3deg - 0.8deg)) skewX(calc(var(--skew) * 1deg));
+  transform: perspective(1800px)
+    rotate(calc(var(--d) * 3deg + var(--papel-giro, 1) * -0.7deg + var(--f-ang, 0) * 1deg))
+    rotateX(calc(var(--f-rx, 0) * 1deg)) rotateY(calc(var(--f-ry, 0) * 1deg))
+    translateY(calc(var(--f-lift, 0) * -6px));
+  will-change: transform;
 }
 
 .tr-trabalho--retrato .tr-cartao {
-  right: 10vw;
+  left: 19vw;
   width: auto;
-  height: 64vh;
+  height: 68vh;
   aspect-ratio: 4 / 5;
-  transform: rotate(calc(var(--d) * 3deg + 1.2deg)) skewX(calc(var(--skew) * 1deg));
+}
+
+/* a sombra fica na parede: quando a folha descola, ela se afasta.
+   box-shadow numa camada própria: a GPU só move a sombra pronta. Com
+   filter blur (ou drop-shadow na capa) o p95 da travessia subia ~40%
+   numa GPU integrada, porque o filtro reprocessa a cada quadro. */
+.tr-sombra {
+  position: absolute;
+  inset: 4% 3% 0;
+  box-shadow: 0 0 46px 14px rgba(0, 0, 0, 0.6);
+  will-change: transform;
+  opacity: calc(var(--reveal) * (0.75 + var(--f-lift, 0) * 0.25));
+  transform: translate(
+      calc(var(--f-ang, 0) * -1.2px + var(--f-lift, 0) * 10px),
+      calc(14px + var(--f-lift, 0) * 16px)
+    )
+    scale(calc(1 - var(--f-lift, 0) * 0.03));
 }
 
 .tr-midia {
@@ -466,7 +528,8 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--color-offwhite) url('/textures/texture-paper-two.png') center / cover;
+  background: var(--color-offwhite) url('/textures/texture-paper.png') var(--papel-pos, 50% 50%) /
+    240% auto;
   background-blend-mode: multiply;
 }
 
@@ -480,29 +543,31 @@
   mask-image: linear-gradient(118deg, #000 0%, transparent 58%);
 }
 
+/* a âncora do placeholder em tinta cheia e discreta: placeholder não
+   compete com a etiqueta do trabalho */
 .tr-ph-ancora {
   position: relative;
   font-family: var(--font-display);
-  font-size: 10vw;
+  font-size: 6.4vw;
   line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 2px var(--color-black);
+  color: rgba(34, 34, 34, 0.22);
 }
 
 .tr-trabalho--retrato .tr-ph-ancora {
-  font-size: 6.4vw;
+  font-size: 4.6vw;
 }
 
 .tr-ph-legenda {
   position: absolute;
-  left: 0;
+  right: 0;
   top: calc(100% + 1rem);
   font-family: var(--font-numeric);
-  font-size: 0.95rem;
+  font-size: 1rem;
   letter-spacing: 0.16em;
   white-space: nowrap;
   color: rgba(251, 251, 251, 0.5);
-  opacity: var(--reveal);
+  /* texto de vizinho não aparece na beirada da tela */
+  opacity: clamp(0, calc((var(--near) - 0.5) * 2.4), 1);
 }
 
 .tr-fita {
@@ -523,6 +588,75 @@
 .tr-fita--b {
   right: 9%;
   rotate: 5deg;
+}
+
+/* nome, tipo e anotação: a etiqueta preta cola por cima da borda de
+   baixo do cartão. Vizinhos na beirada da tela mostram só a peça, não
+   pedaços de texto: a opacidade só sobe quando o painel chega. */
+.tr-info {
+  position: absolute;
+  z-index: 3;
+  left: 2vw;
+  /* a etiqueta assenta sobre a borda de baixo do cartão (46% + 30vh) */
+  top: calc(46% + 30vh - 2.6vw);
+  width: 40vw;
+  color: var(--color-offwhite);
+  opacity: clamp(0, calc((var(--near) - 0.5) * 2.4), 1);
+  transform: translateX(calc(var(--d) * -6vw)) skewX(calc(var(--skew) * 1deg));
+  pointer-events: none;
+}
+
+.tr-trabalho--retrato .tr-info {
+  left: 4vw;
+  top: calc(46% + 34vh - 2.6vw);
+}
+
+.tr-ordem {
+  margin-right: 0.6em;
+  color: var(--color-green);
+}
+
+.tr-titulo {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 4.3vw, 5.4rem);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  transform-origin: 0 100%;
+  rotate: clamp(-3deg, calc(var(--d) * 5deg - 1.5deg), 3deg);
+}
+
+.tr-etiqueta {
+  display: inline;
+  padding: 0.1em 0.22em 0;
+  background: var(--color-black);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.tr-linha {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4rem;
+  margin-top: 1rem;
+}
+
+.tr-tipo {
+  white-space: nowrap;
+  font-family: var(--font-numeric);
+  font-size: 1.15rem;
+  letter-spacing: 0.14em;
+  color: rgba(251, 251, 251, 0.72);
+}
+
+.tr-anotacao {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--color-green);
+  rotate: -4deg;
 }
 
 /* ---------- Fecho: a headline em verde chapado ---------- */
@@ -616,7 +750,7 @@
 .tr-capitulo-nome {
   margin-left: 0.6rem;
   font-family: var(--font-numeric);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   letter-spacing: 0.16em;
   white-space: nowrap;
 }
@@ -645,8 +779,14 @@
   left: 0;
   right: 0;
   top: 50%;
-  height: 3px;
+  height: 5px;
   translate: 0 -50%;
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tr-tick.is-atual::before,
+.tr-tick.is-atual::after {
+  height: 11px;
 }
 
 .tr-tick::before {
@@ -679,19 +819,24 @@
 
 .tr-contador {
   font-family: var(--font-numeric);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   letter-spacing: 0.14em;
   color: rgba(251, 251, 251, 0.6);
 }
 
 .tr-contador-n {
-  color: var(--color-offwhite);
+  margin-right: 0.15em;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--color-green);
 }
 
 .tr-nome {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.9rem;
   text-transform: uppercase;
 }
 
@@ -752,6 +897,14 @@
   height: 80vh;
 }
 
+.pilares.is-static .tr-capa-folha {
+  transform: none;
+}
+
+.pilares.is-static [data-folha] {
+  cursor: auto;
+}
+
 .pilares.is-static .tr-trabalho {
   display: flex;
   flex-direction: column;
@@ -768,6 +921,15 @@
   transform: none;
 }
 
+.pilares.is-static .tr-info {
+  order: 1;
+  opacity: 1;
+}
+
+.pilares.is-static .tr-linha {
+  flex-wrap: wrap;
+}
+
 .pilares.is-static .tr-trabalho--retrato .tr-cartao {
   width: min(100%, 28rem);
   height: auto;
@@ -775,6 +937,7 @@
 
 .pilares.is-static .tr-ph-legenda {
   position: static;
+  text-align: right;
   margin-top: 1rem;
   white-space: normal;
 }

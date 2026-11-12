@@ -81,7 +81,13 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
         syncVisibility()
         if (self.isActive) updateActive()
       },
-      onUpdate: updateActive,
+      // um salto direto do topo pros Pilares atravessa o gatilho inteiro
+      // sem ligá-lo, e o onToggle não dispara; o onUpdate sim
+      onUpdate: (self) => {
+        readTrigger(self)
+        syncVisibility()
+        updateActive()
+      },
       onRefresh: (self) => {
         readTrigger(self)
         syncVisibility()
@@ -94,7 +100,9 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       : atos.map((el) =>
           ScrollTrigger.create({
             trigger: el,
-            start: 'top 62%',
+            // liga quando o texto do ato pisa na tela, não depois: com
+            // 'top 62%' o texto já estava em quadro e ainda invisível
+            start: 'top 85%',
             onEnter: () => el.classList.add('is-on'),
             onLeaveBack: () => el.classList.remove('is-on'),
           }),

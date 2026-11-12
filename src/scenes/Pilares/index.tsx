@@ -11,12 +11,14 @@ import { Cartaz } from './panels/Cartaz'
 import { Fecho } from './panels/Fecho'
 import { TrabalhoPainel } from './panels/TrabalhoPainel'
 import { Trilho } from './panels/Trilho'
+import { useFolhas } from './useFolhas'
 import { useTira } from './useTira'
 import './pilares.css'
 
 export function Pilares() {
   const sectionRef = useRef<HTMLElement>(null)
   useTira(sectionRef)
+  useFolhas(sectionRef)
 
   return (
     <section
@@ -43,6 +45,7 @@ export function Pilares() {
                   frente={painel.frente}
                   trabalho={painel.trabalho}
                   ordem={painel.ordem}
+                  indice={painel.indice}
                 />
               )
             case 'fecho':

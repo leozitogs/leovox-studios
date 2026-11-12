@@ -32,7 +32,7 @@ import {
 } from './tiraMath'
 
 // Laptop primeiro: abaixo disso (e com reduced motion) a tira não pina.
-const STATIC_QUERY = '(prefers-reduced-motion: reduce), (max-width: 899px)'
+export const STATIC_QUERY = '(prefers-reduced-motion: reduce), (max-width: 899px)'
 
 // Histerese do liga e desliga de cada painel, em telas de distância.
 const LIGA = 0.38
@@ -118,11 +118,22 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
 
     paper?.classList.add('has-paper-transition')
 
-    // O menu some enquanto o cartaz ocupa a tela e volta com a câmera andando.
+    // O menu some enquanto o cartaz ocupa a tela e continua fora durante
+    // a tira: a pílula caía por cima do topo das capas. Ele volta quando o
+    // cursor sobe pro topo da tela e no fecho.
+    let cursorNoTopo = false
     const updateMenu = () => {
-      const alpha = current <= 0 ? 1 - ramp(arrivalProgress, 0.12, 0.55) : 1
+      const naTira = current > 0 && TIRA[current]?.kind !== 'fecho'
+      const alpha =
+        current <= 0 ? 1 - ramp(arrivalProgress, 0.12, 0.55) : naTira && !cursorNoTopo ? 0 : 1
       header?.style.setProperty('--paper-menu', String(alpha))
       if (header) header.inert = alpha < 0.01
+    }
+    const onPointer = (ev: PointerEvent) => {
+      const noTopo = ev.clientY < 110
+      if (noTopo === cursorNoTopo) return
+      cursorNoTopo = noTopo
+      updateMenu()
     }
 
     const tocarMidia = (el: HTMLElement, on: boolean) => {
@@ -165,6 +176,7 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
         nome.textContent = rotuloDe(i)
         carimbar(nome)
       }
+      ticks.forEach((tick, j) => tick.classList.toggle('is-atual', tickPanel[j] === i))
     }
 
     const render = (scroll: number) => {
@@ -289,11 +301,13 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
       if (i >= 0) goTo(i)
     }
     window.addEventListener('keydown', onKey)
+    window.addEventListener('pointermove', onPointer, { passive: true })
     section.addEventListener('click', onClick)
 
     return () => {
       window.clearTimeout(idle)
       window.removeEventListener('keydown', onKey)
+      window.removeEventListener('pointermove', onPointer)
       section.removeEventListener('click', onClick)
       st.kill()
       arrival?.kill()
