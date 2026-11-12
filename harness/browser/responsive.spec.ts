@@ -31,7 +31,14 @@ for (const viewport of VIEWPORTS) {
     const manifestoBox = await manifesto.boundingBox()
     expect(manifestoBox?.width).toBeLessThanOrEqual(viewport.width)
 
-    await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.12))
+    // o cartaz ocupa a primeira parte do pin, com a câmera parada: meia
+    // tela depois do início, a luz já caiu e nada andou
+    await app.evaluate(() => {
+      const h = window.__LEOVOX_HARNESS__!
+      const t = h.getScrollTriggers().find((trigger) => trigger.scene === 'pilares')
+      const p = t ? (window.innerHeight * 0.5) / (t.end - t.start) : 0.05
+      return h.setProgress('pilares', p)
+    })
     const lockup = await app.locator('.pl-lockup').boundingBox()
     const personagem = await app.locator('.pl-personagem').boundingBox()
     expect(lockup).not.toBeNull()
@@ -43,18 +50,20 @@ for (const viewport of VIEWPORTS) {
       Math.min(personagem!.x + personagem!.width, viewport.width) - Math.max(personagem!.x, 0),
     ).toBeGreaterThan(viewport.width * 0.5)
 
-    await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.4))
-    await expect(app.locator('.pl-project--identity')).toHaveClass(/is-on/)
-    await expect(app.locator('.pl-project--identity .pl-project-intro')).toBeInViewport()
-    await expect(app.locator('.pl-identity-hero')).toBeInViewport()
+    // abaixo de 900px a tira não pina (laptop primeiro; o resto vem depois)
+    if (viewport.width < 900) return
 
-    const navBoxes = await app.locator('.pl-nav-btn').evaluateAll((buttons) =>
+    await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.3))
+    await app.evaluate(() => window.__LEOVOX_HARNESS__!.settle(3000))
+    await expect(app.locator('.pl-track > .is-on').first()).toBeInViewport()
+
+    const alvos = await app.locator('.pl-nav-btn, .tr-tick').evaluateAll((buttons) =>
       buttons.map((button) => {
         const rect = button.getBoundingClientRect()
         return { width: rect.width, height: rect.height }
       }),
     )
-    for (const box of navBoxes) {
+    for (const box of alvos) {
       expect(box.width).toBeGreaterThanOrEqual(44)
       expect(box.height).toBeGreaterThanOrEqual(44)
     }

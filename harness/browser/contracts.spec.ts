@@ -5,48 +5,50 @@ test('expõe as cenas estruturais na ordem do filme', async ({ app }) => {
   expect(scenes).toEqual(['hero', 'manifesto', 'pilares'])
 })
 
-test('Pilares contém exatamente três frentes oficiais', async ({ app }) => {
+test('Pilares abre uma capa por frente oficial, na ordem', async ({ app }) => {
   await app.evaluate(() => window.__LEOVOX_HARNESS__!.enterScene('pilares'))
-  const headings = (await app.locator('.pl-q-frente').allTextContents()).map((text) =>
+  const capas = (await app.locator('.tr-capa-nome').allTextContents()).map((text) =>
     text.toLocaleUpperCase('pt-BR'),
   )
-  expect(headings).toHaveLength(3)
-  expect(headings).toEqual(['IDENTIDADE & DESIGN', 'PRESENÇA DIGITAL', 'TECNOLOGIA & AUTOMAÇÃO'])
+  expect(capas).toEqual(['IDENTIDADE & DESIGN', 'PRESENÇA DIGITAL', 'TECNOLOGIA & AUTOMAÇÃO'])
   await expect(app.locator('.pl-nav-btn')).toHaveCount(3)
 })
 
-test('Pilares prepara três trabalhos reais sem fingir assets publicados', async ({ app }) => {
-  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.4))
-
-  const projects = app.locator('.pl-project')
-  await expect(projects).toHaveCount(3)
-  expect(
-    await projects.evaluateAll((items) =>
-      items.map((item) => item.getAttribute('data-project-placeholder')),
-    ),
-  ).toEqual(['true', 'true', 'true'])
-  await expect(app.locator('.pl-asset[data-asset-request]')).toHaveCount(10)
-  await expect(app.locator('.pl-asset.is-placeholder figcaption').first()).toContainText(
-    'ASSET SOLICITADO',
+test('a tira só declara placeholders, nunca cases falsos', async ({ app }) => {
+  const trabalhos = app.locator('.tr-trabalho')
+  expect(await trabalhos.count()).toBeGreaterThanOrEqual(3)
+  const estado = await trabalhos.evaluateAll((items) =>
+    items.map((item) => ({
+      frente: item.getAttribute('data-frente'),
+      placeholder: item.getAttribute('data-placeholder'),
+      temMidia: Boolean(item.querySelector('.tr-midia img, .tr-midia video')),
+      paragrafos: item.querySelectorAll('.tr-info p:not(.tr-ordem):not(.tr-tipo):not(.tr-anotacao)')
+        .length,
+    })),
   )
+  for (const frente of ['identidade', 'digital', 'tecnologia']) {
+    expect(estado.some((t) => t.frente === frente)).toBe(true)
+  }
+  for (const t of estado) {
+    // placeholder não carrega mídia; trabalho com mídia não é placeholder
+    expect(t.placeholder === 'true').toBe(!t.temMidia)
+    expect(t.paragrafos).toBe(0)
+  }
+  const legendas = app.locator('.tr-trabalho[data-placeholder="true"] .tr-ph-legenda')
+  await expect(legendas.first()).toContainText('Placeholder')
+})
 
-  // No celular a rodada valida estrutura e leitura; a interação dos
-  // quadros é de tablet e desktop (plano de 2026-09-17).
-  if (test.info().project.name.endsWith('-mobile')) return
-
-  const identityToggle = app.locator('.pl-view-switch')
-  await identityToggle.click()
-  await expect(identityToggle).toHaveAttribute('aria-pressed', 'true')
-
-  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.63))
-  const landscapeFormat = app.locator('.pl-format-controls button').nth(2)
-  await landscapeFormat.click()
-  await expect(landscapeFormat).toHaveAttribute('aria-pressed', 'true')
-
-  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.84))
-  const runFlow = app.locator('.pl-run-flow')
-  await runFlow.click()
-  await expect(runFlow).toHaveAttribute('aria-pressed', 'true')
+test('nenhum título de capa ou de trabalho estoura a coluna', async ({ app }) => {
+  test.skip(
+    !['chromium-desktop', 'chromium-compact'].includes(test.info().project.name),
+    'Laptop e desktop primeiro; a responsividade fina vem depois',
+  )
+  const estouros = await app.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>('.tr-titulo, .tr-capa-nome')]
+      .filter((el) => el.scrollWidth > el.clientWidth + 1)
+      .map((el) => el.textContent),
+  )
+  expect(estouros).toEqual([])
 })
 
 test('Manifesto e Pilares aceitam posicionamento determinístico', async ({ app }) => {
@@ -58,7 +60,8 @@ test('Manifesto e Pilares aceitam posicionamento determinístico', async ({ app 
 
   const pilares = await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.72))
   expect(pilares.id).toBe('pilares')
-  if (test.info().project.name === 'chromium-reduced-motion') expect(pilares.progress).toBeNull()
+  const semPin = await app.locator('.pilares.is-static').count()
+  if (semPin) expect(pilares.progress).toBeNull()
   else expect(pilares.progress).toBeGreaterThan(0.65)
 })
 

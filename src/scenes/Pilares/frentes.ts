@@ -1,75 +1,134 @@
-export type Frente = 'identidade' | 'digital' | 'tecnologia'
+// As 3 frentes oficiais e a tira de trabalhos (briefing v4, "A tira").
+// Por ora todo trabalho é placeholder: o PO está levantando os projetos
+// reais. Para ligar um trabalho de verdade basta preencher `midia` e
+// trocar título, tipo e ano; o painel deixa de ser placeholder sozinho.
 
-export type ProjectAsset = {
-  readonly src?: string
-  readonly kind?: 'image' | 'video'
-  readonly poster?: string
-  readonly alt: string
-  readonly request: string
-}
+export type Frente = 'identidade' | 'digital' | 'tecnologia'
 
 export type FrenteInfo = {
   readonly id: Frente
   readonly numero: string
   readonly nome: string
   readonly ancora: string
-  readonly categoria: string
-  readonly projeto: string
-  readonly resumo: string
-  readonly assets: Readonly<Record<string, ProjectAsset>>
 }
 
-// Os caminhos ficam vazios ate os trabalhos reais serem entregues. Cada
-// painel mostra exatamente qual exportacao falta sem requisitar um arquivo
-// inexistente nem fingir que o estudo ja e um case publicado.
+export type Midia = {
+  readonly kind: 'image' | 'video'
+  readonly src: string
+  readonly poster?: string
+  readonly alt: string
+}
+
+export type Trabalho = {
+  readonly id: string
+  readonly frente: Frente
+  readonly titulo: string
+  readonly tipo: string
+  readonly ano: string
+  readonly formato: 'paisagem' | 'retrato'
+  readonly anotacao?: string
+  readonly midia?: Midia
+}
+
 export const FRENTES: readonly FrenteInfo[] = [
+  { id: 'identidade', numero: '01', nome: 'Identidade & Design', ancora: 'CARA.' },
+  { id: 'digital', numero: '02', nome: 'Presença Digital', ancora: 'PALCO.' },
+  { id: 'tecnologia', numero: '03', nome: 'Tecnologia & Automação', ancora: 'MOTOR.' },
+]
+
+export const TRABALHOS: readonly Trabalho[] = [
   {
-    id: 'identidade',
-    numero: '01',
-    nome: 'Identidade & Design',
-    ancora: 'CARA.',
-    categoria: 'Branding / Sistema visual',
-    projeto: 'Seu projeto de identidade',
-    resumo:
-      'Uma marca revelada pelo resultado, pelas aplicações e pela lógica que sustenta o sistema.',
-    assets: {
-      hero: { alt: 'Key visual do projeto de identidade', request: 'KEY VISUAL 16:10' },
-      mark: { alt: 'Símbolo do projeto de identidade', request: 'SÍMBOLO SVG' },
-      applicationOne: { alt: 'Primeira aplicação da identidade', request: 'APLICAÇÃO 01' },
-      applicationTwo: { alt: 'Segunda aplicação da identidade', request: 'APLICAÇÃO 02' },
-    },
+    id: 'identidade-01',
+    frente: 'identidade',
+    titulo: 'Identidade 01',
+    tipo: 'Identidade visual',
+    ano: '2026',
+    formato: 'paisagem',
+    anotacao: 'o trabalho real entra aqui',
   },
   {
-    id: 'digital',
-    numero: '02',
-    nome: 'Presença Digital',
-    ancora: 'PALCO.',
-    categoria: 'Conteúdo / Edição de vídeo',
-    projeto: 'Sua campanha em movimento',
-    resumo: 'Uma campanha atravessando formatos, ritmo e canais sem perder a própria identidade.',
-    assets: {
-      vertical: { alt: 'Vídeo vertical da campanha', request: 'VÍDEO 9:16', kind: 'video' },
-      square: { alt: 'Publicação quadrada da campanha', request: 'POST 1:1' },
-      landscape: { alt: 'Thumbnail horizontal da campanha', request: 'THUMB 16:9' },
-    },
+    id: 'identidade-02',
+    frente: 'identidade',
+    titulo: 'Identidade 02',
+    tipo: 'Apparel',
+    ano: '2025',
+    formato: 'retrato',
   },
   {
-    id: 'tecnologia',
-    numero: '03',
-    nome: 'Tecnologia & Automação',
-    ancora: 'MOTOR.',
-    categoria: 'Produto digital / Automação',
-    projeto: 'Seu produto em funcionamento',
-    resumo:
-      'Uma experiência digital montada em cena, da entrada ao resultado que o usuário realmente vê.',
-    assets: {
-      desktop: { alt: 'Interface desktop do produto', request: 'CAPTURA DESKTOP' },
-      mobile: { alt: 'Interface mobile do produto', request: 'CAPTURA MOBILE' },
-      recording: {
-        alt: 'Demonstração gravada do produto',
-        request: 'GRAVAÇÃO 8 A 15S',
-        kind: 'video',
-      },
-    },
+    id: 'digital-01',
+    frente: 'digital',
+    titulo: 'Presença 01',
+    tipo: 'Site',
+    ano: '2026',
+    formato: 'paisagem',
+    anotacao: 'site rodando em vídeo',
+  },
+  {
+    id: 'digital-02',
+    frente: 'digital',
+    titulo: 'Presença 02',
+    tipo: 'Conteúdo e vídeo',
+    ano: '2025',
+    formato: 'retrato',
+  },
+  {
+    id: 'tecnologia-01',
+    frente: 'tecnologia',
+    titulo: 'Motor 01',
+    tipo: 'Automação',
+    ano: '2026',
+    formato: 'paisagem',
+    anotacao: 'entrada vira saída',
+  },
+  {
+    id: 'tecnologia-02',
+    frente: 'tecnologia',
+    titulo: 'Motor 02',
+    tipo: 'Produto digital',
+    ano: '2026',
+    formato: 'paisagem',
   },
 ]
+
+export type Painel =
+  | { readonly kind: 'cartaz'; readonly id: 'cartaz' }
+  | { readonly kind: 'capa'; readonly id: string; readonly frente: FrenteInfo }
+  | {
+      readonly kind: 'trabalho'
+      readonly id: string
+      readonly frente: FrenteInfo
+      readonly trabalho: Trabalho
+      readonly indice: number
+      readonly ordem: string
+    }
+  | { readonly kind: 'fecho'; readonly id: 'fecho' }
+
+/** A tira na ordem de leitura: cartaz, cada frente com capa e trabalhos, fecho. */
+export function montarTira(
+  frentes: readonly FrenteInfo[] = FRENTES,
+  trabalhos: readonly Trabalho[] = TRABALHOS,
+): Painel[] {
+  const tira: Painel[] = [{ kind: 'cartaz', id: 'cartaz' }]
+  let indice = 0
+  for (const frente of frentes) {
+    tira.push({ kind: 'capa', id: `capa-${frente.id}`, frente })
+    trabalhos
+      .filter((t) => t.frente === frente.id)
+      .forEach((trabalho, i) => {
+        tira.push({
+          kind: 'trabalho',
+          id: trabalho.id,
+          frente,
+          trabalho,
+          indice,
+          ordem: `${frente.numero}.${i + 1}`,
+        })
+        indice += 1
+      })
+  }
+  tira.push({ kind: 'fecho', id: 'fecho' })
+  return tira
+}
+
+export const TIRA = montarTira()
+export const TOTAL_TRABALHOS = TIRA.filter((p) => p.kind === 'trabalho').length

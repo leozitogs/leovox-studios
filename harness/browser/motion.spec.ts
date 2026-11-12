@@ -1,38 +1,71 @@
 import { expect, test } from './fixtures'
 
-test('a navegação da tira conclui a ida e a volta', async ({ app }) => {
-  test.skip(
-    !['chromium-desktop', 'chromium-compact'].includes(test.info().project.name),
-    'Invariante do pin pertence aos projetos desktop com movimento',
-  )
+const DESKTOP = ['chromium-desktop', 'chromium-compact', 'firefox-desktop']
 
-  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.4))
-  const scene = app.locator('[data-harness-scene="pilares"]')
-  const nav = app.locator('.pl-nav-btn')
-  await expect(scene).toHaveAttribute('data-beat', '1')
+// distância do painel ativo ao centro da tela, em telas
+const desvioDoAtivo = () => {
+  const cena = document.querySelector<HTMLElement>('[data-harness-scene="pilares"]')!
+  const ids = [...cena.querySelectorAll<HTMLElement>('.pl-track > *')]
+  const ativo = ids.find((el) => el.dataset.panelId === cena.dataset.panel)
+  return Math.abs(Number.parseFloat(ativo?.style.getPropertyValue('--d') || 'NaN'))
+}
 
-  await nav.nth(2).click()
-  await expect(scene).toHaveAttribute('data-beat', '3', { timeout: 6000 })
-
-  await nav.nth(0).click()
-  await expect(scene).toHaveAttribute('data-beat', '1', { timeout: 6000 })
+test('parado no meio da travessia, a tira assenta num painel', async ({ app }) => {
+  test.skip(!DESKTOP.includes(test.info().project.name), 'A tira pina em laptop e desktop')
+  for (const progresso of [0.23, 0.48, 0.71]) {
+    await app.evaluate((p) => window.__LEOVOX_HARNESS__!.setProgress('pilares', p), progresso)
+    await app.waitForTimeout(150)
+    await app.evaluate(() => window.__LEOVOX_HARNESS__!.settle(3000))
+    expect(await app.evaluate(desvioDoAtivo)).toBeLessThan(0.02)
+  }
 })
 
-test('reduced motion mantém todas as frentes no fluxo', async ({ app }) => {
-  test.skip(
-    test.info().project.name !== 'chromium-reduced-motion',
-    'Contrato específico de reduced motion',
-  )
+test('o trilho e o teclado navegam pela tira', async ({ app }) => {
+  test.skip(!DESKTOP.includes(test.info().project.name), 'A tira pina em laptop e desktop')
+  const cena = app.locator('[data-harness-scene="pilares"]')
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.2))
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.settle(3000))
+
+  await app.locator('.tr-tick').nth(3).click()
+  await expect(cena).toHaveAttribute('data-panel', 'digital-02', { timeout: 6000 })
+
+  await app.locator('.pl-nav-btn').nth(2).click()
+  await expect(cena).toHaveAttribute('data-panel', 'capa-tecnologia', { timeout: 6000 })
+  await expect(app.locator('.pl-nav-btn').nth(2)).toHaveAttribute('aria-current', 'true')
+
+  await app.keyboard.press('ArrowRight')
+  await expect(cena).toHaveAttribute('data-panel', 'tecnologia-01', { timeout: 6000 })
+  await app.keyboard.press('ArrowLeft')
+  await expect(cena).toHaveAttribute('data-panel', 'capa-tecnologia', { timeout: 6000 })
+})
+
+test('sem pin, a tira inteira fica no fluxo vertical', async ({ app }) => {
+  test.skip(DESKTOP.includes(test.info().project.name), 'Reduced motion e telas estreitas')
   await expect(app.locator('[data-harness-scene="pilares"]')).toHaveClass(/is-static/)
-  await expect(app.locator('.pl-quadro')).toHaveCount(3)
+  await expect(app.locator('.tr-capa')).toHaveCount(3)
+  expect(await app.locator('.tr-trabalho').count()).toBeGreaterThanOrEqual(3)
 })
 
-test('coleta baseline de frames em ambiente fixo', async ({ app, browserName }) => {
+test('coleta baseline de frames na travessia', async ({ app, browserName }) => {
   test.skip(
     browserName !== 'chromium' || test.info().project.name !== 'chromium-desktop',
     'Baseline de frame usa um único ambiente fixo',
   )
-  const metrics = await app.evaluate(() => window.__LEOVOX_HARNESS__!.collectFrameMetrics(350))
+  await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.1))
+  const metrics = await app.evaluate(async () => {
+    const h = window.__LEOVOX_HARNESS__!
+    const inicio = window.scrollY
+    const varrer = (async () => {
+      for (let i = 0; i < 90; i += 1) {
+        window.scrollTo(0, inicio + i * 40)
+        await new Promise((r) => requestAnimationFrame(r))
+      }
+    })()
+    const m = await h.collectFrameMetrics(1200)
+    await varrer
+    return m
+  })
   expect(metrics.frameCount).toBeGreaterThan(5)
   expect(Number.isFinite(metrics.p95FrameMs)).toBe(true)
+  test.info().annotations.push({ type: 'p95FrameMs', description: metrics.p95FrameMs.toFixed(1) })
 })
