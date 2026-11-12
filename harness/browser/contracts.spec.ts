@@ -30,7 +30,9 @@ test('Pilares prepara três trabalhos reais sem fingir assets publicados', async
     'ASSET SOLICITADO',
   )
 
-  if (test.info().project.name === 'chromium-mobile') return
+  // No celular a rodada valida estrutura e leitura; a interação dos
+  // quadros é de tablet e desktop (plano de 2026-09-17).
+  if (test.info().project.name.endsWith('-mobile')) return
 
   const identityToggle = app.locator('.pl-view-switch')
   await identityToggle.click()

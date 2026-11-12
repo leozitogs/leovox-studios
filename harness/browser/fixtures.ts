@@ -16,7 +16,11 @@ export const test = base.extend<HarnessFixtures>({
       // Vídeo é baixado em pedaços: o navegador cancela e retoma o pedido
       // de mídia quando quer (o WebKit faz isso sempre). Isso não é asset
       // quebrado; asset quebrado volta como resposta com status de erro.
-      if (request.resourceType() === 'media' && /cancel|abort/i.test(reason)) return
+      // O WebKit do Linux nem sempre marca o pedido como "media"; a
+      // extensão do arquivo decide.
+      const isMedia =
+        request.resourceType() === 'media' || /\.(webm|mp4|mov)(\?|$)/i.test(request.url())
+      if (isMedia && /cancel|abort/i.test(reason)) return
       errors.push(`request: ${request.url()} ${reason}`)
     })
     page.on('response', (response) => {
