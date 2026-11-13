@@ -7,13 +7,13 @@
 //    deriva dele parallax, revelação e inclinação. Parou o scroll, a
 //    gravidade assenta no painel mais próximo: a tela nunca descansa
 //    entre dois (decisões 35 e 47).
-// 3. GESTOS: carimbos, troca de nome no trilho e vídeo do painel ativo
+// 3. GESTOS: carimbos, marcas do trilho e vídeo do painel ativo
 //    disparam em tempo real quando um painel liga, com histerese.
 
 import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
 import { getLenis } from '../../lib/lenis'
-import { TIRA } from './frentes'
+import { TIRA, TOTAL_TRABALHOS } from './frentes'
 import {
   D_MAX,
   TITULO_ON_VH,
@@ -40,14 +40,15 @@ const DESLIGA = 0.5
 
 const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3)
 
+// o que o leitor de tela ouve quando a tira assenta num painel
 function rotuloDe(i: number): string {
   const painel = TIRA[i]
   if (!painel) return ''
   switch (painel.kind) {
     case 'trabalho':
-      return painel.trabalho.titulo
+      return `${painel.trabalho.titulo}, trabalho ${painel.indice + 1} de ${TOTAL_TRABALHOS}`
     case 'capa':
-      return painel.frente.nome
+      return `Frente ${painel.frente.numero}, ${painel.frente.nome}`
     case 'fecho':
       return 'Um ecossistema'
     default:
@@ -81,9 +82,9 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
     const paper = section.closest<HTMLElement>('.story-paper')
     const signature = paper?.querySelector<HTMLElement>('.mf-ato-4')
     const header = document.querySelector<HTMLElement>('.nav-pill')
-    const capituloNome = section.querySelector<HTMLElement>('.tr-capitulo-nome')
     const contadorN = section.querySelector<HTMLElement>('.tr-contador-n')
-    const nome = section.querySelector<HTMLElement>('.tr-nome')
+    const anuncio = section.querySelector<HTMLElement>('.tr-sr')
+    const grupos = Array.from(section.querySelectorAll<HTMLElement>('.tr-regua-grupo'))
     const ticks = Array.from(section.querySelectorAll<HTMLButtonElement>('.tr-tick'))
     const navBtns = Array.from(section.querySelectorAll<HTMLButtonElement>('.pl-nav-btn'))
     const tickPanel = ticks.map((t) => ids.indexOf(t.dataset.goto ?? ''))
@@ -143,14 +144,6 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
       })
     }
 
-    const carimbar = (el: HTMLElement | null) => {
-      if (!el) return
-      el.classList.remove('is-stamp')
-      // força o reflow pra animação reexecutar a cada troca
-      void el.offsetWidth
-      el.classList.add('is-stamp')
-    }
-
     const atualizarTrilho = (i: number) => {
       section.dataset.panel = ids[i]
       section.dataset.kind = TIRA[i]?.kind ?? ''
@@ -162,20 +155,13 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
         if (ativo) btn.setAttribute('aria-current', 'true')
         else btn.removeAttribute('aria-current')
       })
-      if (capituloNome) {
-        const painel = TIRA[i]
-        capituloNome.textContent =
-          painel && (painel.kind === 'capa' || painel.kind === 'trabalho') ? painel.frente.nome : ''
-      }
+      grupos.forEach((g) => g.classList.toggle('is-ativo', g.dataset.frente === frente))
       // na capa, o contador já aponta o primeiro trabalho daquela frente
       const proximo = TIRA.slice(i).find((p) => p.kind === 'trabalho')
       if (contadorN && proximo?.kind === 'trabalho') {
         contadorN.textContent = String(proximo.indice + 1).padStart(2, '0')
       }
-      if (nome) {
-        nome.textContent = rotuloDe(i)
-        carimbar(nome)
-      }
+      if (anuncio) anuncio.textContent = rotuloDe(i)
       ticks.forEach((tick, j) => tick.classList.toggle('is-atual', tickPanel[j] === i))
     }
 

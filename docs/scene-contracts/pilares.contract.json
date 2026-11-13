@@ -10,7 +10,7 @@
     "Cada frente tem ao menos um trabalho; placeholder é declarado por data-placeholder e nunca se apresenta como case publicado",
     "A câmera é função pura do scroll dentro do pin",
     "Parado em qualquer ponto da travessia, o scroll assenta no descanso de um painel",
-    "O trilho informa a frente e o trabalho ativos e navega por clique e por teclado",
+    "O trilho informa a frente e o trabalho ativos e navega por clique e por teclado, sem repetir texto que já está na tela",
     "Nenhum título de capa ou de trabalho estoura a própria coluna em laptop",
     "Produção de conteúdo e edição de vídeo pertencem a Presença Digital",
     "Reduced motion e telas abaixo de 900px apresentam a tira em fluxo vertical, sem pin",

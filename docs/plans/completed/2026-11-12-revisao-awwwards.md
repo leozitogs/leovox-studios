@@ -32,6 +32,13 @@ papel solto com o cursor. Laptop primeiro; placeholders mantidos.
   ficha sai assim mesmo.
 - Contador do trilho some quando o fecho verde espia na beirada.
 
+## Terceira rodada: trilho limpo e colagem assumida (decisão 72)
+
+- Saem os botões redondos de capítulo e os nomes repetidos do rodapé; a régua agrupa os trabalhos por
+  frente com a âncora da marca como capítulo, o contador fica à direita e a dica de navegação só
+  aparece na primeira capa.
+- A ficha vaza de propósito pela esquerda do cartão, com giro firme e sempre caindo.
+
 ## Evidências
 
 - `npm run validate`: 33 testes de unidade (11 novos da física), contratos, tipos, lint, formato e

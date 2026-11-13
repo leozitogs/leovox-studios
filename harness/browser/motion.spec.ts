@@ -100,7 +100,7 @@ test('a ficha do trabalho sai quando a tira assenta e não cobre a peça', async
   const m = (await midia.boundingBox())!
   const f = (await ficha.boundingBox())!
   // invade no máximo a dobra de 1,4rem por baixo do cartão (mais o giro)
-  expect(m.y + m.height - f.y).toBeLessThanOrEqual(40)
+  expect(m.y + m.height - f.y).toBeLessThanOrEqual(52)
   // e não encosta no trilho
   const trilho = (await app.locator('.tr-trilho').boundingBox())!
   expect(f.y + f.height).toBeLessThan(trilho.y)
