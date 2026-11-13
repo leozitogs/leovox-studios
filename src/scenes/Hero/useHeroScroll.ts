@@ -77,7 +77,7 @@ export function useHeroScroll(
         const st = ScrollTrigger.create({
           start: 0,
           end: 'max',
-          onUpdate: (self) => gsap.set(navProgress, { scaleX: self.progress }),
+          onUpdate: (self) => gsap.set(navProgress, { '--p': self.progress }),
         })
         return () => st.kill()
       }
@@ -280,7 +280,7 @@ export function useHeroScroll(
 
       // ---------- Progresso da página no fio da pill ----------
       const progressTo = navProgress
-        ? gsap.quickTo(navProgress, 'scaleX', { duration: 0.35, ease: 'power2.out' })
+        ? gsap.quickTo(navProgress, '--p', { duration: 0.35, ease: 'power2.out' })
         : null
 
       ScrollTrigger.create({

@@ -30,17 +30,20 @@
 }
 
 /* Barra de progresso da página: faixa cinza que preenche a pill
-   da esquerda pra direita conforme o scroll avança (escolha do PO). */
+   da esquerda pra direita conforme o scroll avança (escolha do PO).
+   A faixa fica sempre em escala 1 e o progresso (--p, de 0 a 1, vindo
+   do useHeroScroll) é uma máscara de cantos redondos. Com scaleX, o
+   raio de 10px era espremido na horizontal e a borda da faixa ficava
+   serrilhada e mais clara que o preto e o cinza (QA de 2026-11-13). */
 .nav-progress {
   position: absolute;
   top: 0.4rem;
   bottom: 0.4rem;
   left: 4.2rem; /* começa depois da isologo, como na referência */
   right: 8rem; /* termina antes do CTA: cheia = atrás dos links */
-  border-radius: 10px;
+  --p: 0;
   background: rgba(255, 255, 255, 0.09);
-  transform: scaleX(0);
-  transform-origin: left center;
+  clip-path: inset(0 calc((1 - var(--p)) * 100%) 0 0 round 10px);
   pointer-events: none;
 }
 
