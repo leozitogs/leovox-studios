@@ -19,3 +19,7 @@ docs/DECISOES.md
 
 # Restos de montagem FUSE (sandbox de agentes)
 .fuse_hidden*
+
+# Wrangler: estado local do wrangler dev e segredos locais
+.wrangler/
+.dev.vars*

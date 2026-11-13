@@ -3,18 +3,24 @@
 // Cabeçalhos em public/_headers; o que não sobe, em public/.assetsignore.
 {
   "name": "leovox-studios",
-  "compatibility_date": "2026-11-12",
+  "compatibility_date": "2026-10-28",
   // Sem telemetria do Wrangler.
   "send_metrics": false,
+  // Site fechado até as licenças de fonte (SDD 07-operacional/01-deploy):
+  // o Worker pede usuário e senha antes de qualquer arquivo e falha
+  // fechado sem a senha. A senha é segredo (wrangler secret put
+  // PREVIEW_PASSWORD), nunca vai pro repositório.
+  "main": "worker/index.ts",
+  "vars": { "PREVIEW_USER": "leovox" },
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
     // URL que não existe recebe a cena 404 (dist/404.html) com status 404.
     "not_found_handling": "404-page",
   },
-  // O site só existe no domínio, que fica atrás do Cloudflare Access até
-  // as licenças de fonte serem resolvidas (SDD 07-operacional/01-deploy).
-  // Sem isso, o *.workers.dev e as URLs de preview seriam portas abertas
-  // ao redor do Access.
+  // O site só existe no domínio. Sem isso, o *.workers.dev e as URLs de
+  // preview seriam portas abertas ao redor da senha.
   "workers_dev": false,
   "preview_urls": false,
   "routes": [

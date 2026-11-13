@@ -32,18 +32,23 @@ dois cortes são trial.
 
 ### Domínio fechado (2026-11-13)
 
-Decisão do PO: até as licenças, o site roda no domínio, mas fechado.
+Decisão do PO: até as licenças, o site roda no domínio, mas fechado por senha. O
+Cloudflare Access foi descartado porque o Zero Trust Free exige cartão cadastrado.
 
-- `leovoxstudios.com.br` e `www` são custom domains do Worker, protegidos por uma
-  aplicação self-hosted do Cloudflare Access que libera só os e-mails autorizados
-  (login por código enviado ao e-mail).
-- `workers_dev` e `preview_urls` desligados no `wrangler.jsonc`: sem isso, o
-  `*.workers.dev` e as URLs de preview seriam portas abertas ao redor do Access.
-- Ordem obrigatória: a aplicação do Access existe antes do primeiro deploy com as
-  rotas. Conferência: `curl -sI https://leovoxstudios.com.br` responde 302 para
-  `*.cloudflareaccess.com`.
-- Abrir ao público, depois das licenças: apagar a aplicação do Access (ou trocar a
-  política por "Everyone").
+- `leovoxstudios.com.br` e `www` são custom domains do Worker `worker/index.ts`,
+  que roda antes de qualquer arquivo (`run_worker_first`) e pede usuário e senha
+  (HTTP Basic). Usuário em `vars` (`PREVIEW_USER`); a senha é segredo do Worker,
+  cadastrado pelo PO com `npx wrangler secret put PREVIEW_PASSWORD`, e nunca vai
+  pro repositório.
+- Falha fechado: sem a senha cadastrada, tudo responde 503. Senha errada, 401.
+  Tudo sai com `X-Robots-Tag: noindex` e cache privado.
+- `workers_dev` e `preview_urls` desligados: sem isso, o `*.workers.dev` e as URLs
+  de preview seriam portas abertas ao redor da senha.
+- `compatibility_date` acompanha o runtime da versão fixada do Wrangler (o
+  `wrangler dev` recusa data mais nova que o binário).
+- Abrir ao público, depois das licenças: tirar `main`, `vars`, `binding` e
+  `run_worker_first` do `wrangler.jsonc`; a Cloudflare volta a servir o `dist/`
+  direto.
 
 ## CI/CD
 
