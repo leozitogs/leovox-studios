@@ -1,5 +1,6 @@
 // Hospedagem: Cloudflare Workers com assets estáticos (plano free).
-// Não há código de Worker: a Cloudflare serve o dist/ direto.
+// O dist/ é servido pelo binding ASSETS, atrás do Worker de senha
+// (worker/index.ts) enquanto o site está fechado.
 // Cabeçalhos em public/_headers; o que não sobe, em public/.assetsignore.
 {
   "name": "leovox-studios",
