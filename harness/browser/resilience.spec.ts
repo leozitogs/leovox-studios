@@ -28,6 +28,6 @@ test('abre sem erro quando o navegador não oferece WebGL', async ({ page }) => 
   await expect(page.locator('.persistent-canvas')).toHaveAttribute('data-webgl', 'off')
   await expect(page.locator('.persistent-canvas canvas')).toHaveCount(0)
   const scenes = await page.evaluate(() => window.__LEOVOX_HARNESS__!.listScenes())
-  expect(scenes).toEqual(['hero', 'manifesto', 'pilares'])
+  expect(scenes).toEqual(['hero', 'manifesto', 'pilares', 'sobre'])
   expect(errors, errors.join('\n')).toEqual([])
 })

@@ -7,6 +7,7 @@ import { destroyLenis, initLenis, stopLenis } from './lib/lenis'
 import { Hero } from './scenes/Hero'
 import { Manifesto } from './scenes/Manifesto'
 import { Pilares } from './scenes/Pilares'
+import { Sobre } from './scenes/Sobre'
 
 export default function App() {
   // O site inteiro vive na .site: e ela que sobe como folha na
@@ -34,8 +35,8 @@ export default function App() {
             <Manifesto />
             <Pilares />
           </div>
-          {/* Respiro pós-tira: destino provisório até a Cena 4 */}
-          <section className="scene-spacer" aria-hidden="true" />
+          {/* a folha da Cena 7 sobe por cima do fecho verde dos Pilares */}
+          <Sobre />
         </main>
         {/* a lâmina de verde chapado dos saltos longos do menu (lib/navegar) */}
         <div className="lamina" aria-hidden="true" />

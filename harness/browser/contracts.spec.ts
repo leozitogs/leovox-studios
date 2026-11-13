@@ -2,7 +2,7 @@ import { expect, test } from './fixtures'
 
 test('expõe as cenas estruturais na ordem do filme', async ({ app }) => {
   const scenes = await app.evaluate(() => window.__LEOVOX_HARNESS__!.listScenes())
-  expect(scenes).toEqual(['hero', 'manifesto', 'pilares'])
+  expect(scenes).toEqual(['hero', 'manifesto', 'pilares', 'sobre'])
 })
 
 test('Pilares abre uma capa por frente oficial, na ordem', async ({ app }) => {

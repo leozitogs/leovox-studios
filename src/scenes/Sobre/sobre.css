@@ -1,0 +1,726 @@
+/* ============================================================
+   Cena 7 · Sobre · O making-of
+   A folha off-white sobe por cima do fecho verde dos Pilares (que
+   fica parado atrás, ver useSobre) com os cantos de cima
+   arredondados, da família do raio do card do hero. Matéria: papel,
+   negativo #222222 com furos e código de borda, fotos P&B em
+   halftone. O verde é só a mão: círculo, seta, sublinhado, setas do
+   retrato e a fita do set.
+   ============================================================ */
+
+.sobre {
+  --sv-raio: clamp(18px, 3vw, 44px);
+  --sv-cinza: #8a8a84;
+  --sv-papel: #ece9e1;
+  position: relative;
+  z-index: calc(var(--z-content) + 1);
+  padding: clamp(170px, 18vw, 300px) 4vw 14vh;
+  background: var(--color-offwhite);
+  color: var(--color-black);
+  border-radius: var(--sv-raio) var(--sv-raio) 0 0;
+  box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.18);
+}
+
+/* o papel da folha, por baixo de tudo */
+.sobre::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: url('/textures/texture-paper.png') center / cover;
+  mix-blend-mode: multiply;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.sobre > * {
+  position: relative;
+}
+
+.sv-rot {
+  font-family: var(--font-numeric);
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sv-cinza);
+}
+
+.sv-rot b {
+  font-weight: 400;
+  color: var(--color-black);
+}
+
+/* ---------- As fitas da borda ----------
+   Duas fitas de 112vw cruzam a borda de cima, giradas em sentidos
+   opostos, e correm com a velocidade e o sentido da rolagem. O
+   negativo tem furos nas bordas; a fita do set é verde com contorno
+   preto, pra não sumir sobre o fecho verde. */
+
+.sv-fitas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.sv-fita {
+  position: absolute;
+  top: clamp(54px, 6.4vw, 108px);
+  left: -6vw;
+  width: 112vw;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--font-numeric);
+  font-size: clamp(26px, 2.5vw, 40px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sv-fita-trilho {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.sv-fita-jogo,
+.sv-fita-jogo > span {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.sv-fita-jogo b {
+  padding: 0 0.35em;
+  font-weight: 400;
+}
+
+.sv-fita-jogo i {
+  width: 0.32em;
+  height: 0.32em;
+  margin: 0 0.25em;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.sv-fita--negativo {
+  padding: 1.05em 0 0.95em;
+  background: var(--color-gray-dark);
+  color: #f1efe8;
+  transform: rotate(2.1deg);
+}
+
+/* furos de tracionamento nas duas bordas do negativo */
+.sv-fita--negativo::before,
+.sv-fita--negativo::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0.32em;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 0.45em,
+    #e9e7e0 0.45em 0.85em,
+    transparent 0.85em 1.3em
+  );
+  opacity: 0.9;
+}
+
+.sv-fita--negativo::before {
+  top: 0.28em;
+}
+
+.sv-fita--negativo::after {
+  bottom: 0.28em;
+}
+
+.sv-fita--set {
+  margin-top: 0.1em;
+  padding: 0.42em 0 0.3em;
+  background: var(--color-green);
+  color: var(--color-black);
+  box-shadow: 0 0 0 2px var(--color-black);
+  transform: rotate(-1.7deg);
+}
+
+/* ---------- Abertura ---------- */
+
+.sv-abre {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  gap: 6vw;
+  align-items: end;
+}
+
+.sv-titulo {
+  margin-top: 1.4vh;
+  font-family: var(--font-signature);
+  font-weight: 400;
+  font-size: min(13vw, 24vh);
+  line-height: 0.84;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.sv-abre-texto {
+  padding-bottom: 1.4vh;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: #333;
+}
+
+/* ---------- A folha de contato ---------- */
+
+.sv-folha {
+  width: min(1000px, 76vw);
+  margin: 16vh auto 0;
+  padding: 34px 26px 26px;
+  background: var(--sv-papel);
+  box-shadow:
+    0 1px 0 #d8d5cc,
+    0 26px 60px rgba(0, 0, 0, 0.14);
+}
+
+.sv-folha-cab,
+.sv-ph-legenda {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-numeric);
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sv-cinza);
+}
+
+.sv-folha-cab {
+  margin-bottom: 30px;
+}
+
+.sv-ph-legenda {
+  margin-top: 26px;
+}
+
+.sv-tiras {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sv-tira {
+  --revela: 1;
+  position: relative;
+  margin-bottom: 78px;
+}
+
+.sv-tira:last-child {
+  margin-bottom: 0;
+}
+
+.sv-tira-cod {
+  position: absolute;
+  top: -21px;
+  left: 0;
+  font-family: var(--font-numeric);
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  color: var(--sv-cinza);
+}
+
+.sv-tira-ano {
+  position: absolute;
+  right: -78px;
+  top: 50%;
+  font-family: var(--font-numeric);
+  font-size: 1.9rem;
+  letter-spacing: 0.2em;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+/* o texto da prova é do leitor de tela: na tela, a prova é a foto */
+.sv-prova-texto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sv-negativo {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 26px 12px;
+  background: var(--color-gray-dark);
+}
+
+.sv-negativo::before,
+.sv-negativo::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 9px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 10px,
+    #e9e7e0 10px 19px,
+    transparent 19px 28px
+  );
+  opacity: 0.85;
+}
+
+.sv-negativo::before {
+  top: 8px;
+}
+
+.sv-negativo::after {
+  bottom: 8px;
+}
+
+.sv-take {
+  position: relative;
+  margin: 0;
+}
+
+.sv-quadro {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--sv-papel);
+}
+
+/* placeholder: um recorte do fundo do hero, que já é halftone */
+.sv-foto {
+  position: absolute;
+  inset: 0;
+  background: url('/background/bg-predios.webp') 0 0 / 420% auto no-repeat;
+  filter: grayscale(1) contrast(1.05);
+}
+
+/* a revelação: o papel fotográfico branco some e a foto aparece,
+   função pura da distância da tira ao centro (--revela, useSobre) */
+.sv-papel-foto {
+  position: absolute;
+  inset: 0;
+  background: #f4f2ec;
+  opacity: calc(1 - var(--revela));
+}
+
+.sv-quadro-num {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  font-family: var(--font-numeric);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: #f4f2ec;
+  mix-blend-mode: difference;
+}
+
+/* a mão: o círculo e a seta são traços de pathLength 1 que se escrevem
+   quando a tira assenta (gesto em tempo real, com histerese) */
+.sv-circulo {
+  position: absolute;
+  inset: -16% -14%;
+  width: 128%;
+  height: 132%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.sv-circulo path,
+.sv-seta path,
+.sv-sublinha path {
+  fill: none;
+  stroke: var(--color-green);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+
+.sv-circulo path {
+  /* em unidades do viewBox (100x100 esticado no take): o traço engrossa
+     um pouco nas laterais, como lápis de cera; sem non-scaling-stroke,
+     que quebra o tracejado de pathLength 1 */
+  stroke-width: 2.2;
+  transition: stroke-dashoffset 0.35s ease-in;
+}
+
+.sv-tira.is-circulada .sv-circulo path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.sv-nota {
+  position: absolute;
+  top: -72px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.2em;
+  font-family: var(--font-numeric);
+  font-size: 1.4rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-green);
+  pointer-events: none;
+}
+
+.sv-nota--dir {
+  left: 88%;
+}
+
+.sv-nota--esq {
+  right: 88%;
+  flex-direction: row-reverse;
+}
+
+.sv-nota--esq .sv-seta {
+  transform: scaleX(-1);
+}
+
+.sv-seta {
+  flex: 0 0 auto;
+  width: 84px;
+  height: 56px;
+  margin-top: 6px;
+  overflow: visible;
+}
+
+.sv-seta path {
+  stroke-width: 5px;
+  transition: stroke-dashoffset 0.25s ease-in;
+}
+
+.sv-nota span {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.sv-tira.is-circulada .sv-seta path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.3, 0, 0.2, 1) 0.75s;
+}
+
+.sv-tira.is-circulada .sv-nota span {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.4s 1.05s,
+    transform 0.6s cubic-bezier(0.2, 1, 0.3, 1) 1.05s;
+}
+
+/* ---------- A tese em pessoa ---------- */
+
+.sv-tese {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  min-height: 70vh;
+  margin-top: 22vh;
+}
+
+.sv-tese-frase {
+  font-family: var(--font-signature);
+  font-weight: 400;
+  font-size: min(7.4vw, 13vh);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.sv-sublinha {
+  position: relative;
+  display: inline-block;
+}
+
+.sv-sublinha svg {
+  position: absolute;
+  left: -2%;
+  bottom: -0.04em;
+  width: 104%;
+  height: 0.22em;
+  overflow: visible;
+}
+
+.sv-sublinha path {
+  stroke-width: 4;
+  transition: stroke-dashoffset 0.3s;
+}
+
+.sv-tese.is-assinada .sv-sublinha path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.45, 0, 0.2, 1) 0.2s;
+}
+
+.sv-retrato {
+  position: relative;
+  justify-self: end;
+  width: min(560px, 40vw);
+  margin: 0 -4vw 0 0;
+}
+
+.sv-retrato img {
+  display: block;
+  width: 100%;
+  filter: grayscale(1) contrast(1.1);
+}
+
+.sv-ficha {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-right: 4vw;
+  font-family: var(--font-numeric);
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sv-cinza);
+}
+
+.sv-setas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sv-setas li {
+  position: absolute;
+  right: calc(100% + 1vw);
+  font-family: var(--font-numeric);
+  font-size: 1.25rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-green);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.sv-setas li::after {
+  content: ' →';
+}
+
+.sv-setas li:nth-child(1) {
+  top: 18%;
+}
+
+.sv-setas li:nth-child(2) {
+  top: 44%;
+}
+
+.sv-setas li:nth-child(3) {
+  top: 70%;
+}
+
+.sv-tese.is-assinada .sv-setas li {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.4s,
+    transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.sv-tese.is-assinada .sv-setas li:nth-child(2) {
+  transition-delay: 0.25s;
+}
+
+.sv-tese.is-assinada .sv-setas li:nth-child(3) {
+  transition-delay: 0.5s;
+}
+
+/* ---------- O varal do elenco ----------
+   As provas são folhas soltas penduradas por pregador: a física da tira
+   (folhaFisica, material próprio) balança com a inércia da rolagem, o
+   cursor as sopra e a mão pode pegar e soltar. O fio cede no meio. */
+
+.sv-varal {
+  height: 64vh;
+  margin-top: 16vh;
+}
+
+.sv-fio {
+  position: absolute;
+  left: -4vw;
+  right: -4vw;
+  top: 9vh;
+  width: calc(100% + 8vw);
+  height: 40px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.sv-fio-linha {
+  fill: none;
+  stroke: #6b6b66;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.sv-provas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sv-prova {
+  position: absolute;
+  top: calc(9vh + 14px);
+  left: calc(14% + var(--i) * 28%);
+  width: clamp(170px, 14vw, 220px);
+  padding: 10px 10px 34px;
+  background: var(--color-white);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+  transform-origin: 50% -12px;
+  transform: translateY(var(--sag, 0px))
+    rotate(calc(var(--giro, 0) * 1deg + var(--f-ang, 0) * 1deg))
+    rotateX(calc(var(--f-rx, 0) * 1deg)) rotateY(calc(var(--f-ry, 0) * 1deg));
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.sv-prova:nth-child(1) {
+  --giro: -3;
+}
+
+.sv-prova:nth-child(2) {
+  --giro: 2;
+}
+
+.sv-prova:nth-child(3) {
+  --giro: -1.5;
+}
+
+.sv-prova.is-pega {
+  cursor: grabbing;
+}
+
+.sv-pregador {
+  position: absolute;
+  left: 50%;
+  top: -22px;
+  width: 18px;
+  height: 40px;
+  margin-left: -9px;
+  background: #b9b6ac;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.sv-prova-foto {
+  aspect-ratio: 5 / 6;
+  background: url('/branding/mascot/mascot-full-body/mascot-hero-fallback.png') 50% 8% / 150% auto
+    no-repeat #e8e8e8;
+  filter: grayscale(1) contrast(1.1);
+}
+
+.sv-prova.is-convite .sv-prova-foto {
+  background: url('/background/bg-predios.webp') 60% 70% / 520% auto no-repeat;
+}
+
+.sv-prova-rot {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 9px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-numeric);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+/* ---------- Créditos e a ponte pro contato ---------- */
+
+.sv-creditos {
+  width: min(720px, 70vw);
+  margin: 4vh auto 0;
+  font-family: var(--font-numeric);
+  font-size: 1.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sv-creditos div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 34px;
+}
+
+.sv-creditos dt {
+  text-align: right;
+  color: var(--sv-cinza);
+}
+
+.sv-creditos dd {
+  margin: 0;
+}
+
+.sv-fim {
+  margin-top: 10vh;
+  text-align: center;
+  font-family: var(--font-signature);
+  font-size: min(9vw, 15vh);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.sv-fim span {
+  color: var(--color-green);
+}
+
+/* ---------- Sem pin (reduced motion e telas estreitas) ----------
+   A folha entra no fluxo, sem subir por cima do fecho; tudo já vem
+   revelado, circulado e assinado; as provas ficam paradas. */
+
+.sobre.is-estatica .sv-papel-foto {
+  opacity: 0;
+}
+
+@media (max-width: 899px) {
+  .sv-abre,
+  .sv-tese {
+    grid-template-columns: 1fr;
+  }
+
+  .sv-folha {
+    width: 100%;
+  }
+
+  .sv-tira-ano {
+    display: none;
+  }
+
+  .sv-retrato {
+    justify-self: stretch;
+    width: 100%;
+    margin: 6vh 0 0;
+  }
+
+  .sv-setas li {
+    position: static;
+    opacity: 1;
+    transform: none;
+  }
+
+  .sv-prova {
+    left: calc(4% + var(--i) * 32%);
+    width: 28vw;
+  }
+}

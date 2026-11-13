@@ -670,6 +670,12 @@
 .tr-fecho-folha {
   position: absolute;
   inset: 0 0 0 -3vw;
+  /* coberto pela folha da Cena 7 (--cobre, 0 a 1, escrito pelo useSobre):
+     o fecho fica parado atrás, cresce 8% e sobe 6% da tela. Propriedades
+     individuais, pra não brigar com o transform da câmera da tira. */
+  scale: calc(1 + var(--cobre, 0) * 0.08);
+  translate: 0 calc(var(--cobre, 0) * -6vh);
+  transform-origin: 30% 40%;
   display: flex;
   flex-direction: column;
   justify-content: center;

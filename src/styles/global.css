@@ -100,14 +100,6 @@ button {
 /* Fim da página enquanto a Cena 4 não existe: um respiro no #222222
    da tira dos Pilares, nunca um void preto nem um clarão off-white.
    Quando o Selected Projects entrar, esta seção vira a cena. */
-.scene-spacer {
-  height: 40vh;
-  background: var(--color-gray-dark);
-  /* costura da emenda com o fim do pin dos Pilares: pinta 2px acima
-     da borda contra o sulco de subpixel, padrao das outras emendas */
-  box-shadow: 0 -2px 0 0 var(--color-gray-dark);
-}
-
 /* Um unico papel acompanha o fechamento do Manifesto e os Pilares. */
 .story-paper {
   position: relative;
