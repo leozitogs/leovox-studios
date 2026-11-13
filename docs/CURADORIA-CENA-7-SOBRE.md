@@ -1,7 +1,7 @@
 # Curadoria de direção de arte · Cena 7 · Sobre
 
 > v1 · 2026-11-13. Complementa o `BRIEFING-CENA-7-SOBRE.md` (conceito "folha de contato").
-> Status: **proposta, aguardando o PO.**
+> Status: **direção aprovada pelo PO em 13/11, com a subida no estilo do Eduardo; protótipo de motion feito.**
 > Os quadros de referência e a amostra de matéria ficam fora do repositório, porque são
 > capturas de sites de terceiros: `C:\Design\Leovox\curadoria\cena-7-sobre\`.
 
@@ -86,6 +86,29 @@ o layout final:
 - créditos.
 
 As fotos são placeholders em halftone (prédios do hero e o mascote).
+
+## A subida da cena (pedido do PO, 13/11)
+
+A cena entra como o "Sobre" do Eduardo entra depois do hero. O PO aprovou a direção e pediu
+esta mecânica, vista ao vivo antes do protótipo:
+
+- **O que fica atrás:** o fecho verde dos Pilares ("UM ECOSSISTEMA.") fica parado. Enquanto é
+  coberto, cresce 8%, sobe 6% da altura e perde parte da força. É câmera: função pura do
+  quanto a folha já cobriu.
+- **O que sobe:** a folha off-white da Cena 7 sobe no scroll natural por cima, com os cantos de
+  cima arredondados (`clamp(18px, 3vw, 44px)`, da família do raio do card do hero) e uma
+  sombra curta na borda.
+- **As fitas:** duas fitas de 112vw cruzam a borda de cima da folha, levemente giradas em
+  sentidos opostos (2,1 e -1,7 graus).
+  - O **negativo** é preto, com furos nas duas bordas e o texto "CENA 07 · MAKING-OF ·
+    LEOVOX 400 · TAKE 1".
+  - A **fita de isolamento do set** é verde com contorno preto, para não sumir sobre o fecho
+    verde, e diz "SET DE FILMAGEM · NÃO ULTRAPASSE · EQUIPE TRABALHANDO".
+- **O movimento das fitas:** as duas correm em sentidos opostos. A velocidade base é baixa e
+  cresce com a velocidade da rolagem; o sentido vira quando a pessoa rola pra cima. É a
+  mecânica do Eduardo, com a matéria da Leovox (o filme e o set), não os cargos dele.
+
+Protótipo gravado: `cena7-prototipo.webm`, na pasta da curadoria.
 
 ## Assets necessários (do PO)
 
