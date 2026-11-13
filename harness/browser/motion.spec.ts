@@ -89,6 +89,19 @@ test('a ficha do trabalho sai quando a tira assenta e não cobre a peça', async
   const midia = app.locator(`[data-panel-id="${painel}"] .tr-midia`)
   const ficha = app.locator(`[data-panel-id="${painel}"] .tr-ficha`)
 
+  // o cartão balança pela inércia do assentamento; girado, a caixa da
+  // mídia cresce e infla a medida. Mede com ele parado no prumo.
+  const cartao = app.locator(`[data-panel-id="${painel}"] .tr-cartao`)
+  await expect
+    .poll(
+      () =>
+        cartao.evaluate((el) =>
+          Math.abs(Number.parseFloat(el.style.getPropertyValue('--f-ang') || '0')),
+        ),
+      { timeout: 6000 },
+    )
+    .toBeLessThan(0.3)
+
   // à mostra: a ficha desce abaixo do cartão, presa só pela beirada
   await expect
     .poll(async () => {

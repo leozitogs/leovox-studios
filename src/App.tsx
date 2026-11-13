@@ -25,6 +25,8 @@ export default function App() {
       <Loader siteRef={siteRef} />
       <div ref={siteRef} className="site">
         <PersistentCanvas />
+        {/* o header vem antes do conteúdo: é o primeiro destino do Tab */}
+        <Header />
         <main>
           <Hero />
           <div className="story-paper">
@@ -35,7 +37,8 @@ export default function App() {
           {/* Respiro pós-tira: destino provisório até a Cena 4 */}
           <section className="scene-spacer" aria-hidden="true" />
         </main>
-        <Header />
+        {/* a lâmina de verde chapado dos saltos longos do menu (lib/navegar) */}
+        <div className="lamina" aria-hidden="true" />
       </div>
     </>
   )
