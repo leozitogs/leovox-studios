@@ -13,6 +13,7 @@
 import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
 import { getLenis } from '../../lib/lenis'
+import { marcarRolagem, navegando, registrarDestino } from '../../lib/navegar'
 import { TIRA, TOTAL_TRABALHOS } from './frentes'
 import {
   D_MAX,
@@ -75,7 +76,16 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
     if (window.matchMedia(STATIC_QUERY).matches) {
       section.classList.add('is-static')
       paineis.forEach((el) => el.classList.add('is-on'))
-      return () => section.classList.remove('is-static')
+      // sem pin, o destino de cada painel é o topo dele na página
+      const tirar = paineis.map((el, i) =>
+        registrarDestino(`pilares:${TIRA[i]?.id ?? i}`, () =>
+          Math.max(0, window.scrollY + el.getBoundingClientRect().top - 24),
+        ),
+      )
+      return () => {
+        tirar.forEach((t) => t())
+        section.classList.remove('is-static')
+      }
     }
 
     const ids = TIRA.map((p) => p.id)
@@ -216,6 +226,14 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
     let tentativas = 0
     const settle = () => {
       section.style.setProperty('--skew', '0')
+      // no meio de uma navegação deliberada (trilho, teclado, menu) a
+      // gravidade espera: senão um temporizador antigo assentava no painel
+      // de partida e cancelava o clique (teste do trilho instável)
+      if (navegando()) {
+        window.clearTimeout(idle)
+        idle = window.setTimeout(settle, 150)
+        return
+      }
       const target = st.isActive ? settleTarget(s, layout) : null
       if (target === null || tentativas >= 2) {
         section.classList.remove('is-andando')
@@ -279,6 +297,9 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
     // Navegação deliberada (trilho e teclado): rola até o descanso do painel.
     const goTo = (i: number) => {
       const alvo = Math.max(0, Math.min(paineis.length - 1, i))
+      window.clearTimeout(idle)
+      tentativas = 0
+      marcarRolagem(0.9)
       getLenis()?.scrollTo(st.start + restScroll(alvo, layout), {
         duration: 0.9,
         easing: easeOutCubic,
@@ -300,12 +321,18 @@ export function useTira(sectionRef: RefObject<HTMLElement | null>): void {
       const i = ids.indexOf(alvo.dataset.goto ?? '')
       if (i >= 0) goTo(i)
     }
+    // destinos do menu: o descanso de cada painel dentro do pin
+    const tirarDestinos = paineis.map((_, i) =>
+      registrarDestino(`pilares:${ids[i]}`, () => st.start + restScroll(i, layout)),
+    )
+
     window.addEventListener('keydown', onKey)
     window.addEventListener('pointermove', onPointer, { passive: true })
     section.addEventListener('click', onClick)
 
     return () => {
       window.clearTimeout(idle)
+      tirarDestinos.forEach((t) => t())
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('pointermove', onPointer)
       section.removeEventListener('click', onClick)
