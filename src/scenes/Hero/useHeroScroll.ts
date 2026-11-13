@@ -5,7 +5,8 @@
 // do leoleo.studio) roda em TEMPO REAL, não scrubada. O scroll apenas
 // dispara o play quando o encolhimento começa, e o reverse na volta.
 // Depois do hero, a pill ganha comportamento de direção: some suave no
-// scroll pra baixo, reaparece no scroll pra cima. A barra cinza interna
+// scroll pra baixo, reaparece no scroll pra cima, com o cursor no topo,
+// com o foco do teclado e depois de um salto pelo menu. O fio na base
 // (.nav-progress) acompanha o progresso total da página com inércia.
 //
 // Regras duras aprendidas aqui: nunca tweenar opacity inline da camada
@@ -16,6 +17,7 @@
 
 import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
+import { NAVEGOU_EVENT } from '../../lib/navegar'
 
 const HEADER_TRIGGER = 0.66 // progresso do pin em que o encolhimento começa
 const MANIFESTO_NAV_TRIGGER = 0.92 // card quase no enquadramento final da referência
@@ -45,6 +47,8 @@ export function useHeroScroll(
     const navPill = document.querySelector<HTMLElement>('.nav-pill')
     const navCta = navPill?.querySelector<HTMLElement>('.nav-cta') ?? null
     const navProgress = navPill?.querySelector<HTMLElement>('.nav-progress') ?? null
+    const navLogo = navPill?.querySelector<HTMLElement>('.nav-logo') ?? null
+    const navLetras = navPill ? Array.from(navPill.querySelectorAll<HTMLElement>('.nav-ch')) : []
     let manifestoPreviewVisible = false
     const setManifestoPreview = (visible: boolean) => {
       if (manifestoPreviewVisible === visible) return
@@ -62,11 +66,7 @@ export function useHeroScroll(
       gsap.set(video, { autoAlpha: 0 })
       gsap.set(mascoteStatic, { autoAlpha: 1 })
       if (navPill) {
-        gsap.set(navPill, {
-          autoAlpha: 1,
-          maxWidth: 'min(47.5rem, calc(100vw - 2rem))',
-          borderRadius: 16,
-        })
+        gsap.set(navPill, { autoAlpha: 1, clipPath: 'none' })
         navPill.classList.add('is-open')
       }
       if (navCta) gsap.set(navCta, { autoAlpha: 1, scale: 1 })
@@ -84,40 +84,120 @@ export function useHeroScroll(
       return
     }
 
+    let soltarPill = () => {}
+
     const ctx = gsap.context(() => {
       // ---------- Header em tempo real (coreografia do leoleo) ----------
+      // A pill já existe na largura final. A bola é uma máscara redonda
+      // no centro dela; a forma abre até a barra inteira enquanto a logo
+      // desliza do centro pro canto, e só depois as letras dos links
+      // sobem uma a uma. Só máscara e transform: nada de max-width nem
+      // border-radius animados, que recalculavam o layout a cada quadro.
       const headerTl = gsap.timeline({ paused: true })
+      const forma = () => {
+        const w = navPill?.offsetWidth ?? 0
+        const h = navPill?.offsetHeight ?? 0
+        const lado = Math.max(0, (w - h) / 2)
+        const logoCentro = navLogo ? navLogo.offsetLeft + navLogo.offsetWidth / 2 : w / 2
+        return {
+          bola: `inset(0px ${lado}px 0px ${lado}px round ${h / 2}px)`,
+          logoNoCentro: w / 2 - logoCentro,
+        }
+      }
       if (navPill) {
-        // Um gesto só: a expansão nasce dentro do pouso da bola
-        // (overlap em 0.38s), sem pausa entre os movimentos.
+        // a bola cai do topo
         headerTl.fromTo(
           navPill,
-          { autoAlpha: 0, y: -44, scale: 0.6 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.7, ease: 'power2.out' },
+          { autoAlpha: 0, y: -56 },
+          { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' },
           0,
         )
-        // O circulo e so da bola: na largada da expansao o raio fecha
-        // rapido pra 16px e a barra ja se forma retangular.
-        headerTl.to(navPill, { borderRadius: 16, duration: 0.25, ease: 'power2.out' }, 0.45)
-        headerTl.to(
+        // ainda no pouso, a forma abre (um gesto só, sem pausa)
+        headerTl.fromTo(
           navPill,
+          { clipPath: () => forma().bola },
           {
-            maxWidth: 'min(47.5rem, calc(100vw - 2rem))',
-            duration: 0.9,
-            ease: 'power2.inOut',
+            clipPath: 'inset(0px 0px 0px 0px round 16px)',
+            duration: 0.95,
+            ease: 'power3.inOut',
           },
-          0.45,
+          0.4,
         )
-        headerTl.call(() => navPill.classList.add('is-open'), undefined, 0.7)
+        if (navLogo) {
+          headerTl.fromTo(
+            navLogo,
+            { x: () => forma().logoNoCentro },
+            { x: 0, duration: 0.95, ease: 'power3.inOut' },
+            0.4,
+          )
+        }
+        if (navLetras.length) {
+          headerTl.fromTo(
+            navLetras,
+            { yPercent: 115 },
+            { yPercent: 0, duration: 0.6, ease: 'power3.out', stagger: 0.016 },
+            0.8,
+          )
+        }
+        headerTl.call(() => navPill.classList.add('is-open'), undefined, 0.9)
       }
       if (navCta) {
         headerTl.fromTo(
           navCta,
           { autoAlpha: 0, scale: 0.7 },
-          { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'power2.out' },
-          1.05,
+          { autoAlpha: 1, scale: 1, duration: 0.55, ease: 'back.out(1.6)' },
+          1.0,
         )
       }
+
+      // as medidas da forma dependem da largura da pill: refaz no resize
+      // sem perder o ponto da timeline
+      let resizeCall: gsap.core.Tween | null = null
+      const onResize = () => {
+        resizeCall?.kill()
+        resizeCall = gsap.delayedCall(0.15, () => {
+          const p = headerTl.progress()
+          headerTl.invalidate()
+          headerTl.progress(p)
+        })
+      }
+      window.addEventListener('resize', onResize)
+
+      // Antes da primeira interação (roda, toque, tecla, clique), toda
+      // mudança de scroll é da página: restauração no refresh, refresh dos
+      // pins, salto do harness. Nesses casos a pill vai direto pro estado
+      // certo, sem coreografia: ela só nasce quando quem rola é a pessoa.
+      let pessoaRolou = false
+      const marcarPessoa = () => {
+        pessoaRolou = true
+      }
+      const gestos = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const
+      gestos.forEach((g) => window.addEventListener(g, marcarPessoa, { passive: true }))
+
+      // põe a bola e a logo na medida atual da pill antes de nascer
+      const prepararForma = () => {
+        headerTl.invalidate()
+        const f = forma()
+        if (navPill) gsap.set(navPill, { clipPath: f.bola })
+        if (navLogo) gsap.set(navLogo, { x: f.logoNoCentro })
+      }
+
+      const sincronizarHeader = (progress: number) => {
+        const nascer = progress >= HEADER_TRIGGER
+        if (!pessoaRolou && !headerTl.isActive()) {
+          headerTl.pause().progress(nascer ? 1 : 0)
+          return
+        }
+        if (nascer) {
+          // mede a pill de novo antes de nascer: a largura muda quando as
+          // fontes chegam, e a bola medida na criação saltava 23px no meio
+          if (headerTl.progress() === 0) prepararForma()
+          headerTl.play()
+        } else headerTl.reverse()
+      }
+      void document.fonts?.ready.then(() => {
+        if (headerTl.progress() === 0) prepararForma()
+      })
 
       // ---------- Pill inteligente: some descendo, volta subindo ----------
       // Ativa só depois do hero. Histerese por distância: só reage a
@@ -129,18 +209,76 @@ export function useHeroScroll(
       let pillAcc = 0
       let pillLastY = 0
 
+      // o cursor no topo da tela ou o foco dentro da pill seguram ela:
+      // a inércia do scroll não esconde o menu que está sendo usado
+      let cursorNoTopo = false
+      const segurando = () => cursorNoTopo || (navPill?.contains(document.activeElement) ?? false)
+
+      // O some-e-volta usa yPercent, propriedade só dele: o nascimento
+      // usa y, e os dois nunca brigam pelo mesmo canal.
       const hidePill = () => {
-        if (!navPill || pillHidden) return
+        if (!navPill || pillHidden || segurando()) return
         pillHidden = true
-        gsap.to(navPill, { y: -110, duration: 0.6, ease: 'power2.inOut', overwrite: 'auto' })
+        gsap.to(navPill, {
+          yPercent: -180,
+          duration: 0.55,
+          ease: 'power3.inOut',
+          overwrite: 'auto',
+        })
       }
       const showPill = () => {
         if (!navPill || !pillHidden) return
         pillHidden = false
-        gsap.to(navPill, { y: 0, duration: 0.7, ease: 'power2.out', overwrite: 'auto' })
+        gsap.to(navPill, { yPercent: 0, duration: 0.65, ease: 'power3.out', overwrite: 'auto' })
       }
 
-      // ---------- Progresso da página na barra cinza ----------
+      // Volta quando é preciso, não só no scroll pra cima: cursor no topo
+      // da tela, foco do teclado dentro da pill (Tab nunca cai num link
+      // fora de quadro) e logo depois de um salto pelo próprio menu, que
+      // não deve sumir com a pill que acabou de ser usada.
+      let ignorarAte = 0
+      const onPointer = (ev: PointerEvent) => {
+        cursorNoTopo = ev.clientY <= 96
+        if (!pastHero || !pillHidden || !cursorNoTopo) return
+        pillAcc = 0
+        showPill()
+      }
+      const onFoco = () => {
+        pillAcc = 0
+        showPill()
+      }
+      const onNavegou = () => {
+        pillAcc = 0
+        ignorarAte = performance.now() + 1600
+        showPill()
+      }
+      // o refresh dos pins mexe no scroll sem ninguém rolar: esse salto
+      // não é direção de leitura e não pode esconder a pill
+      const onRefreshInit = () => {
+        ignorarAte = performance.now() + 600
+      }
+      const onRefreshFim = () => {
+        pillLastY = window.scrollY
+        pillAcc = 0
+      }
+      ScrollTrigger.addEventListener('refreshInit', onRefreshInit)
+      ScrollTrigger.addEventListener('refresh', onRefreshFim)
+
+      window.addEventListener('pointermove', onPointer, { passive: true })
+      navPill?.addEventListener('focusin', onFoco)
+      window.addEventListener(NAVEGOU_EVENT, onNavegou)
+      soltarPill = () => {
+        window.removeEventListener('pointermove', onPointer)
+        navPill?.removeEventListener('focusin', onFoco)
+        window.removeEventListener(NAVEGOU_EVENT, onNavegou)
+        window.removeEventListener('resize', onResize)
+        resizeCall?.kill()
+        gestos.forEach((g) => window.removeEventListener(g, marcarPessoa))
+        ScrollTrigger.removeEventListener('refreshInit', onRefreshInit)
+        ScrollTrigger.removeEventListener('refresh', onRefreshFim)
+      }
+
+      // ---------- Progresso da página no fio da pill ----------
       const progressTo = navProgress
         ? gsap.quickTo(navProgress, 'scaleX', { duration: 0.35, ease: 'power2.out' })
         : null
@@ -153,7 +291,7 @@ export function useHeroScroll(
           const y = self.scroll()
           const delta = y - pillLastY
           pillLastY = y
-          if (!pastHero || delta === 0) return
+          if (!pastHero || delta === 0 || performance.now() < ignorarAte) return
           if (delta > 0 !== pillAcc > 0) pillAcc = 0
           pillAcc += delta
           if (pillAcc > 90) hidePill()
@@ -180,6 +318,9 @@ export function useHeroScroll(
             showPill()
             setManifestoPreview(true)
           },
+          // refresh (e o primeiro cálculo, com o scroll restaurado) põe a
+          // pill no estado certo sem tocar a coreografia
+          onRefresh: (self) => sincronizarHeader(self.progress),
           onUpdate: (self) => {
             // O vídeo congela assim que a câmera começa a andar
             // e volta a rodar se o usuário retornar ao topo.
@@ -221,11 +362,7 @@ export function useHeroScroll(
 
             // O header dispara em tempo próprio quando o encolhimento
             // começa, e desfaz na volta. O scroll é só o gatilho.
-            if (self.progress >= HEADER_TRIGGER) {
-              headerTl.play()
-            } else {
-              headerTl.reverse()
-            }
+            sincronizarHeader(self.progress)
           },
         },
       })
@@ -290,6 +427,7 @@ export function useHeroScroll(
     }, section)
 
     return () => {
+      soltarPill()
       setManifestoPreview(false)
       delete document.documentElement.dataset.manifestoNavReady
       ctx.revert()

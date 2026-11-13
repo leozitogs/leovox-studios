@@ -10,6 +10,7 @@
 import { type RefObject, useEffect } from 'react'
 import { ScrollTrigger } from '../../lib/gsap'
 import { getLenis } from '../../lib/lenis'
+import { registrarDestino } from '../../lib/navegar'
 
 const MANIFESTO_PREVIEW_EVENT = 'leovox:manifesto-preview'
 
@@ -27,6 +28,12 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     let manifestoPassed = false
 
     if (reducedMotion) section.classList.add('is-static')
+
+    // destino do menu (Sobre): o primeiro ato
+    const tiraDestino = registrarDestino('manifesto', () => {
+      const ato = atos[0]
+      return ato ? window.scrollY + ato.getBoundingClientRect().top : null
+    })
 
     const setVisible = (visible: boolean) => {
       if (!nav) return
@@ -128,6 +135,7 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     })
 
     return () => {
+      tiraDestino()
       navTrigger.kill()
       window.removeEventListener(MANIFESTO_PREVIEW_EVENT, onHeroPreview)
       reveals.forEach((reveal) => reveal.kill())

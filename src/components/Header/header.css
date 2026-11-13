@@ -1,6 +1,13 @@
 /* Nav pill do protótipo: bola com a isologo que vira o header.
    Geometria do mock: pill ~40vw de largura, 4rem de altura, isologo
-   com respiro, links espaçados, CTA branco de canto 12px. */
+   com respiro, links espaçados, CTA branco de canto 12px.
+
+   Motion no padrão leoleo.studio: a pill já existe na largura final e
+   a FORMA é que abre, por máscara (clip-path), da bola central até a
+   barra inteira, com a logo deslizando do centro pro canto junto com a
+   borda. Nada de max-width ou border-radius animados: só máscara e
+   transform, sem recalcular layout a cada quadro (antes a largura
+   subia de 2 em 2px por 260 quadros). A coreografia é do useHeroScroll. */
 
 .nav-pill {
   position: fixed;
@@ -13,17 +20,17 @@
   gap: 2.2rem;
   height: 4rem;
   padding: 0.5rem;
-  max-width: 4rem; /* estado bola: só a isologo; a coreografia expande */
   overflow: hidden;
   background: rgba(17, 17, 17, 0.96);
-  border-radius: 999px;
+  border-radius: 16px;
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
+  will-change: transform, clip-path;
 }
 
 /* Barra de progresso da página: faixa cinza que preenche a pill
-   da esquerda pra direita conforme o scroll avança. */
+   da esquerda pra direita conforme o scroll avança (escolha do PO). */
 .nav-progress {
   position: absolute;
   top: 0.4rem;
@@ -57,28 +64,115 @@
 }
 
 .nav-links {
+  position: relative;
   display: flex;
-  gap: 2.2rem;
+  gap: 1.4rem;
   margin-left: 0.6rem;
 }
 
-.nav-links a {
+/* área de toque de 44px; o texto fica na janela .nav-txt */
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.4rem;
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--color-offwhite);
-  /* sem fade individual: a borda da pill em expansão revela (leoleo) */
-  opacity: 0.85;
-  transition: none;
 }
 
-.nav-pill.is-open .nav-links a {
-  transition: opacity var(--duration-micro) ease;
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: -2px;
+  border-radius: 8px;
 }
 
-.nav-pill.is-open .nav-links a:hover,
-.nav-pill.is-open .nav-links a:focus-visible {
-  opacity: 1 !important;
+/* A janela do texto: as letras nascem de baixo dela no nascimento da
+   pill e rolam dentro dela no hover. */
+.nav-txt {
+  display: block;
+  overflow: hidden;
+  line-height: 1.3;
+  padding-bottom: 0.05em;
+}
+
+/* Cada letra é uma caixa vazia com duas cópias (antes e depois). No
+   hover, a cópia de cima sobe e some, a de baixo entra; o atraso por
+   letra (--i) faz a onda correr da esquerda pra direita, como no
+   leoleo. A caixa em si é transparente: só dá a largura. */
+.nav-ch {
+  position: relative;
+  display: inline-block;
+  color: transparent;
+}
+
+.nav-ch::before,
+.nav-ch::after {
+  content: attr(data-ch);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: var(--color-offwhite);
+  transition:
+    transform 0.45s cubic-bezier(0.215, 0.61, 0.355, 1),
+    opacity 0.45s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition-delay: calc(var(--i, 0) * 16ms);
+}
+
+.nav-ch::before {
+  opacity: 0.72;
+}
+
+.nav-ch::after {
+  opacity: 0;
+  transform: translateY(130%);
+}
+
+.nav-link[aria-current] .nav-ch::before {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .nav-link:hover .nav-ch::before {
+    opacity: 0;
+    transform: translateY(-130%);
+  }
+
+  .nav-link:hover .nav-ch::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-link:focus-visible .nav-ch::before {
+  opacity: 0;
+  transform: translateY(-130%);
+}
+
+.nav-link:focus-visible .nav-ch::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* O marcador da seção: um traço verde chapado sob o link da seção em
+   que você está. Só muda quando a seção muda, deslizando de um link pro
+   outro; o hover é das letras. Posição e largura vêm do useNav. */
+.nav-marca {
+  position: absolute;
+  left: 0;
+  bottom: 0.45rem;
+  width: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-green);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.nav-marca.is-visivel {
+  opacity: 1;
 }
 
 /* CTA no padrao getquoti, spec final do PO: o botao E a mascara (o

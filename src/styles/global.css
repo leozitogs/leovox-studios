@@ -146,5 +146,18 @@ button {
 }
 .nav-pill {
   filter: opacity(var(--paper-menu, 1));
-  transition: filter 0.18s linear;
+  transition: filter 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* A lâmina de verde chapado: cobre a tela nos saltos longos do menu
+   (lib/navegar) enquanto o scroll pula por baixo. Mesma família da
+   saída da abertura, power4. Verde sempre chapado, sem efeito. */
+.lamina {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-blade);
+  background: var(--color-green);
+  /* sem transform aqui: o GSAP dirige o yPercent e somaria com ele */
+  visibility: hidden;
+  pointer-events: none;
 }
