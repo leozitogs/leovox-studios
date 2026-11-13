@@ -131,15 +131,22 @@
   text-align: center;
 }
 
+/* Cada ato tem a altura do que diz: um viewport cheio pra cada um
+   deixava vãos de 2/3 de tela de papel em branco entre os atos (QA de
+   2026-11-12). O ato 4 fica com a tela inteira porque a chegada dos
+   Pilares corre enquanto ele sobe. */
 .mf-ato-1 {
+  min-height: 80vh;
   color: var(--color-black);
 }
 
 .mf-ato-2 {
+  min-height: 60vh;
   color: var(--color-black);
 }
 
 .mf-ato-3 {
+  min-height: 88vh;
   color: var(--color-black);
 }
 

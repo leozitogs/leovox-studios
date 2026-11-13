@@ -1,18 +1,31 @@
 {
   "$schema": "../../harness/schemas/scene-contract.schema.json",
   "id": "pilares",
-  "title": "Três pilares Leovox",
+  "title": "Pilares · A tira de trabalhos",
   "route": "/",
   "viewports": ["desktop", "mobile", "reduced-motion"],
-  "states": ["abertura", "identidade", "digital", "tecnologia"],
+  "states": ["cartaz", "capa", "trabalho", "fecho"],
   "acceptance": [
-    "Existem exatamente três quadros de pilares",
-    "Cada quadro contém um preview de projeto e slots nomeados para os assets reais",
-    "Os placeholders são identificados como solicitações de asset e não como cases publicados",
-    "A navegação informa o quadro ativo",
-    "Reverse conclui em um estado de descanso válido",
+    "A tira tem exatamente três capas, uma por frente oficial, na ordem 01, 02 e 03",
+    "Cada frente tem ao menos um trabalho; placeholder é declarado por data-placeholder e nunca se apresenta como case publicado",
+    "A câmera é função pura do scroll dentro do pin",
+    "Parado em qualquer ponto da travessia, o scroll assenta no descanso de um painel",
+    "O trilho informa a frente e o trabalho ativos e navega por clique e por teclado, sem repetir texto que já está na tela",
+    "Nenhum título de capa ou de trabalho estoura a própria coluna em laptop",
     "Produção de conteúdo e edição de vídeo pertencem a Presença Digital",
-    "Reduced motion apresenta os quadros em fluxo vertical"
+    "Reduced motion e telas abaixo de 900px apresentam a tira em fluxo vertical, sem pin",
+    "Capas e cartões são folhas soltas: o cursor as sopra, a câmera as balança por inércia, a mão pode pegar e soltar, e soltas voltam ao prumo dentro do limite de giro",
+    "Painel vizinho na beirada da tela mostra a peça, nunca pedaços de texto",
+    "O nome do trabalho vive numa ficha presa embaixo do cartão: recolhida enquanto a câmera anda, à mostra quando a tira assenta, sem cobrir a peça e sem depender de hover"
   ],
-  "forbidden": ["quarto pilar", "administração de redes e tráfego", "glow", "neon", "estado intermediário após settle"]
+  "forbidden": [
+    "quarto pilar",
+    "administração de redes e tráfego",
+    "glow",
+    "neon",
+    "estado intermediário após settle",
+    "parágrafo de apoio nos trabalhos",
+    "letra vazada gigante no fundo disputando com o trabalho",
+    "filter blur ou drop-shadow animado em folha"
+  ]
 }

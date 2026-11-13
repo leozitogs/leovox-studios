@@ -109,9 +109,9 @@ try {
       registra('fluxo', `reversao suja: atos ligados [${estado.join(', ')}]`)
   }
 
-  // Cena 3 (Pilares): a chegada apaga a luz do palco, o cartaz
-  // assembla, a travessia desliza o trilho um painel por vez e a
-  // reversao devolve o cartaz limpo
+  // Cena 3 (Pilares, a tira): a chegada apaga a luz do palco, o cartaz
+  // assembla, a camera percorre a tira e, parada no meio, a gravidade
+  // assenta num painel; a volta devolve o cartaz limpo
   const pl = await page.evaluate(() => {
     const el = document.querySelector('.pilares')
     if (!el) return null
@@ -128,41 +128,44 @@ try {
       })
       await page.waitForTimeout(PAUSA_ATO)
     }
+    const desvio = () =>
+      page.evaluate(() => {
+        const cena = document.querySelector('.pilares')
+        const ativo = cena.querySelector(`[data-panel-id="${cena.dataset.panel}"]`)
+        const d = Number.parseFloat(ativo?.style.getPropertyValue('--d') || 'NaN')
+        return { painel: cena.dataset.panel, d: Math.abs(d) }
+      })
 
-    // t = 2.5 da duracao virtual: beat do cartaz, luz ja caida
-    await vaiPra(1.0)
+    // o cartaz com a luz ja caida
+    await vaiPra(0.5)
     const cartaz = await page.evaluate(() => ({
       bg: getComputedStyle(document.querySelector('.story-paper-bg')).backgroundColor,
       on: !!document.querySelector('.pl-abertura.is-on'),
-      quadros: document.querySelectorAll('.pl-quadro').length,
+      capas: document.querySelectorAll('.tr-capa').length,
+      trabalhos: document.querySelectorAll('.tr-trabalho').length,
       capitulos: document.querySelectorAll('.pl-nav-btn').length,
     }))
     if (cartaz.bg !== 'rgb(34, 34, 34)') {
       registra('fluxo', `a luz dos pilares nao caiu pro cinza da tira: ${cartaz.bg}`)
     }
     if (!cartaz.on) registra('fluxo', 'o cartaz dos pilares nao assemblou')
-    if (cartaz.quadros !== 3 || cartaz.capitulos !== 3) {
+    if (cartaz.capas !== 3 || cartaz.capitulos !== 3 || cartaz.trabalhos < 3) {
       registra(
         'fluxo',
-        `pilares deveria ter 3 quadros e 3 capitulos (${cartaz.quadros}/${cartaz.capitulos})`,
+        `pilares deveria ter 3 capas, 3 capitulos e trabalhos (${cartaz.capas}/${cartaz.capitulos}/${cartaz.trabalhos})`,
       )
     }
 
-    // t = 4.0: cruza o limiar e a travessia leva ao quadro 01
-    await vaiPra(1.6)
+    // parado no meio da travessia: a gravidade assenta num painel
+    await vaiPra(2.35)
     await page.waitForTimeout(1200)
-    const q1 = await page.evaluate(() => {
-      const track = document.querySelector('.pl-track')
-      const m = new DOMMatrixReadOnly(getComputedStyle(track).transform)
-      return { x: m.e, alvo: -window.innerWidth, on: !!document.querySelector('.pl-quadro.is-on') }
-    })
-    if (Math.abs(q1.x - q1.alvo) > 40) {
-      registra('fluxo', `a travessia nao chegou no quadro 01: x=${Math.round(q1.x)}`)
+    const meio = await desvio()
+    if (!meio.painel || meio.painel === 'cartaz' || !(meio.d < 0.03)) {
+      registra('fluxo', `a gravidade nao assentou a tira: ${meio.painel} d=${meio.d}`)
     }
-    if (!q1.on) registra('fluxo', 'o quadro 01 nao ligou na chegada')
 
-    // de volta ao cartaz: a travessia reverte e o estado fica limpo
-    await vaiPra(1.0)
+    // de volta ao cartaz: a camera volta inteira e nada fica ligado
+    await vaiPra(0.5)
     await page.waitForTimeout(1200)
     const volta = await page.evaluate(() => {
       const track = document.querySelector('.pl-track')
@@ -170,10 +173,10 @@ try {
       return {
         x: m.e,
         cartaz: !!document.querySelector('.pl-abertura.is-on'),
-        sujo: !!document.querySelector('.pl-quadro.is-on'),
+        sujo: !!document.querySelector('.pl-track > .is-on:not(.pl-abertura)'),
       }
     })
-    if (Math.abs(volta.x) > 40) {
+    if (Math.abs(volta.x) > 2) {
       registra('fluxo', `a reversao nao devolveu o cartaz: x=${Math.round(volta.x)}`)
     }
     if (!volta.cartaz || volta.sujo) registra('fluxo', 'reversao suja nos pilares')

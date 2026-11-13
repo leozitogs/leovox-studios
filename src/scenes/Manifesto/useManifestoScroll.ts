@@ -24,6 +24,7 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let heroPreviewVisible = document.documentElement.dataset.manifestoNavReady === 'true'
     let manifestoVisible = false
+    let manifestoPassed = false
 
     if (reducedMotion) section.classList.add('is-static')
 
@@ -34,8 +35,19 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       nav.setAttribute('aria-hidden', String(!visible))
     }
 
+    // O índice nasce como prévia quando o card do hero assenta (92% do
+    // pin) e vive até o fim do manifesto. Antes, a regra escrita era
+    // "prévia E manifesto ativo", e só funcionava porque o isActive vinha
+    // undefined no refresh: toggle(classe, undefined) INVERTE a classe, o
+    // que acendia o índice na prévia e o deixava aceso por cima dos
+    // Pilares depois de um salto. Agora a regra é explícita.
     const syncVisibility = () =>
-      setVisible(reducedMotion ? manifestoVisible : heroPreviewVisible && manifestoVisible)
+      setVisible(reducedMotion ? manifestoVisible : heroPreviewVisible && !manifestoPassed)
+
+    const readTrigger = (self: ScrollTrigger) => {
+      manifestoVisible = self.progress > 0 && self.progress < 1
+      manifestoPassed = self.progress >= 1
+    }
 
     const onHeroPreview = (event: Event) => {
       heroPreviewVisible = (event as CustomEvent<{ visible: boolean }>).detail.visible
@@ -65,13 +77,19 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       start: 'top bottom',
       end: 'bottom top',
       onToggle: (self) => {
-        manifestoVisible = self.isActive
+        readTrigger(self)
         syncVisibility()
         if (self.isActive) updateActive()
       },
-      onUpdate: updateActive,
+      // um salto direto do topo pros Pilares atravessa o gatilho inteiro
+      // sem ligá-lo, e o onToggle não dispara; o onUpdate sim
+      onUpdate: (self) => {
+        readTrigger(self)
+        syncVisibility()
+        updateActive()
+      },
       onRefresh: (self) => {
-        manifestoVisible = self.isActive
+        readTrigger(self)
         syncVisibility()
         updateActive()
       },
@@ -82,7 +100,9 @@ export function useManifestoScroll(sectionRef: RefObject<HTMLElement | null>): v
       : atos.map((el) =>
           ScrollTrigger.create({
             trigger: el,
-            start: 'top 62%',
+            // liga quando o texto do ato pisa na tela, não depois: com
+            // 'top 62%' o texto já estava em quadro e ainda invisível
+            start: 'top 85%',
             onEnter: () => el.classList.add('is-on'),
             onLeaveBack: () => el.classList.remove('is-on'),
           }),

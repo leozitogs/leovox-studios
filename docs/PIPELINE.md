@@ -14,8 +14,8 @@ com mecânica própria, e nenhuma transição parece reload. Este documento
 | 1 | Hero · A primeira tomada | Abre já em movimento, sem loading | Entregue |
 | 2 | Manifesto · A recusa em 4 atos | O coração verbal, a luz se apagando | Entregue |
 | A | Abertura · LVX vira LEOVOX | Loader com progresso real e folha de entrada | Em revisão |
-| 3 | Pilares · As 3 frentes | Um ecossistema. Três frentes integradas. | Em produção |
-| 4 | Selected Projects · O trailer | 3 a 4 trabalhos curados pra seduzir | Roteirizada |
+| 3 | Pilares · A tira | Os trabalhos das 3 frentes numa tira só | Em produção (v4, placeholders) |
+| 4 | Selected Projects · O trailer | Absorvida pela tira dos Pilares (v4) | Fundida na cena 3 |
 | 5 | Case Index · O acervo | Lista completa com filtros | Em revisão (ver nota) |
 | 6 | Case Study · O close-up | Página dedicada de cada projeto | Roteirizada |
 | 7 | Sobre · O making-of | A história como prova viva da tese | Roteirizada |
@@ -134,7 +134,23 @@ Tecnologia & Automação. Produção de conteúdo e edição de vídeo entram
 como entregas complementares de Presença Digital, com menção breve e
 sem criar uma quarta frente.
 
-## Cena 4 · Selected Projects · O trailer · ROTEIRIZADA
+Atualização de 2026-11-12 (briefing v4, "A tira"): a seção horizontal foi
+refeita do zero. Depois do cartaz, o scroll vira câmera sobre uma tira de
+trabalhos: capa de cada frente em folha rasgada, os trabalhos dela em
+cartões colados com fita e o fecho UM ECOSSISTEMA. em verde chapado. A
+câmera é scrubada; parou, a gravidade assenta no painel mais próximo
+(substitui a travessia por gatilho). Cada painel deriva parallax,
+revelação e inclinação da própria distância ao centro, e um trilho fixo
+mostra capítulo e trabalho. Por ora os trabalhos são placeholders
+declarados; laptop primeiro, responsividade depois. Plano e evidências em
+`docs/plans/completed/2026-11-12-pilares-tira.md`.
+
+## Cena 4 · Selected Projects · O trailer · FUNDIDA NA CENA 3
+
+Atualização de 2026-11-12: a tira dos Pilares já mostra os trabalhos por
+frente, então esta cena deixou de existir como seção própria. Cada painel
+da tira vira a porta do seu case study (Cena 6) quando os trabalhos reais
+chegarem. O texto abaixo fica como registro do roteiro original.
 
 Recorte curado de 3 a 4 trabalhos no fluxo da home. Cada projeto entra
 como uma tomada: thumb grande, título seco, frente a que pertence, e
