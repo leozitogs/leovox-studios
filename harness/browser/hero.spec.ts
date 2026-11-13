@@ -1,8 +1,8 @@
 import { expect, test } from './fixtures'
 
-// O disparo do hero (decisão 77): a frase cai em duas partes e a
-// assinatura (o pixo verde) se desfaz no mesmo ritmo; quando a frase
-// assenta, a mão reescreve a assinatura e a última palavra passa a trocar
+// O disparo do hero (decisões 77 e 83): no repouso o muro está limpo; a
+// frase cai em duas partes e, quando assenta, a mão escreve a assinatura
+// (o pixo verde) por cima de DESENVOLVA, e a última palavra passa a trocar
 // no lugar, sempre em branco e na mesma fonte.
 const PALAVRAS = ['SONHOS.', 'PROJETOS.', 'PLANOS.', 'NEGÓCIOS.', 'PRODUTOS.']
 
@@ -21,7 +21,7 @@ const palavra = () =>
 const escalaA = () =>
   new DOMMatrix(getComputedStyle(document.querySelector('.headline-ghost .hl-a')!).transform).a
 
-test('a frase cai, a assinatura se desfaz e volta escrita por cima', async ({ app }) => {
+test('o muro nasce limpo e a assinatura só aparece no disparo', async ({ app }) => {
   test.skip(
     test.info().project.name.includes('reduced-motion'),
     'Sem movimento, o hero já nasce no estado final',
@@ -30,17 +30,18 @@ test('a frase cai, a assinatura se desfaz e volta escrita por cima', async ({ ap
   const ir = (p: number) =>
     app.evaluate((v) => window.__LEOVOX_HARNESS__!.setProgress('hero', v), p)
 
+  // no repouso, nenhuma tinta
   await ir(0)
-  await expect.poll(() => app.evaluate(tinta)).toMatchObject({ total: 25, visiveis: 25, cheio: 1 })
+  await expect.poll(() => app.evaluate(tinta)).toMatchObject({ total: 25, visiveis: 0, cheio: 0 })
   await expect(hero).not.toHaveClass(/is-assentado/)
 
-  // a frase assentou e a mão está sem tinta
+  // a frase assentou e a mão ainda não começou
   await ir(0.3)
   await expect.poll(() => app.evaluate(tinta), { timeout: 4000 }).toMatchObject({ visiveis: 0 })
   await expect(hero).toHaveClass(/is-assentado/)
   await expect.poll(() => app.evaluate(escalaA)).toBeGreaterThan(1.5)
 
-  // a mão reescreveu a assinatura inteira
+  // a mão escreveu a assinatura inteira
   await ir(0.62)
   await expect
     .poll(() => app.evaluate(tinta), { timeout: 4000 })
@@ -52,7 +53,7 @@ test('a frase cai, a assinatura se desfaz e volta escrita por cima', async ({ ap
   expect(await app.evaluate(palavra)).toBe('SONHOS.')
   await ir(0)
   await expect.poll(() => app.evaluate(escalaA), { timeout: 4000 }).toBeLessThan(1.01)
-  await expect.poll(() => app.evaluate(tinta)).toMatchObject({ visiveis: 25, cheio: 1 })
+  await expect.poll(() => app.evaluate(tinta)).toMatchObject({ visiveis: 0, cheio: 0 })
 })
 
 test('a palavra troca no lugar, em branco, sem empurrar a frase', async ({ app }) => {

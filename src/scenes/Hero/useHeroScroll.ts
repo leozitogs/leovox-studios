@@ -70,7 +70,8 @@ export function useHeroScroll(
       })
       pixoCheio?.style.setProperty('opacity', String(Math.min(1, Math.max(0, (d - 0.96) / 0.04))))
     }
-    desenharPixo(1)
+    // no repouso não há assinatura: ela só nasce no disparo (decisão 83)
+    desenharPixo(0)
 
     // ---------- A frase em duas partes ----------
     // DESENVOLVA cresce até 82% da largura, na altura do rosto; SEUS
@@ -171,6 +172,7 @@ export function useHeroScroll(
     // Reduced-motion: direto no estado final, sem pin nem timelines.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       headline.classList.add('is-scrolling')
+      desenharPixo(1)
       // a frase assentada e assinada, sem troca de palavra
       const assentar = () => {
         const fim = alvos()
@@ -539,18 +541,10 @@ export function useHeroScroll(
         0.3,
       )
       // A mão é função pura do tempo da timeline (já suavizado pelo
-      // scrub): desfaz de 0.3 a 2.4, fica sem tinta enquanto a frase
-      // assenta e reescreve de 3.3 a 6.0. Duas tweens no mesmo valor se
-      // atropelavam no refresh e apagavam a assinatura no topo.
-      const maoNoTempo = (t: number) => {
-        if (t <= 0.3) return 1
-        if (t < 2.4) {
-          const u = (t - 0.3) / 2.1
-          return 1 - u * u * (3 - 2 * u)
-        }
-        if (t <= 3.3) return 0
-        return Math.min(1, (t - 3.3) / 2.7)
-      }
+      // scrub). No repouso o muro está limpo: a assinatura só nasce no
+      // disparo, escrita de 3.3 a 6.0, depois que a frase assenta, por
+      // cima de DESENVOLVA (decisão 83). Na volta, a mão desfaz.
+      const maoNoTempo = (t: number) => (t <= 3.3 ? 0 : Math.min(1, (t - 3.3) / 2.7))
       tl.eventCallback('onUpdate', () => desenharPixo(maoNoTempo(tl.time())))
 
       tl.fromTo(
