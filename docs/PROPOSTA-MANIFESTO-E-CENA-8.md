@@ -1,6 +1,7 @@
 # Proposta · Manifesto refeito e Cena 8 (Contato)
 
-> v1 · 2026-11-13. Status: **proposta, aguardando o PO.** Nada disso está no código.
+> v1 · 2026-11-13. Status: **reprovada pelo PO** (o lettering do manifesto e a Cena 8). Fica como
+> registro; o manifesto seguiu para `CURADORIA-MANIFESTO-LETTERING.md`.
 > Quadros-chave em `C:\Design\Leovox\curadoria\manifesto-e-cena-8\` (fora do repositório).
 
 ## O fio que liga as cenas
