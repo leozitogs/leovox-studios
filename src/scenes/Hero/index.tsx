@@ -1,13 +1,16 @@
 // Cena 1 · Hero · A primeira tomada.
 // Estado A: cena em movimento com microinterações.
-// Estados B e C: sequência de scroll em useHeroScroll.ts.
+// Estados B e C: sequência de scroll em useHeroScroll.ts. No disparo, a
+// frase cai e a assinatura (o pixo verde) se desfaz no mesmo ritmo; quando
+// a frase assenta, a mão reescreve a assinatura por cima de DESENVOLVA e a
+// última palavra passa a trocar no lugar (decisão 77).
 
 import { useEffect, useRef } from 'react'
-import { gsap } from '../../lib/gsap'
 import { onReveal } from '../../lib/reveal'
 import { ContourField } from '../../components/ContourField'
 import { GlobeHub } from './GlobeHub'
 import { HeadlineGhost } from './HeadlineGhost'
+import { PIXO_ALTURA, PIXO_CAMINHOS, PIXO_LARGURA, PIXO_TRACO } from './pixo'
 import { useHeroScroll } from './useHeroScroll'
 import './hero.css'
 
@@ -15,8 +18,7 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const headlineRef = useRef<HTMLDivElement>(null)
-  const claimRef = useRef<HTMLDivElement>(null)
-  const grafismRef = useRef<HTMLImageElement>(null)
+  const grafismRef = useRef<SVGSVGElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const mascoteStaticRef = useRef<HTMLImageElement>(null)
 
@@ -48,56 +50,6 @@ export function Hero() {
     return () => {
       off()
       video.removeEventListener('canplay', tryPlay)
-    }
-  }, [])
-
-  // Brilho suave que segue o cursor sobre o claim (mesma mecânica da
-  // headline, com mais inércia e queda mais longa). Só aparece quando
-  // o claim está visível, então o handler pode viver sempre ligado.
-  useEffect(() => {
-    const claim = claimRef.current
-    if (!claim) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const moveX = gsap.quickTo(claim, '--cmx', { duration: 0.6, ease: 'power3.out' })
-    const moveY = gsap.quickTo(claim, '--cmy', { duration: 0.6, ease: 'power3.out' })
-    let inside = false
-
-    const onMove = (event: MouseEvent) => {
-      const rect = claim.getBoundingClientRect()
-      moveX(event.clientX - rect.left)
-      moveY(event.clientY - rect.top)
-
-      const isInside =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom
-
-      if (isInside !== inside) {
-        inside = isInside
-        gsap.to(claim, {
-          '--creveal': isInside ? 1 : 0,
-          duration: isInside ? 0.6 : 0.8,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        })
-      }
-    }
-
-    window.addEventListener('mousemove', onMove)
-
-    // varredura de luz automática sobre o claim, como na abertura
-    const sweep = gsap.timeline({ repeat: -1, repeatDelay: 5, delay: 2 })
-    sweep.fromTo(
-      claim,
-      { '--csweep': '-30%' },
-      { '--csweep': '130%', duration: 0.7, ease: 'power2.inOut' },
-    )
-
-    return () => {
-      window.removeEventListener('mousemove', onMove)
-      sweep.kill()
     }
   }, [])
 
@@ -141,7 +93,7 @@ export function Hero() {
     }
   }, [])
 
-  useHeroScroll(sectionRef, frameRef, headlineRef, claimRef, grafismRef, videoRef, mascoteStaticRef)
+  useHeroScroll(sectionRef, frameRef, headlineRef, grafismRef, videoRef, mascoteStaticRef)
 
   return (
     <section
@@ -159,14 +111,53 @@ export function Hero() {
       <div ref={frameRef} className="hero-frame">
         <div className="hero-bg" role="presentation" />
         <HeadlineGhost rootRef={headlineRef} />
-        <img
+        {/* a assinatura: a arte é revelada por uma máscara de traços que a
+            mão percorre (pixo.ts); a imagem cheia fecha os últimos pontos */}
+        <svg
           ref={grafismRef}
           className="hero-grafism"
-          src="/branding/typography/leovox-grafism.png"
-          alt=""
-          draggable={false}
-        />
+          viewBox={`0 0 ${PIXO_LARGURA} ${PIXO_ALTURA}`}
+          aria-hidden="true"
+          focusable="false"
+        >
+          <defs>
+            <mask
+              id="hero-pixo-mao"
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width={PIXO_LARGURA}
+              height={PIXO_ALTURA}
+            >
+              <g
+                fill="none"
+                stroke="#fff"
+                strokeWidth={PIXO_TRACO}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {PIXO_CAMINHOS.map((d) => (
+                  <path key={d} className="pixo-traco" d={d} pathLength={1} />
+                ))}
+              </g>
+            </mask>
+          </defs>
+          <image
+            href="/branding/typography/leovox-grafism.png"
+            width={PIXO_LARGURA}
+            height={PIXO_ALTURA}
+            mask="url(#hero-pixo-mao)"
+          />
+          <image
+            className="pixo-cheio"
+            href="/branding/typography/leovox-grafism.png"
+            width={PIXO_LARGURA}
+            height={PIXO_ALTURA}
+          />
+        </svg>
         <div className="hero-paper" role="presentation" />
+        {/* os prédios da frente: tudo que está pintado no muro fica atrás deles */}
+        <div className="hero-predios" role="presentation" />
         <video
           ref={videoRef}
           className="hero-mascote"
@@ -184,14 +175,6 @@ export function Hero() {
           alt=""
           draggable={false}
         />
-        <div ref={claimRef} className="hero-claim" aria-hidden="true">
-          <span className="claim-desenvolva">
-            <span className="claim-text">DESENVOLVA</span>
-            <span className="claim-shine">DESENVOLVA</span>
-            <span className="claim-sweep">DESENVOLVA</span>
-          </span>
-          <span className="claim-sonhos">seus sonhos.</span>
-        </div>
         <GlobeHub />
       </div>
     </section>

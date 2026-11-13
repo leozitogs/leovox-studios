@@ -31,9 +31,12 @@ mascote vivo em vídeo com alpha, rodando em loop. A headline DESENVOLVA
 SEUS SONHOS vive como fantasma no céu, com varredura de luz ocasional e
 revelação que segue o cursor.
 
-No scroll, a frase mergulha por trás do mascote e renasce por baixo, na
-frente, como claim carimbado (DESENVOLVA em Anton, seus sonhos. em Lost
-in South). No último ato a cena encolhe pra um card sobre palco
+No scroll, a frase cai em duas partes e a assinatura (o pixo verde) se
+desfaz no mesmo ritmo, como a mão voltando pelo traço; quando a frase
+assenta, a mão reescreve a assinatura por cima de DESENVOLVA e a última
+palavra passa a trocar no lugar (SONHOS., PROJETOS., PLANOS.), com a
+varredura de glifos, sempre em branco e na Extenda. Os prédios da frente
+passam por cima da frase e do pixo, que ficam pintados no muro. No último ato a cena encolhe pra um card sobre palco
 off-white, e o header nasce de uma bola com a isologo que desce e se
 expande em nav pill, com barra de progresso interna e comportamento
 inteligente por direção de scroll.
