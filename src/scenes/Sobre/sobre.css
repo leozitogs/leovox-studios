@@ -19,6 +19,9 @@
   color: var(--color-black);
   border-radius: var(--sv-raio) var(--sv-raio) 0 0;
   box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.18);
+  /* as fitas (112vw), o fio e o retrato sangram de propósito pros lados:
+     clip corta só na horizontal, sem criar contêiner de rolagem */
+  overflow-x: clip;
 }
 
 /* o papel da folha, por baixo de tudo */
