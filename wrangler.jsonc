@@ -11,4 +11,14 @@
     // URL que não existe recebe a cena 404 (dist/404.html) com status 404.
     "not_found_handling": "404-page",
   },
+  // O site só existe no domínio, que fica atrás do Cloudflare Access até
+  // as licenças de fonte serem resolvidas (SDD 07-operacional/01-deploy).
+  // Sem isso, o *.workers.dev e as URLs de preview seriam portas abertas
+  // ao redor do Access.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "leovoxstudios.com.br", "custom_domain": true },
+    { "pattern": "www.leovoxstudios.com.br", "custom_domain": true },
+  ],
 }

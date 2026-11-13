@@ -26,10 +26,24 @@ arquivo (o build tem cerca de 100 arquivos e o maior passa pouco de 6 MB).
 A CSP fica de fora até o inventário de origens fechar: GSAP escreve estilo inline
 e o Three pode usar workers por blob.
 
-**Bloqueio de publicação:** produção só depois de resolver as licenças de fonte.
-Lost in South é demo para uso pessoal; a família Extenda está sob CC BY-NC e dois
-cortes são trial. Até lá, o domínio não aponta para o site, e o preview fica
-fechado com Cloudflare Access.
+**Bloqueio de publicação:** produção aberta só depois de resolver as licenças de
+fonte. Lost in South é demo para uso pessoal; a família Extenda está sob CC BY-NC e
+dois cortes são trial.
+
+### Domínio fechado (2026-11-13)
+
+Decisão do PO: até as licenças, o site roda no domínio, mas fechado.
+
+- `leovoxstudios.com.br` e `www` são custom domains do Worker, protegidos por uma
+  aplicação self-hosted do Cloudflare Access que libera só os e-mails autorizados
+  (login por código enviado ao e-mail).
+- `workers_dev` e `preview_urls` desligados no `wrangler.jsonc`: sem isso, o
+  `*.workers.dev` e as URLs de preview seriam portas abertas ao redor do Access.
+- Ordem obrigatória: a aplicação do Access existe antes do primeiro deploy com as
+  rotas. Conferência: `curl -sI https://leovoxstudios.com.br` responde 302 para
+  `*.cloudflareaccess.com`.
+- Abrir ao público, depois das licenças: apagar a aplicação do Access (ou trocar a
+  política por "Everyone").
 
 ## CI/CD
 
