@@ -7,7 +7,8 @@ import { useEffect, useRef, type RefObject } from 'react'
 import { combineMarks, type Marks } from './progressMath'
 
 const KEY_IMAGES = [
-  '/background/bg-buildings.png',
+  '/background/bg-predios.webp',
+  '/background/bg-predios-frente.webp',
   '/textures/texture-paper.png',
   '/branding/typography/leovox-grafism.png',
   '/branding/mascot/mascot-full-body/mascot-hero-fallback.png',

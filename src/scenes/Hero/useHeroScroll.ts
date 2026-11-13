@@ -18,17 +18,26 @@
 import { type RefObject, useEffect } from 'react'
 import { gsap, ScrollTrigger } from '../../lib/gsap'
 import { NAVEGOU_EVENT } from '../../lib/navegar'
+import { pixoEscrito } from './pixo'
 
 const HEADER_TRIGGER = 0.66 // progresso do pin em que o encolhimento começa
 const MANIFESTO_NAV_TRIGGER = 0.92 // card quase no enquadramento final da referência
 const MANIFESTO_PREVIEW_EVENT = 'leovox:manifesto-preview'
 
+// A última palavra da frase troca no lugar depois que ela assenta, com a
+// varredura de glifos do hero do Eduardo: cada letra vira um glifo
+// sorteado e assenta na palavra nova, da esquerda pra direita. Só a
+// palavra muda; fonte e cor ficam (decisão 77). Todas concordam com "SEUS".
+const PALAVRAS = ['SONHOS.', 'PROJETOS.', 'PLANOS.', 'NEGÓCIOS.', 'PRODUTOS.']
+const GLIFOS = '!<>-_/[]{}=+*^?#01'
+const TROCA_MS = 720
+const TROCA_INTERVALO_MS = 2600
+
 export function useHeroScroll(
   sectionRef: RefObject<HTMLElement | null>,
   frameRef: RefObject<HTMLDivElement | null>,
   headlineRef: RefObject<HTMLDivElement | null>,
-  claimRef: RefObject<HTMLDivElement | null>,
-  grafismRef: RefObject<HTMLImageElement | null>,
+  grafismRef: RefObject<SVGSVGElement | null>,
   videoRef: RefObject<HTMLVideoElement | null>,
   mascoteStaticRef: RefObject<HTMLImageElement | null>,
 ): void {
@@ -36,11 +45,10 @@ export function useHeroScroll(
     const section = sectionRef.current
     const frame = frameRef.current
     const headline = headlineRef.current
-    const claim = claimRef.current
     const grafism = grafismRef.current
     const video = videoRef.current
     const mascoteStatic = mascoteStaticRef.current
-    if (!section || !frame || !headline || !claim || !grafism || !video || !mascoteStatic) {
+    if (!section || !frame || !headline || !grafism || !video || !mascoteStatic) {
       return
     }
 
@@ -49,6 +57,109 @@ export function useHeroScroll(
     const navProgress = navPill?.querySelector<HTMLElement>('.nav-progress') ?? null
     const navLogo = navPill?.querySelector<HTMLElement>('.nav-logo') ?? null
     const navLetras = navPill ? Array.from(navPill.querySelectorAll<HTMLElement>('.nav-ch')) : []
+    // ---------- A assinatura: escrita e desfeita pela mão ----------
+    const tracos = Array.from(grafism.querySelectorAll<SVGPathElement>('.pixo-traco'))
+    const pixoCheio = grafism.querySelector<SVGImageElement>('.pixo-cheio')
+    const desenharPixo = (d: number) => {
+      pixoEscrito(d).forEach((v, i) => {
+        const traco = tracos[i]
+        if (!traco) return
+        traco.style.strokeDashoffset = String(1 - v)
+        // sem tinta, o traço some: a ponta redonda deixaria um pingo
+        traco.style.visibility = v > 0 ? 'visible' : 'hidden'
+      })
+      pixoCheio?.style.setProperty('opacity', String(Math.min(1, Math.max(0, (d - 0.96) / 0.04))))
+    }
+    desenharPixo(1)
+
+    // ---------- A frase em duas partes ----------
+    // DESENVOLVA cresce até 82% da largura, na altura do rosto; SEUS
+    // SONHOS. assenta numa linha só, colada embaixo, à direita do ombro.
+    // Medidas de layout (offset), que transform nenhum altera, no espaço
+    // do frame. Recalculadas a cada refresh do ScrollTrigger.
+    const stack = headline.querySelector<HTMLElement>('.headline-stack')
+    const parteA = headline.querySelector<HTMLElement>('.headline-ghost .hl-a')
+    const parteB = headline.querySelector<HTMLElement>('.headline-ghost .hl-b')
+    const trocas = Array.from(headline.querySelectorAll<HTMLElement>('.hl-troca'))
+    const predios = frame.querySelector<HTMLElement>('.hero-predios')
+    const regua = document.createElement('canvas').getContext('2d')
+    const alvos = () => {
+      if (!stack || !parteA || !parteB) {
+        return { a: { x: 0, y: 0, s: 1 }, b: { x: 0, y: 0, s: 1 } }
+      }
+      const W = frame.offsetWidth
+      const H = frame.offsetHeight
+      const css = getComputedStyle(stack)
+      const fs = parseFloat(css.fontSize)
+      const baseX = headline.offsetLeft + stack.offsetLeft
+      const baseY = headline.offsetTop + stack.offsetTop
+      const k1 = (W * 0.82) / parteA.offsetWidth
+      const topoA = H * 0.15
+      // a linha de baixo cabe com a palavra mais longa da troca
+      let maior = parteB.offsetWidth
+      if (regua) {
+        regua.font = css.font
+        const espaco = parseFloat(css.letterSpacing) || 0
+        maior = Math.max(
+          ...PALAVRAS.map((w) => regua.measureText(`SEUS ${w}`).width + espaco * (w.length + 5)),
+        )
+      }
+      const kb = (H * 0.12) / fs
+      return {
+        a: {
+          x: (W - parteA.offsetWidth * k1) / 2 - (baseX + parteA.offsetLeft),
+          y: topoA - (baseY + parteA.offsetTop),
+          s: k1,
+        },
+        b: {
+          x: Math.min(W * 0.675, W * 0.96 - maior * kb) - (baseX + parteB.offsetLeft),
+          y: topoA + fs * k1 * 0.84 - (baseY + parteB.offsetTop),
+          s: kb,
+        },
+      }
+    }
+
+    // ---------- A palavra que troca ----------
+    let trocaId = 0
+    let indicePalavra = 0
+    let cicloTroca = 0
+    let heroForaDeQuadro = false
+    const escrever = (texto: string) => trocas.forEach((el) => (el.textContent = texto))
+    const embaralhar = (para: string) => {
+      const id = ++trocaId
+      const de = trocas[0]?.textContent ?? ''
+      const n = Math.max(de.length, para.length)
+      const t0 = performance.now()
+      const passo = (agora: number) => {
+        if (id !== trocaId) return
+        const p = Math.min(1, (agora - t0) / TROCA_MS)
+        let saida = ''
+        for (let i = 0; i < n; i += 1) {
+          const assenta = 0.3 + ((i + 1) / n) * 0.7
+          if (p >= assenta) saida += para[i] ?? ''
+          else if (p >= assenta - 0.3) saida += GLIFOS[Math.floor(Math.random() * GLIFOS.length)]
+          else saida += de[i] ?? ''
+        }
+        escrever(saida)
+        if (p < 1) requestAnimationFrame(passo)
+      }
+      requestAnimationFrame(passo)
+    }
+    const iniciarTroca = () => {
+      window.clearInterval(cicloTroca)
+      cicloTroca = window.setInterval(() => {
+        if (document.hidden || heroForaDeQuadro) return
+        indicePalavra = (indicePalavra + 1) % PALAVRAS.length
+        embaralhar(PALAVRAS[indicePalavra])
+      }, TROCA_INTERVALO_MS)
+    }
+    const pararTroca = () => {
+      window.clearInterval(cicloTroca)
+      trocaId += 1
+      indicePalavra = 0
+      escrever(PALAVRAS[0])
+    }
+
     let manifestoPreviewVisible = false
     const setManifestoPreview = (visible: boolean) => {
       if (manifestoPreviewVisible === visible) return
@@ -60,8 +171,18 @@ export function useHeroScroll(
     // Reduced-motion: direto no estado final, sem pin nem timelines.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       headline.classList.add('is-scrolling')
-      gsap.set(headline, { autoAlpha: 0 })
-      gsap.set(claim, { autoAlpha: 1 })
+      // a frase assentada e assinada, sem troca de palavra
+      const assentar = () => {
+        const fim = alvos()
+        gsap.set(headline.querySelectorAll('.hl-a'), { x: fim.a.x, y: fim.a.y, scale: fim.a.s })
+        gsap.set(headline.querySelectorAll('.hl-b'), { x: fim.b.x, y: fim.b.y, scale: fim.b.s })
+      }
+      assentar()
+      // a medida depende da Extenda carregada
+      void document.fonts?.ready.then(assentar)
+      gsap.set(headline.querySelectorAll('.headline-ghost'), { opacity: 1 })
+      if (predios) predios.style.opacity = '0.22'
+      section.classList.add('is-assentado')
       gsap.set(frame, { scale: 0.88, borderRadius: 28 })
       gsap.set(video, { autoAlpha: 0 })
       gsap.set(mascoteStatic, { autoAlpha: 1 })
@@ -309,12 +430,15 @@ export function useHeroScroll(
           scrub: 0.7,
           pin: true,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
           onLeave: () => {
             pastHero = true
+            heroForaDeQuadro = true
             setManifestoPreview(true)
           },
           onEnterBack: () => {
             pastHero = false
+            heroForaDeQuadro = false
             showPill()
             setManifestoPreview(true)
           },
@@ -346,9 +470,24 @@ export function useHeroScroll(
             // inline venceria o CSS do is-entering e vazava a headline e
             // o poster do mascote durante a subida da folha da abertura.
             if (!section.classList.contains('is-entering')) {
-              fade(headline, 1 - clamp01((p10 - 2.4) / 0.4))
+              // os prédios da frente recuam enquanto a frase vem pra frente
+              const queda = clamp01((p10 - 0.3) / 2.3)
+              if (predios) {
+                predios.style.opacity = String(0.5 - 0.28 * queda * queda * (3 - 2 * queda))
+              }
               fade(video, 1 - clamp01((p10 - 7.65) / 0.4))
               fade(mascoteStatic, clamp01((p10 - 7.6) / 0.4))
+            }
+
+            // A frase assentou: a palavra começa a trocar no lugar. Gesto
+            // com histerese, pra não piscar na borda do gatilho.
+            const assentado = section.classList.contains('is-assentado')
+            if (!assentado && p10 >= 2.7) {
+              section.classList.add('is-assentado')
+              iniciarTroca()
+            } else if (assentado && p10 < 2.2) {
+              section.classList.remove('is-assentado')
+              pararTroca()
             }
 
             // O vídeo roda a cena inteira e só congela quando o card
@@ -367,45 +506,55 @@ export function useHeroScroll(
         },
       })
 
-      // ---------- Beat 1 (0 a 2.6) ----------
-      tl.fromTo('.headline-ghost', { opacity: 0.16 }, { opacity: 0.55, duration: 0.8 }, 0)
+      // ---------- Beat 1 (0.3 a 2.6): a frase cai, a mão desfaz ----------
+      // A frase acende e cai em duas partes; no mesmo ritmo, a assinatura
+      // se desfaz de trás pra frente, como a mão voltando pelo traço.
+      tl.fromTo('.headline-ghost', { opacity: 0.16 }, { opacity: 1, duration: 1.7 }, 0.3)
       tl.fromTo(headline, { '--sweep2': '-30%' }, { '--sweep2': '130%', duration: 1.1 }, 0.2)
       tl.fromTo(headline, { '--sweep2': '-30%' }, { '--sweep2': '130%', duration: 1.0 }, 1.5)
       tl.fromTo(
-        headline,
-        { y: 0, scale: 1 },
-        { y: '52vh', scale: 0.72, duration: 2.4, ease: 'power1.in', immediateRender: false },
-        0.3,
-      )
-
-      // ---------- Beat 2 (2.6 a 5.5) ----------
-      tl.fromTo(
-        claim,
-        { autoAlpha: 0, y: 110, scale: 0.94 },
-        { autoAlpha: 1, y: 0, scale: 1, duration: 1.6, ease: 'expo.out' },
-        2.6,
-      )
-      tl.fromTo(
-        '.claim-sonhos',
-        { autoAlpha: 0, y: -70, rotation: -11, scale: 1.18 },
-        { autoAlpha: 1, y: 0, rotation: -4, scale: 1, duration: 1.5, ease: 'expo.out' },
-        3.6,
-      )
-      tl.fromTo(
-        grafism,
-        { y: 0, scale: 1, rotation: 0 },
+        '.hl-a',
+        { x: 0, y: 0, scale: 1 },
         {
-          y: '-12vh',
-          scale: 1.06,
-          rotation: -1.5,
-          duration: 5,
-          ease: 'circ.inOut',
+          x: () => alvos().a.x,
+          y: () => alvos().a.y,
+          scale: () => alvos().a.s,
+          duration: 2.3,
+          ease: 'power3.out',
           immediateRender: false,
         },
         0.3,
       )
       tl.fromTo(
-        '.hero-bg',
+        '.hl-b',
+        { x: 0, y: 0, scale: 1 },
+        {
+          x: () => alvos().b.x,
+          y: () => alvos().b.y,
+          scale: () => alvos().b.s,
+          duration: 2.3,
+          ease: 'power3.out',
+          immediateRender: false,
+        },
+        0.3,
+      )
+      // A mão é função pura do tempo da timeline (já suavizado pelo
+      // scrub): desfaz de 0.3 a 2.4, fica sem tinta enquanto a frase
+      // assenta e reescreve de 3.3 a 6.0. Duas tweens no mesmo valor se
+      // atropelavam no refresh e apagavam a assinatura no topo.
+      const maoNoTempo = (t: number) => {
+        if (t <= 0.3) return 1
+        if (t < 2.4) {
+          const u = (t - 0.3) / 2.1
+          return 1 - u * u * (3 - 2 * u)
+        }
+        if (t <= 3.3) return 0
+        return Math.min(1, (t - 3.3) / 2.7)
+      }
+      tl.eventCallback('onUpdate', () => desenharPixo(maoNoTempo(tl.time())))
+
+      tl.fromTo(
+        ['.hero-bg', '.hero-predios'],
         { y: 0, scale: 1 },
         { y: '-5vh', scale: 1.08, duration: 5, ease: 'circ.inOut', immediateRender: false },
         0.3,
@@ -427,10 +576,11 @@ export function useHeroScroll(
     }, section)
 
     return () => {
+      pararTroca()
       soltarPill()
       setManifestoPreview(false)
       delete document.documentElement.dataset.manifestoNavReady
       ctx.revert()
     }
-  }, [sectionRef, frameRef, headlineRef, claimRef, grafismRef, videoRef, mascoteStaticRef])
+  }, [sectionRef, frameRef, headlineRef, grafismRef, videoRef, mascoteStaticRef])
 }

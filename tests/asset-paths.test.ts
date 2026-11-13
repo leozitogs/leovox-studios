@@ -47,6 +47,6 @@ describe('assets referenciados', () => {
   it('o src referencia pelo menos os assets vitais', () => {
     const refs = referencias()
     expect(refs.some((r) => r.includes('mascote-hero.webm'))).toBe(true)
-    expect(refs.some((r) => r.includes('bg-buildings'))).toBe(true)
+    expect(refs.some((r) => r.includes('bg-predios'))).toBe(true)
   })
 })

@@ -2,11 +2,16 @@
 // Estado A: varredura de luz ocasional e revelação no hover seguindo o
 // cursor. Quando o scroll assume (classe is-scrolling, via useHeroScroll),
 // o hover desliga e a timeline do pin passa a dirigir o elemento.
+//
+// A frase vem em duas partes (decisão 77): DESENVOLVA (.hl-a) e
+// SEUS SONHOS. (.hl-b), que caem pra alvos diferentes no disparo. As três
+// camadas repetem a mesma marcação e recebem o mesmo transform, então
+// continuam empilhadas. A palavra final troca de tempos em tempos
+// (.hl-troca); a medida (.hl-medida) segura a largura de SONHOS. no fluxo,
+// pra troca nunca empurrar o resto da frase.
 
 import { type RefObject, useEffect } from 'react'
 import { gsap } from '../../lib/gsap'
-
-const HEADLINE = 'DESENVOLVA SEUS SONHOS.'
 
 interface HeadlineGhostProps {
   rootRef: RefObject<HTMLDivElement | null>
@@ -71,14 +76,33 @@ export function HeadlineGhost({ rootRef }: HeadlineGhostProps) {
   return (
     <div ref={rootRef} className="hero-headline">
       <h1 className="headline-stack">
-        <span className="headline-ghost">{HEADLINE}</span>
+        <span className="headline-ghost">
+          <Partes />
+        </span>
         <span className="headline-lit" aria-hidden="true">
-          {HEADLINE}
+          <Partes />
         </span>
         <span className="headline-sweep" aria-hidden="true">
-          {HEADLINE}
+          <Partes />
         </span>
       </h1>
     </div>
+  )
+}
+
+function Partes() {
+  return (
+    <>
+      <span className="hl-a">DESENVOLVA</span>{' '}
+      <span className="hl-b">
+        SEUS{' '}
+        <span className="hl-palavra">
+          <span className="hl-medida">SONHOS.</span>
+          <span className="hl-troca" aria-hidden="true">
+            SONHOS.
+          </span>
+        </span>
+      </span>
+    </>
   )
 }

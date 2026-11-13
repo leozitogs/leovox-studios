@@ -1,8 +1,10 @@
 /* ============================================================
    Cena 1 · Hero
    Palco (stage) atrás, frame na frente. Dentro do frame, de trás
-   pra frente: prédios > headline > grafism > papel > mascote >
-   claim > globo. O mascote fica na frente de todas as texturas.
+   pra frente: prédios > headline > assinatura (pixo) > papel >
+   prédios da frente > mascote > globo. A frase e o pixo ficam
+   pintados no muro, atrás dos prédios da frente; o mascote fica na
+   frente de tudo.
    ============================================================ */
 
 .hero {
@@ -36,7 +38,19 @@
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url('/background/bg-buildings.png') center / cover no-repeat;
+  background: url('/background/bg-predios.webp') center / cover no-repeat;
+}
+
+/* a mesma foto, só os prédios, em multiplicar: o branco some e eles
+   passam na frente da frase e do pixo. Começa a 50% e recua enquanto
+   a frase cai (useHeroScroll), pra ela não apagar quando assenta */
+.hero-predios {
+  position: absolute;
+  inset: 0;
+  background: url('/background/bg-predios-frente.webp') center / cover no-repeat;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* ---------- Headline fantasma ---------- */
@@ -67,8 +81,33 @@
   user-select: none;
 }
 
-.headline-stack span {
+.headline-stack > span {
   display: block;
+}
+
+/* as duas partes da frase caem pra alvos diferentes no disparo */
+.hl-a,
+.hl-b {
+  display: inline-block;
+  transform-origin: 0 0;
+}
+
+/* a palavra que troca: a medida segura a largura de SONHOS. no fluxo
+   (e é o que o leitor de tela lê); a troca desenha por cima */
+.hl-palavra {
+  position: relative;
+  display: inline-block;
+}
+
+.hl-medida {
+  opacity: 0;
+}
+
+.hl-troca {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
 }
 
 .headline-ghost {
@@ -129,7 +168,22 @@
   left: 50%;
   transform: translateX(-50%);
   width: min(62vw, 73.75rem);
+  height: auto;
+  aspect-ratio: 1674 / 1184;
+  overflow: visible;
   pointer-events: none;
+}
+
+/* a imagem cheia só acende no fim da escrita (fecha os pontos que a
+   máscara de traços não alcança) */
+.pixo-cheio {
+  opacity: 0;
+}
+
+/* cada traço da máscara tem pathLength 1: o dashoffset (1 a 0) é quanto
+   da tinta já saiu da lata */
+.pixo-traco {
+  stroke-dasharray: 1 1;
 }
 
 .hero-mascote {
@@ -197,103 +251,9 @@
 .hero-mascote-static {
   opacity: 0;
   visibility: hidden;
-}
-
-/* ---------- Claim do beat 2: DESENVOLVA + seus sonhos. ----------
-   Geometria cravada no mock: DESENVOLVA em Extenda 80 ocupando 80.5%
-   da largura (15.13vw), script em Lost in South a 7.3vw, deslocado
-   7.4vw abaixo do topo do claim, rotacionado -4 graus. */
-
-.hero-claim {
-  --cmx: 0px;
-  --cmy: 0px;
-  --creveal: 0;
-  --csweep: -30%;
-  position: absolute;
-  left: 50%;
-  top: 60vh;
-  transform: translateX(-50%);
-  z-index: 6;
-  text-align: center;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  /* sombra bem desfocada descolando a frase do fundo */
-  filter: drop-shadow(0 1.1vw 2.4vw rgba(0, 0, 0, 0.55));
-}
-
-.claim-desenvolva {
-  position: relative;
-  display: block;
-  font-family: var(--font-display);
-  font-size: min(11vw, 19.555556vh); /* Anton, escala do mock */
-  letter-spacing: -0.015em; /* fecha levemente o espaçamento natural do corpo grande */
-  line-height: 0.95;
-  color: var(--color-offwhite);
-  white-space: nowrap;
-}
-
-.claim-text {
-  display: block;
-  opacity: 0.87; /* truque de opacidade: a base nunca esta 100% acesa */
-}
-
-/* mesma mecânica da headline de abertura: a base fica a 80% e o
-   cursor revela a versão 100% acesa em máscara suave de queda longa */
-.claim-shine {
-  position: absolute;
-  inset: 0;
-  display: block;
-  color: var(--color-offwhite);
-  opacity: var(--creveal);
-  -webkit-mask-image: radial-gradient(
-    circle 420px at var(--cmx) var(--cmy),
-    #000 20%,
-    transparent 90%
-  );
-  mask-image: radial-gradient(circle 420px at var(--cmx) var(--cmy), #000 20%, transparent 90%);
-}
-
-/* varredura de luz automática, a cada poucos segundos, como na abertura */
-.claim-sweep {
-  position: absolute;
-  inset: 0;
-  display: block;
-  color: var(--color-offwhite);
-  -webkit-mask-image: linear-gradient(
-    75deg,
-    transparent calc(var(--csweep) - 14%),
-    #000 var(--csweep),
-    transparent calc(var(--csweep) + 14%)
-  );
-  mask-image: linear-gradient(
-    75deg,
-    transparent calc(var(--csweep) - 14%),
-    #000 var(--csweep),
-    transparent calc(var(--csweep) + 14%)
-  );
-}
-
-.claim-sonhos {
-  position: absolute;
-  left: 50%;
-  top: min(5.9vw, 10.488889vh);
-  transform: translateX(-50%) rotate(-4deg);
-  font-family: var(--font-seal);
-  font-size: min(7.3vw, 12.977778vh);
-  line-height: 1;
-  color: var(--color-green);
-  white-space: nowrap;
-  /* contorno verde-escuro de adesivo, na base de sombras duras empilhadas */
-  text-shadow:
-    0.045em 0 0 #0c6e00,
-    -0.045em 0 0 #0c6e00,
-    0 0.045em 0 #0c6e00,
-    0 -0.045em 0 #0c6e00,
-    0.032em 0.032em 0 #0c6e00,
-    -0.032em 0.032em 0 #0c6e00,
-    0.032em -0.032em 0 #0c6e00,
-    -0.032em -0.032em 0 #0c6e00;
+  /* o PNG tem o moletom puxado pro verde (73,80,72) e o vídeo é neutro
+     (69,69,69): sem isso, a troca vídeo/png no card dá um salto de tom */
+  filter: grayscale(1) brightness(0.92);
 }
 
 /* ---------- Scroll dirigindo a headline (classe is-scrolling) ----------
@@ -329,6 +289,7 @@
    ============================================================ */
 
 .hero.is-entering .hero-bg,
+.hero.is-entering .hero-predios,
 .hero.is-entering .hero-grafism,
 .hero.is-entering .hero-paper,
 .hero.is-entering video.hero-mascote,
@@ -339,6 +300,11 @@
 
 .hero.is-ready .hero-bg {
   animation: hero-settle 1.4s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+}
+
+/* os prédios da frente assentam junto com o fundo, sem mexer na opacidade */
+.hero.is-ready .hero-predios {
+  animation: hero-settle-frente 1.4s cubic-bezier(0.25, 1, 0.5, 1) backwards;
 }
 
 .hero.is-ready video.hero-mascote {
@@ -364,6 +330,7 @@
 /* primeira carga: o hero ja entra formado dentro da folha do loader,
    sem dobrar animacao com a subida */
 .hero.is-ready.is-instant .hero-bg,
+.hero.is-ready.is-instant .hero-predios,
 .hero.is-ready.is-instant .hero-grafism,
 .hero.is-ready.is-instant .hero-paper,
 .hero.is-ready.is-instant video.hero-mascote,
@@ -375,6 +342,12 @@
 @keyframes hero-settle {
   from {
     opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes hero-settle-frente {
+  from {
     transform: scale(1.12);
   }
 }
@@ -401,6 +374,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero.is-entering .hero-bg,
+  .hero.is-entering .hero-predios,
   .hero.is-entering .hero-grafism,
   .hero.is-entering .hero-paper,
   .hero.is-entering video.hero-mascote,
@@ -410,6 +384,7 @@
   }
 
   .hero.is-ready .hero-bg,
+  .hero.is-ready .hero-predios,
   .hero.is-ready video.hero-mascote,
   .hero.is-ready .hero-grafism,
   .hero.is-ready .hero-paper,
