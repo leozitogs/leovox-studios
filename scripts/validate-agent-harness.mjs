@@ -40,7 +40,7 @@ const files = readdirSync(resolve(root, catalog.sourceDirectory))
   .sort()
 const registered = [...ids].sort()
 if (JSON.stringify(files) !== JSON.stringify(registered)) {
-  fail('LVX-AGENT-007', 'catálogo e .claude/agents estão divergentes')
+  fail('LVX-AGENT-007', `catálogo e ${catalog.sourceDirectory} estão divergentes`)
 }
 
 for (const reviewer of catalog.policy.alwaysReviewers) {

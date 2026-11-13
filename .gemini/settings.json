@@ -1,0 +1,31 @@
+{
+  "context": { "fileName": ["AGENTS.md", "GEMINI.md"] },
+  "hooks": {
+    "BeforeTool": [
+      {
+        "matcher": "run_shell_command|write_file|replace",
+        "hooks": [
+          {
+            "name": "leovox-guarda",
+            "type": "command",
+            "command": "node \"$GEMINI_PROJECT_DIR/scripts/guard.mjs\" antes",
+            "timeout": 15000
+          }
+        ]
+      }
+    ],
+    "AfterTool": [
+      {
+        "matcher": "write_file|replace",
+        "hooks": [
+          {
+            "name": "leovox-travessao",
+            "type": "command",
+            "command": "node \"$GEMINI_PROJECT_DIR/scripts/guard.mjs\" depois",
+            "timeout": 15000
+          }
+        ]
+      }
+    ]
+  }
+}

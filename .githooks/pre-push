@@ -1,0 +1,4 @@
+#!/bin/sh
+# Antes de subir: o portão completo. CI repete tudo, mais o browser.
+set -e
+npm run --silent validate

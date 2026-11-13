@@ -1,0 +1,24 @@
+{
+  "id": "webgl-ausente",
+  "tipo": "bug",
+  "origem": "historico",
+  "base": "b31286bb65c070d52ca9f4ae73a2eda8a57abddc",
+  "pedido": "O harness noturno falha todo dia no Firefox do CI: quando o navegador não oferece contexto WebGL, a página registra erros e lança uma exceção, e o filme inteiro conta como quebrado. Corrija para que o site abra sem nenhum erro de console ou exceção quando não houver WebGL. O site vive no DOM; o canvas 3D é decorativo. Prove a correção com um teste de browser que simula a ausência de WebGL.",
+  "calibracao": "Correção real do projeto (commit f56ef20). O oráculo é o teste de resiliência e a fixture do browser que vieram com ela.",
+  "oraculo": {
+    "commit": "f56ef20",
+    "arquivos": ["harness/browser/resilience.spec.ts", "harness/browser/fixtures.ts"]
+  },
+  "avaliar": [
+    "npm run typecheck",
+    "npm run build",
+    "npx playwright test harness/browser/resilience.spec.ts --project=chromium-desktop"
+  ],
+  "naoTocar": ["public/", "docs/scene-contracts/"],
+  "proibido": [
+    "remover o canvas persistente de vez",
+    "silenciar console.error ou engolir a exceção sem tratar a causa",
+    "instalar dependência nova"
+  ],
+  "rubrica": "evals/rubrics/frontend-scorecard.json"
+}

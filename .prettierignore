@@ -7,3 +7,10 @@ public/mascote
 public/textures
 
 .wrangler/
+
+# Gerados por npm run harness:sync (a fonte é que se formata)
+.claude/agents
+.claude/skills
+.github/copilot-instructions.md
+**/CLAUDE.md
+!/CLAUDE.md

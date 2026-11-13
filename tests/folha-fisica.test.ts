@@ -27,7 +27,7 @@ function simula(f: Folha, e: Entrada, segundos: number, m = CARTAO): Folha {
   return s
 }
 
-describe('folha solta', () => {
+describe('[PIL-09] folha solta', () => {
   it('parada e sem vento, continua parada', () => {
     expect(emRepouso(simula(novaFolha(), parado, 2))).toBe(true)
   })

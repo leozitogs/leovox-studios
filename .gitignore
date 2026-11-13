@@ -23,3 +23,8 @@ docs/DECISOES.md
 # Wrangler: estado local do wrangler dev e segredos locais
 .wrangler/
 .dev.vars*
+
+# Harness: lista local de termos privados e área de trabalho dos evals
+.harness/local/
+evals/.trabalho/
+evals/resultados/

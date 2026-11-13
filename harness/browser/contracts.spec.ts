@@ -5,7 +5,7 @@ test('expõe as cenas estruturais na ordem do filme', async ({ app }) => {
   expect(scenes).toEqual(['hero', 'manifesto', 'pilares'])
 })
 
-test('Pilares abre uma capa por frente oficial, na ordem', async ({ app }) => {
+test('[PIL-01] Pilares abre uma capa por frente oficial, na ordem', async ({ app }) => {
   await app.evaluate(() => window.__LEOVOX_HARNESS__!.enterScene('pilares'))
   const capas = (await app.locator('.tr-capa-nome').allTextContents()).map((text) =>
     text.toLocaleUpperCase('pt-BR'),
@@ -14,7 +14,7 @@ test('Pilares abre uma capa por frente oficial, na ordem', async ({ app }) => {
   await expect(app.locator('.pl-nav-btn')).toHaveCount(3)
 })
 
-test('a tira só declara placeholders, nunca cases falsos', async ({ app }) => {
+test('[PIL-02] a tira só declara placeholders, nunca cases falsos', async ({ app }) => {
   const trabalhos = app.locator('.tr-trabalho')
   expect(await trabalhos.count()).toBeGreaterThanOrEqual(3)
   const estado = await trabalhos.evaluateAll((items) =>
@@ -38,7 +38,7 @@ test('a tira só declara placeholders, nunca cases falsos', async ({ app }) => {
   await expect(legendas.first()).toContainText('Placeholder')
 })
 
-test('nenhum título de capa ou de trabalho estoura a coluna', async ({ app }) => {
+test('[PIL-06] nenhum título de capa ou de trabalho estoura a coluna', async ({ app }) => {
   test.skip(
     !['chromium-desktop', 'chromium-compact'].includes(test.info().project.name),
     'Laptop e desktop primeiro; a responsividade fina vem depois',
@@ -65,7 +65,9 @@ test('Manifesto e Pilares aceitam posicionamento determinístico', async ({ app 
   else expect(pilares.progress).toBeGreaterThan(0.65)
 })
 
-test('índice do Manifesto acompanha e navega entre os quatro atos', async ({ app }) => {
+test('[MAN-02] [MAN-03] [MAN-04] índice do Manifesto acompanha e navega entre os quatro atos', async ({
+  app,
+}) => {
   test.skip(
     !['chromium-desktop', 'chromium-compact'].includes(test.info().project.name),
     'O índice visual desta rodada começa em tablet e desktop',

@@ -1,6 +1,15 @@
+---
+id: cena-07-sobre
+tipo: cena
+status: proposta
+versao: 1
+contrato: null
+aprovada_em: null
+aprovacao: null
+---
 # Briefing · Cena 7 · Sobre · "O making-of"
 
-> Briefing de produção, v1 · 2026-11-13. Status: **proposta, aguardando o PO.**
+> Briefing de produção, v1 · 2026-11-13. Status e aprovação: ver o frontmatter.
 > Vem logo depois da tira dos Pilares e substitui o vão escuro que hoje fecha a página.
 > Régua de nível: a mesma da tira (Eduardo Souza como execução, não como visual).
 

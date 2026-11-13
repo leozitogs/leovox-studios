@@ -1,0 +1,33 @@
+{
+  "description": "Guarda do harness Leovox: a mesma de Claude e Gemini, em scripts/guard.mjs.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/guard.mjs\" antes",
+            "commandWindows": "node scripts/guard.mjs antes",
+            "statusMessage": "Guarda Leovox",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/guard.mjs\" depois",
+            "commandWindows": "node scripts/guard.mjs depois",
+            "statusMessage": "Travessão",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

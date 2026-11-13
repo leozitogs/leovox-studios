@@ -13,7 +13,8 @@ O portfólio é um filme contínuo em React. Cada cena é dona do seu DOM, estil
 | Componentes        | Elementos reutilizáveis sem regra de uma cena específica | `src/components/`             |
 | Infra de movimento | Instâncias únicas de GSAP e Lenis                        | `src/lib/`                    |
 | Harness no browser | Controle e observação determinísticos sob demanda        | `src/harness/`                |
-| Harness de agentes | Catálogo, dependências, roteamento e evidências          | `harness/agents/`             |
+| Harness de agentes | Papéis, catálogo, roteamento, gerador e evidências       | `harness/`, `.agents/skills/` |
+| Specs              | O quê e por quê, com aprovação do PO presa ao conteúdo   | `docs/specs/`                 |
 | Contratos          | Critérios executáveis por cena                           | `docs/scene-contracts/`       |
 | Testes             | Unidade, arquitetura e browser                           | `tests/`, `harness/browser/`  |
 

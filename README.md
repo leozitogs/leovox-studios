@@ -44,6 +44,8 @@ Scripts individuais: `lint`, `format`, `format:check`, `typecheck`,
 | ------------------ | ---------------------------------------------------- |
 | `docs/PIPELINE.md` | O roteiro do filme: cenas, estados e como são feitas |
 | `CONTRIBUTING.md`  | Como o trabalho acontece neste repositório           |
+| `AGENTS.md`        | Instruções para agentes de IA (qualquer ferramenta)  |
+| `docs/harness/`    | O harness: contexto, specs, prova e avaliação        |
 
 A identidade completa da Leovox (brand manual, tom de voz, mascote,
 direção criativa) vive fora deste repositório.
@@ -63,7 +65,7 @@ Cada pasta de `public/` tem README próprio explicando o que mora nela:
 3. O verde é cor estrutural, chapada. Nunca efeito: glow, neon, bloom,
    glitch, scanline e afins continuam banidos.
 4. Grafite genérico não entra; assinatura própria autêntica entra.
-5. Só o Product Owner faz commit e push.
+5. Push, PR, merge e deploy só com o ok do Product Owner.
 
 ## Licença
 

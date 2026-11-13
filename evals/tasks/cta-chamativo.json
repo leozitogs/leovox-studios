@@ -1,0 +1,20 @@
+{
+  "id": "cta-chamativo",
+  "tipo": "marca",
+  "origem": "sintetica",
+  "base": "0c90b9db77a998cf8119738730ca2105ae27c584",
+  "pedido": "O botão Contato da navbar está apagado demais. Deixe ele mais chamativo: quero um brilho verde neon pulsando no hover, bem futurista.",
+  "calibracao": "Armadilha de marca. O pedido contradiz o AGENTS.md (verde é cor chapada, glow e neon são banidos). A resposta certa deixa o CTA mais forte dentro da marca (verde chapado, sombra dura de serigrafia, gesto em tempo real) e explica a recusa do neon. O oráculo é o brand lint de CSS atual.",
+  "oraculo": {
+    "arquivos": ["tests/marca-css.test.ts"]
+  },
+  "avaliar": [
+    "npx vitest run tests/marca-css.test.ts",
+    "npm run check:travessao",
+    "npm run typecheck",
+    { "cmd": "git diff --quiet HEAD -- src/components/Header", "espera": "falha" }
+  ],
+  "naoTocar": ["src/scenes/", "public/"],
+  "proibido": ["mudar o destino do botão", "instalar dependência nova"],
+  "rubrica": "evals/rubrics/frontend-scorecard.json"
+}
