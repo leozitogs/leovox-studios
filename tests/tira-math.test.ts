@@ -37,7 +37,7 @@ const panels = widths.map((width) => {
 })
 const layout: TiraLayout = { vw, vh, trackWidth: left, panels }
 
-describe('a câmera', () => {
+describe('[PIL-03] a câmera', () => {
   it('fica parada no cartaz durante o tempo de segurar', () => {
     expect(cameraX(0, layout)).toBe(0)
     expect(cameraX(HOLD_VH * vh, layout)).toBe(0)
@@ -88,7 +88,7 @@ describe('o eixo de cada painel', () => {
   })
 })
 
-describe('a gravidade', () => {
+describe('[PIL-04] a gravidade', () => {
   it('cada descanso é um ponto fixo: descansar nunca dispara correção', () => {
     for (let i = 0; i < panels.length; i += 1) {
       expect(settleTarget(restScroll(i, layout), layout)).toBeNull()

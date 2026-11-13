@@ -20,8 +20,10 @@ Checklist de aceite: profile 0, `alpha_mode` 1 e alphaextract com mínimo perto 
 
 ## Squad de subagentes Leovox
 
-15 agentes em `.claude/agents/`, orquestrados pelo `leovox-conductor`, com o
-`CLAUDE.md` na raiz. O squad executa o código a partir dos prompts do PO.
+15 papéis em `harness/roles/`, orquestrados pelo `leovox-conductor`, com o
+`AGENTS.md` na raiz como instrução canônica (o Claude Code os recebe como
+subagentes gerados em `.claude/agents/`). O squad executa o código a partir
+dos prompts do PO, em qualquer ferramenta de IA (ADR 0002).
 
 ## Aprendizados de ferramenta
 

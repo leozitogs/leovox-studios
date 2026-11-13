@@ -1,6 +1,6 @@
-# Agentes dentro do harness
+# Papéis da squad
 
-Os 15 especialistas em `.claude/agents/` são módulos de competência do harness. O catálogo em `harness/agents/catalog.json` transforma descrições livres em decisões verificáveis de roteamento, dependências e evidências.
+Os 15 papéis em `harness/roles/` são módulos de competência do harness, escritos sem depender de ferramenta. O Claude Code os recebe como subagentes em `.claude/agents/`, gerados por `npm run harness:sync`; as outras ferramentas leem o arquivo do papel direto. O catálogo em `harness/agents/catalog.json` transforma descrições livres em decisões verificáveis de roteamento, dependências e evidências.
 
 ## Ciclo
 
@@ -22,7 +22,7 @@ Paths podem ser informados diretamente depois de `--` para diagnosticar uma rota
 
 ## Handoff obrigatório
 
-Cada especialista retorna quatro campos:
+Cada especialista retorna quatro campos (definidos em `harness/agents/contrato-comum.md`):
 
 - `summary`: conclusão curta.
 - `evidence`: arquivos, testes, screenshots ou medições.
@@ -33,4 +33,4 @@ Reviewer não altera a implementação que avalia. Ele aponta evidência e sever
 
 ## Catálogo e fontes
 
-O arquivo Markdown continua sendo a instrução completa do agente. O JSON contém somente metadados operacionais. `npm run agents:validate` falha se um agente existir em apenas um dos lados, se uma dependência não existir ou se revisores obrigatórios ganharem permissão de escrita em produção.
+O Markdown em `harness/roles/` é a instrução completa do papel, com frontmatter só de `name` e `description`. O JSON contém os metadados operacionais e, no bloco `claude`, as ferramentas e o modelo do subagente. As regras que valem para todos os papéis ficam em `harness/agents/contrato-comum.md` e são anexadas a cada subagente gerado. `npm run agents:validate` falha se um agente existir em apenas um dos lados, se uma dependência não existir ou se revisores obrigatórios ganharem permissão de escrita em produção.

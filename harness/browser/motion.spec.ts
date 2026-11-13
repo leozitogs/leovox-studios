@@ -10,7 +10,7 @@ const desvioDoAtivo = () => {
   return Math.abs(Number.parseFloat(ativo?.style.getPropertyValue('--d') || 'NaN'))
 }
 
-test('parado no meio da travessia, a tira assenta num painel', async ({ app }) => {
+test('[PIL-04] parado no meio da travessia, a tira assenta num painel', async ({ app }) => {
   test.skip(!DESKTOP.includes(test.info().project.name), 'A tira pina em laptop e desktop')
   for (const progresso of [0.23, 0.48, 0.71]) {
     await app.evaluate((p) => window.__LEOVOX_HARNESS__!.setProgress('pilares', p), progresso)
@@ -20,7 +20,7 @@ test('parado no meio da travessia, a tira assenta num painel', async ({ app }) =
   }
 })
 
-test('o trilho e o teclado navegam pela tira', async ({ app }) => {
+test('[PIL-05] o trilho e o teclado navegam pela tira', async ({ app }) => {
   test.skip(!DESKTOP.includes(test.info().project.name), 'A tira pina em laptop e desktop')
   const cena = app.locator('[data-harness-scene="pilares"]')
   await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.2))
@@ -39,7 +39,7 @@ test('o trilho e o teclado navegam pela tira', async ({ app }) => {
   await expect(cena).toHaveAttribute('data-panel', 'capa-tecnologia', { timeout: 6000 })
 })
 
-test('as folhas soltas balançam com o cursor e voltam ao prumo', async ({ app }) => {
+test('[PIL-09] as folhas soltas balançam com o cursor e voltam ao prumo', async ({ app }) => {
   test.skip(!DESKTOP.includes(test.info().project.name), 'A física roda com a tira pinada')
   await app.evaluate(() => window.__LEOVOX_HARNESS__!.setProgress('pilares', 0.3))
   await app.evaluate(() => window.__LEOVOX_HARNESS__!.settle(3000))
@@ -74,7 +74,9 @@ test('as folhas soltas balançam com o cursor e voltam ao prumo', async ({ app }
   await expect.poll(async () => Math.abs((await ler()).ang), { timeout: 8000 }).toBeLessThan(0.3)
 })
 
-test('a ficha do trabalho sai quando a tira assenta e não cobre a peça', async ({ app }) => {
+test('[PIL-11] a ficha do trabalho sai quando a tira assenta e não cobre a peça', async ({
+  app,
+}) => {
   test.skip(!DESKTOP.includes(test.info().project.name), 'A ficha recolhe com a tira pinada')
   const cena = app.locator('[data-harness-scene="pilares"]')
   // procura um trabalho assentado
@@ -124,7 +126,7 @@ test('a ficha do trabalho sai quando a tira assenta e não cobre a peça', async
   await expect(cena).toHaveClass(/is-andando/)
 })
 
-test('sem pin, a tira inteira fica no fluxo vertical', async ({ app }) => {
+test('[PIL-08] sem pin, a tira inteira fica no fluxo vertical', async ({ app }) => {
   test.skip(DESKTOP.includes(test.info().project.name), 'Reduced motion e telas estreitas')
   await expect(app.locator('[data-harness-scene="pilares"]')).toHaveClass(/is-static/)
   await expect(app.locator('.tr-capa')).toHaveCount(3)

@@ -1,7 +1,17 @@
+---
+id: cena-03-pilares
+tipo: cena
+status: em-build
+versao: 4
+contrato: docs/scene-contracts/pilares.contract.json
+aprovada_em: 2026-11-12
+aprovacao: 2311f5703332
+---
 # Briefing · Cena 3 · Pilares · "A tira"
 
 > Briefing de produção, v4 · 2026-11-12. Substitui a v3 de 2026-09-14
-> (está no histórico do Git). Status: **proposta, aguardando o PO.**
+> (está no histórico do Git). Status e aprovação: ver o frontmatter.
+> Os critérios executáveis vivem no contrato; os desta seção são os da proposta.
 > Régua de nível: o portfólio de Eduardo Souza (eduardosouza-tech.github.io/EduardoDev),
 > analisado em vídeo e no código. Ele é régua de execução, não de visual.
 

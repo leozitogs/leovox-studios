@@ -1,0 +1,4 @@
+# Fim de linha LF em todo clone, em qualquer sistema e ferramenta. O Prettier e os
+# geradores do harness escrevem LF; sem isto, um clone no Windows com autocrlf
+# sai em CRLF e o format:check acusa o repositório inteiro.
+* text=auto eol=lf

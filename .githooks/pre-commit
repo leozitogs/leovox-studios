@@ -1,0 +1,7 @@
+#!/bin/sh
+# Hook de git do harness Leovox. Vale para qualquer ferramenta, e para humano.
+# Instale uma vez com: npm run harness:install
+set -e
+npm run --silent check:travessao
+npm run --silent harness:check
+npm run --silent contracts

@@ -47,7 +47,9 @@ export function routeAgents(catalog, { paths = [], task = '' } = {}) {
       .flatMap(({ agent }) => agent.domains),
   )
   const touchesCatalog = normalizedPaths.some((path) =>
-    /^(AGENTS|CLAUDE)\.md$|^\.claude\/|^harness\/agents\/|^docs\/harness\//.test(path),
+    /(^|\/)(AGENTS|CLAUDE|GEMINI)\.md$|^\.(claude|agents|codex|gemini|githooks)\/|^harness\/(agents|roles|lib)\/|^docs\/harness\/|^scripts\/(harness-|guard)/.test(
+      path,
+    ),
   )
   if (domains.size >= catalog.policy.conductorDomainThreshold || touchesCatalog) {
     addWithRequirements('leovox-conductor', {

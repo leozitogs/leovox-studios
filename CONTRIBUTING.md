@@ -11,7 +11,8 @@ supervisionada, e nada entra sem a minha aprovação por escrito.
 O site é um filme e o roteiro vive em `docs/PIPELINE.md`. Cada cena
 segue o mesmo ciclo, sem atalho:
 
-1. Briefing com protótipo visual aprovado antes de qualquer código.
+1. Spec (briefing) com protótipo visual aprovada antes de qualquer código,
+   em `docs/specs/` (ciclo de vida em `docs/specs/README.md`).
 2. Plano de execução (arquivos, abordagem, libs) aprovado por escrito.
 3. Build estático primeiro, movimento depois.
 4. QA de cena: scroll ida e volta em todos os ritmos, clique em tudo,
@@ -26,7 +27,8 @@ segue o mesmo ciclo, sem atalho:
   (`Build hero scene state A...`, não `feat: ...`).
 - `npm run validate` precisa passar ANTES de todo commit. Sem exceção,
   sem `--no-verify`, sem "arruma depois".
-- Só o Product Owner commita e pusha.
+- Agente commita só em branch de trabalho e quando o Product Owner pede;
+  push, PR, merge e deploy só com o ok dele (ADR 0002).
 - Fluxo trunk-based: cena pra main via PR com CI verde. Sem branch
   develop até existir deploy que justifique.
 
@@ -105,7 +107,8 @@ também roda `npm run test:browser:chromium` antes da entrega.
 | ------------------ | ------------------------------------------------------------------------ |
 | `docs/PIPELINE.md` | O roteiro do filme: as cenas, o estado de cada uma e como são produzidas |
 | `CONTRIBUTING.md`  | Este documento: como o trabalho acontece                                 |
-| `AGENTS.md`        | Mapa curto para agentes e comandos obrigatórios                          |
+| `AGENTS.md`        | Instruções canônicas para qualquer ferramenta de IA                      |
+| `docs/specs/`      | Specs com ciclo de vida e aprovação do PO                                |
 | `ARCHITECTURE.md`  | Limites e dependências do sistema                                        |
 | `docs/harness/`    | Contratos de engenharia, avaliação e evidências                          |
 

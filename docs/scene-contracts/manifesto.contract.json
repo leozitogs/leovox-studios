@@ -3,16 +3,57 @@
   "id": "manifesto",
   "title": "Manifesto Leovox",
   "route": "/",
-  "viewports": ["desktop", "mobile", "reduced-motion"],
-  "states": ["ato-1", "ato-2", "ato-3", "ato-4"],
-  "acceptance": [
-    "Os quatro atos seguem a ordem semântica do DOM",
-    "O índice lateral contém quatro marcadores e acompanha o ato corrente",
-    "O índice permanece oculto até o Hero alcançar o enquadramento final de card",
-    "Cada marcador do índice navega para o ato correspondente",
-    "Cada ato revela ao entrar e volta ao estado inicial no reverse",
-    "A transição para Pilares preserva a textura compartilhada",
-    "Reduced motion mantém os quatro atos legíveis"
+  "viewports": [
+    "desktop",
+    "mobile",
+    "reduced-motion"
   ],
-  "forbidden": ["travessao", "fade branco entre cenas", "conteudo focavel fora do estado ativo"]
+  "states": [
+    "ato-1",
+    "ato-2",
+    "ato-3",
+    "ato-4"
+  ],
+  "acceptance": [
+    {
+      "id": "MAN-01",
+      "text": "Os quatro atos seguem a ordem semântica do DOM",
+      "verify": "manual"
+    },
+    {
+      "id": "MAN-02",
+      "text": "O índice lateral contém quatro marcadores e acompanha o ato corrente",
+      "verify": "browser"
+    },
+    {
+      "id": "MAN-03",
+      "text": "O índice permanece oculto até o Hero alcançar o enquadramento final de card",
+      "verify": "browser"
+    },
+    {
+      "id": "MAN-04",
+      "text": "Cada marcador do índice navega para o ato correspondente",
+      "verify": "browser"
+    },
+    {
+      "id": "MAN-05",
+      "text": "Cada ato revela ao entrar e volta ao estado inicial no reverse",
+      "verify": "manual"
+    },
+    {
+      "id": "MAN-06",
+      "text": "A transição para Pilares preserva a textura compartilhada",
+      "verify": "manual"
+    },
+    {
+      "id": "MAN-07",
+      "text": "Reduced motion mantém os quatro atos legíveis",
+      "verify": "manual"
+    }
+  ],
+  "forbidden": [
+    "travessao",
+    "fade branco entre cenas",
+    "conteudo focavel fora do estado ativo"
+  ]
 }
