@@ -58,11 +58,6 @@ test('o menu leva a cada cena e marca onde você está', async ({ app }) => {
   const cena = app.locator('[data-harness-scene="pilares"]')
   const atual = app.locator('.nav-link[aria-current]')
 
-  // Sobre: perto, rola suave até o primeiro ato do manifesto
-  await app.locator('.nav-link[data-secao="sobre"]').click()
-  await expect(atual).toHaveAttribute('data-secao', 'sobre', { timeout: 6000 })
-  await expect(app.locator('#manifesto-ato-1')).toBeInViewport()
-
   // Projetos: longe, salta pela lâmina até o primeiro trabalho, e a pill
   // continua à mostra depois do salto
   await app.locator('.nav-link[data-secao="projetos"]').click()
@@ -75,6 +70,13 @@ test('o menu leva a cada cena e marca onde você está', async ({ app }) => {
   await app.locator('.nav-link[data-secao="servicos"]').click()
   await expect(cena).toHaveAttribute('data-panel', 'capa-identidade', { timeout: 8000 })
   await expect(atual).toHaveAttribute('data-secao', 'servicos')
+
+  // Sobre: a Cena 7, a folha que sobe depois do fecho dos Pilares
+  await app.mouse.move(720, 30)
+  await app.locator('.nav-link[data-secao="sobre"]').click()
+  await expect(atual).toHaveAttribute('data-secao', 'sobre', { timeout: 8000 })
+  await expect(app.locator('#sobre-titulo')).toBeInViewport()
+  await expect(app.locator('.lamina')).toBeHidden({ timeout: 4000 })
 
   // o logo volta ao início
   await app.mouse.move(720, 30)

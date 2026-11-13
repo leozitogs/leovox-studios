@@ -1,0 +1,30 @@
+{
+  "$schema": "../../harness/schemas/scene-contract.schema.json",
+  "id": "sobre",
+  "title": "Sobre · O making-of",
+  "route": "/",
+  "viewports": ["desktop", "mobile", "reduced-motion"],
+  "states": ["subida", "folha", "tese", "elenco"],
+  "acceptance": [
+    "A folha off-white sobe por cima do fecho verde dos Pilares, que fica parado atrás enquanto é coberto",
+    "A folha tem os cantos de cima arredondados e duas fitas cruzadas na borda: o negativo e a fita verde do set",
+    "As fitas correm em sentidos opostos, mais rápidas quanto mais rápida a rolagem, e invertem com a rolagem pra cima",
+    "A folha de contato tem três tiras, uma por ano, em lista ordenada lida em ordem pelo leitor de tela",
+    "Cada tira se revela do papel branco ao halftone como função pura da distância ao centro",
+    "A mão circula o take escolhido de cada tira quando ela assenta, e desfaz na volta (gesto com histerese)",
+    "O verde aparece só no que a mão faz: círculo, seta, anotação, sublinhado, setas do retrato e a fita do set",
+    "Fotos ainda não fornecidas são placeholders declarados por data-placeholder",
+    "O elenco são provas no varal com a física da folha solta, nunca crachás de cordão",
+    "O menu Sobre leva a esta cena e a marca como corrente",
+    "Reduced motion e telas abaixo de 900px trazem a cena em fluxo, já revelada, circulada e assinada"
+  ],
+  "forbidden": [
+    "glow",
+    "neon",
+    "cursiva tipográfica nas anotações",
+    "crachá pendurado em cordão",
+    "foto colorida",
+    "filter animado",
+    "número sem prova"
+  ]
+}

@@ -184,7 +184,19 @@ duas frases, processo em poucas imagens fortes, e a faixa de resultado
 em destaque (número, impacto, prova). No fim, a ponte pro próximo case
 mantém o usuário dentro do filme em vez de devolvê-lo ao limbo.
 
-## Cena 7 · Sobre · O making-of · ROTEIRIZADA
+## Cena 7 · Sobre · O making-of · CONSTRUÍDA COM PLACEHOLDERS
+
+Atualização de 2026-11-13: construída a partir da curadoria aprovada
+(docs/CURADORIA-CENA-7-SOBRE.md). A folha off-white sobe por cima do
+fecho verde dos Pilares, que fica parado atrás, com os cantos de cima
+arredondados e duas fitas cruzadas na borda (o negativo e a fita do
+set) correndo com a rolagem. Dentro: a folha de contato com três tiras
+que se revelam do papel ao halftone e a mão que circula o take; a tese
+com o sublinhado verde; o elenco como provas no varal, com a física da
+folha solta; e os créditos, que passam a vez ao contato. Fotos, retrato,
+letra escaneada e elenco ainda são placeholders declarados. O texto
+abaixo fica como registro do roteiro original.
+
 
 A história do fundador como prova viva da tese: não precisou se
 encaixar pra ter espaço. Foto P&B com halftone, anotações à mão

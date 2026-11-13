@@ -16,13 +16,19 @@ type Item = { readonly id: SecaoId; readonly rotulo: string; readonly alvo: stri
 // história da Leovox até a Cena 7 existir).
 export const NAV_ITENS: readonly Item[] = [
   { id: 'projetos', rotulo: 'Projetos', alvo: 'pilares:identidade-01' },
-  { id: 'sobre', rotulo: 'Sobre', alvo: 'manifesto' },
+  { id: 'sobre', rotulo: 'Sobre', alvo: 'sobre' },
   { id: 'servicos', rotulo: 'Serviços', alvo: 'pilares:capa-identidade' },
 ]
 
 /** Qual link representa o lugar da página que está no meio da tela. */
 function secaoCorrente(): SecaoId | null {
   const meio = window.innerHeight / 2
+  // a Cena 7 sobe por cima do fecho, que fica parado atrás: ela vem antes
+  const sobre = document.querySelector<HTMLElement>('.sobre')
+  if (sobre) {
+    const r = sobre.getBoundingClientRect()
+    if (r.top <= meio && r.bottom > meio) return 'sobre'
+  }
   const pilares = document.querySelector<HTMLElement>('.pilares')
   if (pilares) {
     const r = pilares.getBoundingClientRect()
@@ -33,11 +39,6 @@ function secaoCorrente(): SecaoId | null {
       // o cartaz ainda é a chegada: o manifesto acabou de sair
       return 'servicos'
     }
-  }
-  const manifesto = document.querySelector<HTMLElement>('.manifesto')
-  if (manifesto) {
-    const r = manifesto.getBoundingClientRect()
-    if (r.top <= meio && r.bottom > meio) return 'sobre'
   }
   return null
 }
